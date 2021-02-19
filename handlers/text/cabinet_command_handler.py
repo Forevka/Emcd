@@ -22,7 +22,7 @@ async def cmd_cabinet(message: types.Message, user: UserRepository, _: dict):
 
     keyboard_markup.add(
         types.InlineKeyboardButton(
-            _['add_account'],
+            _['add_account_btn'],
             callback_data=menu_cb.new(id='_', type="account", action='new'),
         )
     )
