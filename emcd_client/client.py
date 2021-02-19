@@ -1,15 +1,12 @@
-import asyncio
+from emcd_client.models.payouts import payouts_from_dict
+from emcd_client.models.income_rewards import income_rewards_from_dict
+from emcd_client.models.coin_workers import coin_workers_from_dict
 from emcd_client.models.info import AccountInfo, account_info_from_dict
-import functools
-from contextlib import asynccontextmanager
-from dataclasses import dataclass
 from types import TracebackType
-from typing import Any, AsyncIterator, Awaitable, Callable, List, Optional, Type
+from typing import Optional, Type
 
 import aiohttp
-import click
 from yarl import URL
-#v1/info/18b81eca-37bd-40d5-a249-e99a8489c306
 
 API_VERSION = 1
 
@@ -42,4 +39,25 @@ class EmcdClient:
             if (resp.status == 200):
                 ret = await resp.json()
                 return account_info_from_dict(ret)
+            return None
+
+    async def get_workers(self, coin_name: str) -> AccountInfo:
+        async with self._client.get(self._make_url(f"v{API_VERSION}/{coin_name}/workers/{self._account_id}"), raise_for_status=False) as resp:
+            if (resp.status == 200):
+                ret = await resp.json()
+                return coin_workers_from_dict(ret)
+            return None
+
+    async def get_rewards(self, coin_name: str) -> AccountInfo:
+        async with self._client.get(self._make_url(f"v{API_VERSION}/{coin_name}/income/{self._account_id}"), raise_for_status=False) as resp:
+            if (resp.status == 200):
+                ret = await resp.json()
+                return income_rewards_from_dict(ret)
+            return None
+
+    async def get_payouts(self, coin_name: str) -> AccountInfo:
+        async with self._client.get(self._make_url(f"v{API_VERSION}/{coin_name}/payouts/{self._account_id}"), raise_for_status=False) as resp:
+            if (resp.status == 200):
+                ret = await resp.json()
+                return payouts_from_dict(ret)
             return None

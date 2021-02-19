@@ -6,8 +6,9 @@
 #
 #     result = account_info_from_dict(json.loads(json_string))
 
+from config import Coin
 from dataclasses import dataclass
-from typing import Optional, Any, TypeVar, Type, cast
+from typing import Dict, List, Optional, Any, Tuple, TypeVar, Type, cast
 
 
 T = TypeVar("T")
@@ -134,6 +135,25 @@ class AccountInfo:
         result["etc"] = to_class(CoinInfo, self.etc)
         result["notifications"] = to_class(Notifications, self.notifications)
         return result
+    
+    def get_coins(self,) -> Dict[Coin, CoinInfo]:
+        coins = {}
+        coins.update({Coin.Bitcoin: self.bitcoin})
+    
+        coins.update({Coin.Litecoin: self.litecoin})
+
+        coins.update({Coin.BitcoinHash: self.bitcoin_cash})
+
+        coins.update({Coin.BitcoinSV: self.bitcoin_sv})
+
+        coins.update({Coin.Dash: self.dash})
+
+        coins.update({Coin.Ethereum: self.eth})
+
+        coins.update({Coin.EthereumClassic: self.etc})
+        
+        return coins;
+
 
 
 def account_info_from_dict(s: Any) -> AccountInfo:

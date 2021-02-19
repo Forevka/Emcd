@@ -27,4 +27,4 @@ async def cmd_cabinet(message: types.Message, user: UserRepository, _: dict):
         )
     )
 
-    await message.answer(message_text.format(account_count=len(user_accounts)), reply_markup=keyboard_markup)
+    await message.answer(message_text.format(account_count=len(user_accounts),), reply_markup=keyboard_markup)
