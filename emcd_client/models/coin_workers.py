@@ -6,6 +6,7 @@
 #
 #     result = coin_workers_from_dict(json.loads(json_string))
 
+from datetime import datetime
 from enum import Enum
 from dataclasses import dataclass
 from typing import Any, Dict, List, TypeVar, Type, Callable, cast
@@ -147,8 +148,8 @@ class CoinWorker:
     lastbeat: int
     status_id: int # 1 active 0 inactive -1 dead 2 nonstable
 
-    def to_insert(self,) -> str:
-        return f"({self.account_coin_id}, '{self.worker}', CURRENT_TIMESTAMP, {self.status_id}, {self.hashrate}, {self.hashrate1_h}, {self.hashrate24_h}, {self.reject})"
+    def to_insert(self, now: datetime) -> str:
+        return f"({self.account_coin_id}, '{self.worker}', '{now.isoformat()}', {self.status_id}, {self.hashrate}, {self.hashrate1_h}, {self.hashrate24_h}, {self.reject})"
 
 @dataclass
 class CoinWorkers:
@@ -174,7 +175,7 @@ class CoinWorkers:
         result["detailsDead"] = self.details_dead#to_class(DetailsDead, self.details_dead)
         return result
 
-    def get_all_workers(self, account_coin_id: int):
+    def get_all_workers(self, account_coin_id: int) -> typing.List[CoinWorker]:
         workers: typing.List[CoinWorker] = []
         for raw_worker in self.details:
             #if (raw_worker.active == 1):

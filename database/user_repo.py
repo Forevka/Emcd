@@ -1,6 +1,6 @@
 from datetime import datetime
 from models.worker_account_history import WorkerAccountHistory, WorkerAccountHistoryForUser
-from emcd_client.models.coin_workers import CoinWorker
+from emcd_client.models.coin_workers import CoinWorker, CoinWorkers
 from emcd_client.models.info import AccountInfo, CoinInfo
 from typing import List
 from models.account import Account
@@ -63,11 +63,11 @@ class UserRepository:
         
         return [AccountCoin(**acc) for acc in await self.connection.fetch(sql,)]
 
-    async def store_coin_account_worker_history(self, workers: List[CoinWorker]):
+    async def store_coin_account_worker_history(self, workers: List[CoinWorker], now: datetime):
         sql = '''
         insert into worker_account_history (account_coin_id, worker_id, stored_datetime, status_id, hashrate, hashrate1h, hashrate24h, reject)
         values 
-        ''' + ','.join([w.to_insert() for w in workers])
+        ''' + ','.join([w.to_insert(now) for w in workers])
 
         await self.connection.execute(sql,)
 
@@ -93,7 +93,7 @@ class UserRepository:
 
         await self.connection.execute(sql, user_id, account_id, account_name)
 
-    async def add_account_coin(self, user_id: int, account_id: str, coin_id: str, coin_info: CoinInfo, is_active: bool):
+    async def add_account_coin(self, user_id: int, account_id: str, coin_id: str, coin_info: CoinInfo, is_active: bool,):
         sql = '''
         insert into "account_coin" (account_id, user_id, coin_id, 
                                     address, total_count, active_count, 
@@ -107,19 +107,19 @@ class UserRepository:
 
         await self.add_notification_setting(user_id, account_id, is_active, coin_id)
 
-    async def update_account_coid(self, user_id: int, account_id: str, coin_id: str, coin_info: CoinInfo, is_active: bool, last_update_datetime: datetime):
+    async def update_account_coin(self, _id: int, user_id: int, account_id: str, coin_id: str, address: str, coin_workers: CoinWorkers, is_active: bool, last_update_datetime: datetime):
         sql = '''
-        insert into "account_coin" (account_id, user_id, coin_id, 
-                                    address, total_count, active_count, 
-                                    inactive_count, dead_count, is_active,
-                                    total_hashrate, total_hashrate1h, total_hashrate24h,
-                                    last_update_datetime)
-        values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, CURRENT_TIMESTAMP);
+        update "account_coin" set  user_id = $2, coin_id = $3, 
+                                    address = $4, total_count = $5, active_count = $6, 
+                                    inactive_count = $7, dead_count = $8, is_active = $9,
+                                    total_hashrate = $10, total_hashrate1h = $11, total_hashrate24h = $12,
+                                    last_update_datetime = $13
+        where id = $1;
         '''
 
-        await self.connection.execute(sql, account_id, user_id, coin_id, coin_info.address, 0, 0, 0, 0, is_active, 0, 0, 0)
+        workers = coin_workers.get_all_workers(account_id)
 
-        await self.add_notification_setting(user_id, account_id, is_active, coin_id)
+        await self.connection.execute(sql, _id, user_id, coin_id, address, len(workers), len([i for i in workers if i.status_id == 1]), len([i for i in workers if i.status_id == 0]), len([i for i in workers if i.status_id == -1]), is_active, coin_workers.total_hashrate.hashrate, coin_workers.total_hashrate.hashrate1_h, coin_workers.total_hashrate.hashrate24_h, last_update_datetime)
 
 
     async def add_notification_setting(self, user_id: int, account_id: str, is_active: bool, coin_id: str,):
@@ -144,7 +144,7 @@ class UserRepository:
         res = await self.connection.fetchrow(sql, coin_account_id)
         if (res):
             return AccountCoin(**res)
-    
+
     async def get_account_coins(self, user_id: int, account_id: str) -> AccountCoin:
         sql = f"{AccountCoin.__select__} where user_id = $1 and account_id = $2 order by coin_id asc"
 

@@ -36,7 +36,7 @@ texts = {
         'notification_on': "Оповещения вкл. ✅",
         'notification_off': "Оповещения выкл. ❌",
         'delete_account': "Удалить аккаунт",
-        'worker_changed_status': "Воркер {worker_name} изменил статус с ({previous_status}) на ({new_status})",
+        'worker_changed_status': "Воркер {worker_name} с аккаунта {account_name}\nизменил статус с ({previous_status}) на ({new_status})",
         'status': {
             -1: "Мёртвый",
             0: "Не активный",
