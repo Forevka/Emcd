@@ -1,3 +1,6 @@
+from datetime import datetime
+from models.worker_account_history import WorkerAccountHistory, WorkerAccountHistoryForUser
+from emcd_client.models.coin_workers import CoinWorker
 from emcd_client.models.info import AccountInfo, CoinInfo
 from typing import List
 from models.account import Account
@@ -7,6 +10,67 @@ from models.account_coin import AccountCoin
 class UserRepository:
     def __init__(self, con: Connection):
         self.connection = con
+
+    async def cleanup_worker_history_for_account(self, account_coind_id: int):
+        sql = '''
+        delete from worker_account_history
+        where account_coin_id = $1
+        '''
+
+        await self.connection.execute(sql, account_coind_id,)
+
+    async def get_previous_worker_state_for_account(self, account_coin_id: int) -> List[WorkerAccountHistoryForUser]:
+        sql = '''
+        SELECT 
+                latest_record.worker_id
+                , latest_record.account_coin_id
+                , latest_record.stored_datetime
+                , latest_record.status_id
+                , latest_record.hashrate
+                , latest_record.hashrate1h
+                , latest_record.hashrate24h
+                , latest_record.reject
+                , ac.user_id
+                , u.lang_id
+        FROM worker_account_history wah 
+        join account_coin_notification acn on acn.account_coin_id = wah.account_coin_id and wah.account_coin_id = $1 and acn.is_enabled = TRUE
+        LEFT JOIN LATERAL (
+            SELECT 
+                wah2.worker_id
+                , wah2.account_coin_id
+                , wah2.stored_datetime
+                , wah2.status_id
+                , wah2.hashrate
+                , wah2.hashrate1h
+                , wah2.hashrate24h
+                , wah2.reject
+            FROM worker_account_history wah2
+            WHERE wah2.worker_id = wah.worker_id and wah2.account_coin_id = wah.account_coin_id
+            order by wah2.stored_datetime desc
+            FETCH FIRST 1  ROW ONLY
+        ) latest_record ON true
+        join account_coin ac on ac.id = latest_record.account_coin_id
+        join "user" u on u.id = ac.user_id
+        '''
+        
+        return [WorkerAccountHistoryForUser(**acc) for acc in await self.connection.fetch(sql, account_coin_id)]
+
+    async def get_all_account_to_refresh(self,) -> List[AccountCoin]:
+        sql = '''
+        SELECT ac.* from account_coin ac
+        join account_coin_notification acn on acn.account_coin_id = ac."id" and acn.is_enabled = TRUE
+        '''
+        
+        return [AccountCoin(**acc) for acc in await self.connection.fetch(sql,)]
+
+    async def store_coin_account_worker_history(self, workers: List[CoinWorker]):
+        sql = '''
+        insert into worker_account_history (account_coin_id, worker_id, stored_datetime, status_id, hashrate, hashrate1h, hashrate24h, reject)
+        values 
+        ''' + ','.join([w.to_insert() for w in workers])
+
+        await self.connection.execute(sql,)
+
 
     async def create(self, user_id: int, lang_id: int):
         sql = '''
@@ -42,6 +106,21 @@ class UserRepository:
         await self.connection.execute(sql, account_id, user_id, coin_id, coin_info.address, 0, 0, 0, 0, is_active, 0, 0, 0)
 
         await self.add_notification_setting(user_id, account_id, is_active, coin_id)
+
+    async def update_account_coid(self, user_id: int, account_id: str, coin_id: str, coin_info: CoinInfo, is_active: bool, last_update_datetime: datetime):
+        sql = '''
+        insert into "account_coin" (account_id, user_id, coin_id, 
+                                    address, total_count, active_count, 
+                                    inactive_count, dead_count, is_active,
+                                    total_hashrate, total_hashrate1h, total_hashrate24h,
+                                    last_update_datetime)
+        values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, CURRENT_TIMESTAMP);
+        '''
+
+        await self.connection.execute(sql, account_id, user_id, coin_id, coin_info.address, 0, 0, 0, 0, is_active, 0, 0, 0)
+
+        await self.add_notification_setting(user_id, account_id, is_active, coin_id)
+
 
     async def add_notification_setting(self, user_id: int, account_id: str, is_active: bool, coin_id: str,):
         sql = '''

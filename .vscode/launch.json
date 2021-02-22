@@ -17,6 +17,13 @@
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
             "console": "externalTerminal"
+        },
+        {
+            "name": "Python: Service",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/service.py",
+            "console": "externalTerminal"
         }
     ]
 }

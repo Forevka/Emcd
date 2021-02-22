@@ -9,6 +9,7 @@
 from enum import Enum
 from dataclasses import dataclass
 from typing import Any, Dict, List, TypeVar, Type, Callable, cast
+import typing
 
 
 T = TypeVar("T")
@@ -50,13 +51,9 @@ def to_class(c: Type[T], x: Any) -> dict:
     return cast(Any, x).to_dict()
 
 
-class User(Enum):
-    MINERIRKUTSKA = "minerirkutska"
-
-
 @dataclass
 class Detail:
-    user: User
+    user: str
     worker: str
     hashrate: int
     hashrate1_h: int
@@ -68,7 +65,7 @@ class Detail:
     @staticmethod
     def from_dict(obj: Any) -> 'Detail':
         assert isinstance(obj, dict)
-        user = User(obj.get("user"))
+        user = obj.get("user")
         worker = from_str(obj.get("worker"))
         hashrate = from_int(obj.get("hashrate"))
         hashrate1_h = from_int(obj.get("hashrate1h"))
@@ -80,7 +77,7 @@ class Detail:
 
     def to_dict(self) -> dict:
         result: dict = {}
-        result["user"] = to_enum(User, self.user)
+        result["user"] = self.user
         result["worker"] = from_str(self.worker)
         result["hashrate"] = from_int(self.hashrate)
         result["hashrate1h"] = from_int(self.hashrate1_h)
@@ -139,6 +136,21 @@ class TotalHashrate:
 
 
 @dataclass
+class CoinWorker:
+    account_coin_id: int
+    user: str
+    worker: str
+    hashrate: int
+    hashrate1_h: int
+    hashrate24_h: int
+    reject: float
+    lastbeat: int
+    status_id: int # 1 active 0 inactive -1 dead 2 nonstable
+
+    def to_insert(self,) -> str:
+        return f"({self.account_coin_id}, '{self.worker}', CURRENT_TIMESTAMP, {self.status_id}, {self.hashrate}, {self.hashrate1_h}, {self.hashrate24_h}, {self.reject})"
+
+@dataclass
 class CoinWorkers:
     total_count: TotalCount
     total_hashrate: TotalHashrate
@@ -162,6 +174,16 @@ class CoinWorkers:
         result["detailsDead"] = self.details_dead#to_class(DetailsDead, self.details_dead)
         return result
 
+    def get_all_workers(self, account_coin_id: int):
+        workers: typing.List[CoinWorker] = []
+        for raw_worker in self.details:
+            #if (raw_worker.active == 1):
+            workers.append(CoinWorker(account_coin_id, raw_worker.user, raw_worker.worker, raw_worker.hashrate, raw_worker.hashrate1_h, raw_worker.hashrate24_h, raw_worker.reject, raw_worker.lastbeat, raw_worker.active))
+
+        for dead_worker_id, dead_worker_lastbeat in self.details_dead.items():
+            workers.append(CoinWorker(account_coin_id, '', dead_worker_id, 0, 0, 0, 0.0, dead_worker_lastbeat, -1))
+
+        return workers
 
 def coin_workers_from_dict(s: Any) -> CoinWorkers:
     return CoinWorkers.from_dict(s)

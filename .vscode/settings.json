@@ -1,3 +1,4 @@
 {
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "python.pythonPath": "C:\\Users\\bohdan.lushchyk\\AppData\\Local\\Microsoft\\WindowsApps\\python3.8.exe"
 }
