@@ -1,7 +1,6 @@
 from config import DEFAULT_LANG
 from database.user_repo import UserRepository
 from aiogram import types
-from asyncpg.connection import Connection
 
 async def cmd_start(message: types.Message, user: UserRepository, _: dict):
     """

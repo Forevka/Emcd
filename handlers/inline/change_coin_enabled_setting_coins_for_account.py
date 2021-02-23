@@ -4,7 +4,7 @@ import typing
 from aiogram import types
 from database.user_repo import UserRepository
 
-from keyboard_fabrics import coin_account_cb
+from keyboard_fabrics import menu_cb, coin_account_cb
 
 async def change_coin_enabled_setting_coins_for_account(
     query: types.CallbackQuery,
@@ -48,6 +48,13 @@ async def change_coin_enabled_setting_coins_for_account(
         keyboard_markup.add(*i)
 
     account = next((acc for acc in await user.get_accounts(query.from_user.id) if str(acc.account_id) == str(coin_account.account_id)), None,)
+
+    keyboard_markup.add(
+        types.InlineKeyboardButton(
+            _['back_to_account_button'],
+            callback_data=menu_cb.new(id=account.account_id, type="account", action='open'),
+        ),
+    )
 
     await query.message.edit_text(
         _["coin_list_descr"].format(

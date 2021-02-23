@@ -67,6 +67,7 @@ def to_class(c: Type[T], x: Any) -> dict:
 class TypeEnum(Enum):
     DONATION = "donation"
     FPPS = "fpps"
+    REFERRAL = "referral"
 
 
 @dataclass

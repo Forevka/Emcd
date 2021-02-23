@@ -1,15 +1,47 @@
 from datetime import datetime
-from models.worker_account_history import WorkerAccountHistory, WorkerAccountHistoryForUser
+from models.worker_account_history import WorkerAccountHistoryForUser
 from emcd_client.models.coin_workers import CoinWorker, CoinWorkers
-from emcd_client.models.info import AccountInfo, CoinInfo
+from emcd_client.models.info import CoinInfo
 from typing import List
 from models.account import Account
+from models.user import User
 from asyncpg.connection import Connection
 from models.account_coin import AccountCoin
 
 class UserRepository:
     def __init__(self, con: Connection):
         self.connection = con
+
+    async def delete_account_notification_settings_account(self, account_id: int, user_id: int):
+        sql = '''
+        delete from account_coin_notification where account_coin_id in (select id from account_coin where account_id = $1 and user_id = $2)
+        '''
+        
+        await self.connection.execute(sql, account_id, user_id,)
+
+
+    async def delete_user_account_coin(self, account_id: int, user_id: int):
+        sql = '''
+        delete from account_coin where account_id = $1 and user_id = $2
+        '''
+
+        await self.connection.execute(sql, account_id, user_id,)
+        
+
+    async def delete_user_account(self, account_id: int, user_id: int):
+        sql = '''
+        delete from account where user_id = $2 and account_id = $1
+        '''
+
+        await self.connection.execute(sql, account_id, user_id)
+
+
+    async def get_user(self, user_id: int) -> User:
+        sql = f'{User.__select__} where "id" = $1'
+
+        raw = await self.connection.fetchrow(sql, user_id,)
+        if (raw):
+            return User(**raw)
 
     async def cleanup_worker_history_for_account(self, account_coind_id: int):
         sql = '''
@@ -31,7 +63,6 @@ class UserRepository:
                 , latest_record.hashrate24h
                 , latest_record.reject
                 , ac.user_id
-                , u.lang_id
         FROM worker_account_history wah 
         join account_coin_notification acn on acn.account_coin_id = wah.account_coin_id and wah.account_coin_id = $1 and acn.is_enabled = TRUE
         LEFT JOIN LATERAL (
@@ -50,7 +81,6 @@ class UserRepository:
             FETCH FIRST 1  ROW ONLY
         ) latest_record ON true
         join account_coin ac on ac.id = latest_record.account_coin_id
-        join "user" u on u.id = ac.user_id
         '''
         
         return [WorkerAccountHistoryForUser(**acc) for acc in await self.connection.fetch(sql, account_coin_id)]

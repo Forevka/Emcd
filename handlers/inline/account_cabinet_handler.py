@@ -1,11 +1,9 @@
 from config import Coin
-from emcd_client.client import EmcdClient
-from finite_state_machine import Form
 import typing
 from aiogram import types
 from database.user_repo import UserRepository
 
-from keyboard_fabrics import menu_cb
+from keyboard_fabrics import menu_cb, payouts_cb, income_cb, worker_cb, delete_account_cb
 
 
 async def account_cabinet_callback_handler(
@@ -28,8 +26,8 @@ async def account_cabinet_callback_handler(
         ),
         types.InlineKeyboardButton(
             _["workers_stat_button"],
-            callback_data=menu_cb.new(
-                id=account_id, type="account", action="w_stat"
+            callback_data=worker_cb.new(
+                id=account_id, page=1, type="s_coin" #s_coin = select_coin shorthand
             ),
         ),
     )
@@ -37,14 +35,14 @@ async def account_cabinet_callback_handler(
     keyboard_markup.add(
         types.InlineKeyboardButton(
             _["income_stat_button"],
-            callback_data=menu_cb.new(
-                id=account_id, type="account", action="i_stat"
+            callback_data=income_cb.new(
+                id=account_id, page=1, type="s_coin" #s_coin = select_coin shorthand
             ),
         ),
         types.InlineKeyboardButton(
             _["payouts_stat_button"],
-            callback_data=menu_cb.new(
-                id=account_id, type="account", action="p_stat"
+            callback_data=payouts_cb.new(
+                id=account_id, page=1, type='s_coin', #s_coin = select_coin shorthand
             ),
         ),
     )
@@ -58,8 +56,18 @@ async def account_cabinet_callback_handler(
         ),
         types.InlineKeyboardButton(
             _["delete_account"],
+            callback_data=delete_account_cb.new(
+                id=account_id, action="choose"
+            ),
+        ),
+    )
+
+    
+    keyboard_markup.add(
+        types.InlineKeyboardButton(
+            _["back_to_account_list_button"],
             callback_data=menu_cb.new(
-                id=account_id, type="account", action="del"
+                id="_", type="menu", action="main_menu"
             ),
         ),
     )

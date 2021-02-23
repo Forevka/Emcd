@@ -178,7 +178,6 @@ class CoinWorkers:
     def get_all_workers(self, account_coin_id: int) -> typing.List[CoinWorker]:
         workers: typing.List[CoinWorker] = []
         for raw_worker in self.details:
-            #if (raw_worker.active == 1):
             workers.append(CoinWorker(account_coin_id, raw_worker.user, raw_worker.worker, raw_worker.hashrate, raw_worker.hashrate1_h, raw_worker.hashrate24_h, raw_worker.reject, raw_worker.lastbeat, raw_worker.active))
 
         for dead_worker_id, dead_worker_lastbeat in self.details_dead.items():

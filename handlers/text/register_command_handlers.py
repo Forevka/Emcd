@@ -1,6 +1,5 @@
 from handlers.text.account_id_add_handler import account_id_add_handler
-from typing import Text
-from aiogram import Bot, Dispatcher
+from aiogram import Dispatcher
 
 from handlers.text.start_command import cmd_start
 from handlers.text.cabinet_command_handler import cmd_cabinet

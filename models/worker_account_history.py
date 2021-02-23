@@ -19,7 +19,6 @@ class WorkerAccountHistory:
 @dataclass
 class WorkerAccountHistoryForUser:
 	user_id: int
-	lang_id: int
 	account_coin_id: int
 	worker_id: str
 	stored_datetime: datetime.datetime

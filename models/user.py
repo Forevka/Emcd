@@ -9,5 +9,5 @@ class User:
 	lang_id: int
 	created_datetime: datetime.datetime
 
-	__select__ = """ select "id", "lang_id", "created_datetime" from user"""
+	__select__ = ''' select "id", "lang_id", "created_datetime" from "user"'''
 
