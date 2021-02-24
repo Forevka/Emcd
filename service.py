@@ -114,6 +114,8 @@ async def job():
     logger.info(f'Terminating pool')
     await pool.close()
 
+    await notifier.bot.close()
+
 
 if (__name__ == "__main__"):
     scheduler = AsyncIOScheduler()
