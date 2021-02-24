@@ -21,7 +21,7 @@ jobs:
         with:
           envkey_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
           envkey_TOKEN: ${{ secrets.TOKEN }}
-          envkey_ENVIRONMENT_NAME: ${{ secrets.ENV_NAME }}
+          envkey_ENV_NAME: ${{ secrets.ENV_NAME }}
           file_name: .env
 
       - name: Move envfile to host
