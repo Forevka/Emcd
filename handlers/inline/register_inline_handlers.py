@@ -1,3 +1,4 @@
+from handlers.inline.notification_callback_handler import notificaion_enable_callback_handler, notification_callback_handler
 from handlers.inline.delete_account_callback_handler import delete_account_callback_handler, delete_account_confirmation_callback_handler
 from handlers.inline.worker_callback_handler import worker_callback_handler, worker_info_callback_handler
 from handlers.inline.income_callback_handler import income_callback_handler, income_info_callback_handler
@@ -10,7 +11,7 @@ from aiogram import Dispatcher
 
 from handlers.inline.add_ccount_handler import add_account_callback_handler
 
-from keyboard_fabrics import menu_cb, coin_account_cb, payouts_cb, income_cb, worker_cb, delete_account_cb
+from keyboard_fabrics import menu_cb, coin_account_cb, payouts_cb, income_cb, worker_cb, delete_account_cb, notification_cb
 
 
 def register_callback_handlers(dp: Dispatcher):
@@ -77,6 +78,18 @@ def register_callback_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(
         worker_info_callback_handler,
         worker_cb.filter(),
+        state="*"
+    )
+
+    dp.register_callback_query_handler(
+        notification_callback_handler,
+        notification_cb.filter(type='s_coin'),
+        state="*"
+    )
+
+    dp.register_callback_query_handler(
+        notificaion_enable_callback_handler,
+        notification_cb.filter(),
         state="*"
     )
     

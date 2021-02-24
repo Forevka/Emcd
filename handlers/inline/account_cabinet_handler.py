@@ -3,7 +3,7 @@ import typing
 from aiogram import types
 from database.user_repo import UserRepository
 
-from keyboard_fabrics import menu_cb, payouts_cb, income_cb, worker_cb, delete_account_cb
+from keyboard_fabrics import menu_cb, payouts_cb, income_cb, worker_cb, delete_account_cb, notification_cb
 
 
 async def account_cabinet_callback_handler(
@@ -50,8 +50,8 @@ async def account_cabinet_callback_handler(
     keyboard_markup.add(
         types.InlineKeyboardButton(
             _["notifcation_button"],
-            callback_data=menu_cb.new(
-                id=account_id, type="account", action="n_set"
+            callback_data=notification_cb.new(
+                id=account_id, action="_", type='s_coin', #s_coin = select_coin shorthand
             ),
         ),
         types.InlineKeyboardButton(

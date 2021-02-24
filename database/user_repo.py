@@ -1,16 +1,36 @@
 from datetime import datetime
-from models.worker_account_history import WorkerAccountHistoryForUser
+from typing import List
+
+from asyncpg.connection import Connection
 from emcd_client.models.coin_workers import CoinWorker, CoinWorkers
 from emcd_client.models.info import CoinInfo
-from typing import List
 from models.account import Account
-from models.user import User
-from asyncpg.connection import Connection
 from models.account_coin import AccountCoin
+from models.account_coin_notification import AccountCoinNotification
+from models.user import User
+from models.worker_account_history import WorkerAccountHistoryForUser
+
 
 class UserRepository:
     def __init__(self, con: Connection):
         self.connection = con
+
+    async def update_notification_setting_for_account(self, account_coin_id: int, new_value: bool):
+        sql = '''
+        update account_coin_notification set is_enabled = $1 where account_coin_id = $2
+        '''
+
+        await self.connection.execute(sql, new_value, account_coin_id,)
+
+    async def get_notification_setting_for_account(self, account_coin_id: int,) -> AccountCoinNotification:
+        sql = f'''
+        {AccountCoinNotification.__select__} where account_coin_id = $1
+        '''
+        
+        raw = await self.connection.fetchrow(sql, account_coin_id,)
+        if (raw):
+            return AccountCoinNotification(**raw)
+
 
     async def delete_account_notification_settings_account(self, account_id: int, user_id: int):
         sql = '''
