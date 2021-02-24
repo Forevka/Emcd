@@ -1,0 +1,4 @@
+asyncpg
+aiogram
+apscheduler
+loguru

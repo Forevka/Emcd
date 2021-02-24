@@ -1,18 +1,19 @@
+import asyncio
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict
-from notifier.telegram_notifier import TelegramNotifier
-from asyncpg.pool import Pool
-from emcd_client.client import EmcdClient
-from models.account_coin import AccountCoin
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-import asyncio
 
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from asyncpg.pool import Pool
 from loguru import logger
 
+from config import TOKEN, Lang, postgres, texts
 from database.db import get_pool
 from database.user_repo import UserRepository
-from config import Lang, TOKEN, postgres, texts
+from emcd_client.client import EmcdClient
+from models.account_coin import AccountCoin
+from notifier.telegram_notifier import TelegramNotifier
+
 
 @dataclass
 class WorkerChangeStatusDataModel:
