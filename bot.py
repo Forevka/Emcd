@@ -1,15 +1,14 @@
-from aiogram.types.message import ParseMode
-from middlewares.i18n_data_provider_midleware import I18nDataProviderMiddleware
-from database.db import get_pool
 import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-
-from handlers.register_handlers import register_handlers
-
-from middlewares.database_provider_middleware import DatabaseProviderMiddleware
+from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
+
+from database.db import get_pool
+from handlers.register_handlers import register_handlers
+from middlewares.database_provider_middleware import DatabaseProviderMiddleware
+from middlewares.i18n_data_provider_midleware import I18nDataProviderMiddleware
 
 logging.basicConfig(level=logging.INFO)
 
@@ -39,6 +38,7 @@ def start_polling(token: str, db_config: dict):
     dp = init_dispatcher(bot)
     dp["db_config"] = db_config
 
+    dp.middleware.setup(LoggingMiddleware())
     dp.middleware.setup(DatabaseProviderMiddleware(dp))
     dp.middleware.setup(I18nDataProviderMiddleware(dp))
 
