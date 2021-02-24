@@ -5,8 +5,12 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile.bot
+      env_file:
+      - ./.env
       
   service:
     build:
       context: .
       dockerfile: ./Dockerfile.service
+      env_file:
+      - ./.env
