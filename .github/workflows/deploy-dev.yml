@@ -61,4 +61,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          script: cd ${{env.directoryName}} && docker-compose pull && docker-compose up -d --force-recreate --no-deps
+          script: cd ${{env.directoryName}} && docker-compose pull && docker-compose up -d --force-recreate --no-deps --build
