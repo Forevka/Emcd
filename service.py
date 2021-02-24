@@ -114,7 +114,7 @@ async def job():
     logger.info(f'Terminating pool')
     await pool.close()
 
-    await notifier.bot.close()
+    await notifier.bot.session.close()
 
 
 if (__name__ == "__main__"):
