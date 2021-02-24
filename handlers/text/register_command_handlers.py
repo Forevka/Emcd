@@ -1,3 +1,4 @@
+from handlers.text.version_command import cmd_version
 from handlers.text.account_id_add_handler import account_id_add_handler
 from aiogram import Dispatcher
 
@@ -9,6 +10,8 @@ from finite_state_machine import Form
 
 
 def register_command_handlers(dp: Dispatcher):
+    dp.register_message_handler(cmd_version, commands=['version'], state='*')
+
     cabinet_triggers = [texts['ru']['cabinet'], texts['en']['cabinet']]
 
     dp.register_message_handler(cmd_start, commands=['start'], state='*')

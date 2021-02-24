@@ -1,5 +1,8 @@
 from enum import Enum
 import os
+import datetime
+
+START_TIME = datetime.datetime.now()
 
 postgres = os.environ.get('CONNECTION_STRING')
 
