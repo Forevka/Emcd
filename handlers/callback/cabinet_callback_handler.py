@@ -1,7 +1,7 @@
 import typing
-from database.user_repo import UserRepository
-from aiogram import types
 
+from aiogram import types
+from database.user_repo import UserRepository
 from keyboard_fabrics import menu_cb
 
 

@@ -1,10 +1,11 @@
-from utils import grouper
-from config import Coin
 import typing
-from aiogram import types
-from database.user_repo import UserRepository
 
-from keyboard_fabrics import menu_cb, coin_account_cb
+from aiogram import types
+from config import Coin
+from database.user_repo import UserRepository
+from keyboard_fabrics import coin_account_cb, menu_cb
+from utils import grouper
+
 
 async def change_coins_for_account_callback_handler(
     query: types.CallbackQuery,

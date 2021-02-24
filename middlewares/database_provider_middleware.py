@@ -1,7 +1,8 @@
-from database.user_repo import UserRepository
 from typing import Any
+
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.middlewares import LifetimeControllerMiddleware
+from database.user_repo import UserRepository
 
 
 class DatabaseProviderMiddleware(LifetimeControllerMiddleware):

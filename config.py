@@ -1,6 +1,6 @@
-from enum import Enum
-import os
 import datetime
+import os
+from enum import Enum
 
 START_TIME = datetime.datetime.now()
 
@@ -67,8 +67,8 @@ texts = {
             0: "Выключены",
         },
         "setting_notification_set": {
-            1: "Выключить",
-            0: "Включить",
+            0: "Выключить",
+            1: "Включить",
         },
         "yes": "Да",
         "no": "Нет",

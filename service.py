@@ -9,9 +9,9 @@ from loguru import logger
 
 from config import TOKEN, Lang, postgres, texts
 from database.db import get_pool
+from database.models.account_coin import AccountCoin
 from database.user_repo import UserRepository
 from emcd_client.client import EmcdClient
-from models.account_coin import AccountCoin
 from notifier.telegram_notifier import TelegramNotifier
 
 

@@ -4,11 +4,12 @@ from typing import List
 from asyncpg.connection import Connection
 from emcd_client.models.coin_workers import CoinWorker, CoinWorkers
 from emcd_client.models.info import CoinInfo
-from models.account import Account
-from models.account_coin import AccountCoin
-from models.account_coin_notification import AccountCoinNotification
-from models.user import User
-from models.worker_account_history import WorkerAccountHistoryForUser
+
+from database.models.account import Account
+from database.models.account_coin import AccountCoin
+from database.models.account_coin_notification import AccountCoinNotification
+from database.models.user import User
+from database.models.worker_account_history import WorkerAccountHistoryForUser
 
 
 class UserRepository:

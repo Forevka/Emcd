@@ -1,11 +1,11 @@
-from emcd_client.client import EmcdClient
-from utils import format_rate, grouper
-from config import Coin
 import typing
-from aiogram import types
-from database.user_repo import UserRepository
 
+from aiogram import types
+from config import Coin
+from database.user_repo import UserRepository
+from emcd_client.client import EmcdClient
 from keyboard_fabrics import menu_cb, worker_cb
+from utils import format_rate, grouper
 
 PER_PAGE = 5
 

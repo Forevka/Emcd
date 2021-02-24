@@ -1,6 +1,7 @@
+from aiogram import types
 from config import DEFAULT_LANG
 from database.user_repo import UserRepository
-from aiogram import types
+
 
 async def cmd_start(message: types.Message, user: UserRepository, _: dict):
     """

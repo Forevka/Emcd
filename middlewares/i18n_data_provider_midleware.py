@@ -1,9 +1,10 @@
 from typing import Any
+
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.middlewares import LifetimeControllerMiddleware
 from asyncpg.pool import Pool
-
 from config import texts
+
 
 class I18nDataProviderMiddleware(LifetimeControllerMiddleware):
     """

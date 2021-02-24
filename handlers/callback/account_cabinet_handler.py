@@ -1,9 +1,10 @@
-from config import Coin
 import typing
-from aiogram import types
-from database.user_repo import UserRepository
 
-from keyboard_fabrics import menu_cb, payouts_cb, income_cb, worker_cb, delete_account_cb, notification_cb
+from aiogram import types
+from config import Coin
+from database.user_repo import UserRepository
+from keyboard_fabrics import (delete_account_cb, income_cb, menu_cb,
+                              notification_cb, payouts_cb, worker_cb)
 
 
 async def account_cabinet_callback_handler(

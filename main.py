@@ -1,6 +1,6 @@
+
+from bot import start_polling
 from config import TOKEN, postgres
-from bot import on_startup, start_polling
-from aiogram import Dispatcher
 
 
 def start():

@@ -1,8 +1,10 @@
 import os
+
+from aiogram import types
 from config import DEFAULT_LANG, START_TIME
 from database.user_repo import UserRepository
-from aiogram import types
 from git import Repo
+
 
 async def cmd_version(message: types.Message, user: UserRepository, _: dict):
     repo = Repo()

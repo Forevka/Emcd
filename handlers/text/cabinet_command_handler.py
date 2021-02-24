@@ -1,7 +1,7 @@
-from database.user_repo import UserRepository
 from aiogram import types
-
+from database.user_repo import UserRepository
 from keyboard_fabrics import menu_cb
+
 
 async def cmd_cabinet(message: types.Message, user: UserRepository, _: dict):
     user_accounts = await user.get_accounts(message.from_user.id)

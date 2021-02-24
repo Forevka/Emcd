@@ -1,21 +1,22 @@
-from emcd_client.client import EmcdClient
-from utils import grouper
-from config import Coin
 import typing
-from aiogram import types
-from database.user_repo import UserRepository
 
-from keyboard_fabrics import menu_cb, income_cb, notification_cb
+from aiogram import types
+from config import Coin
+from database.user_repo import UserRepository
+from emcd_client.client import EmcdClient
+from keyboard_fabrics import menu_cb, payouts_cb
+from utils import grouper
 
 PER_PAGE = 5
 
-async def notification_callback_handler(
+async def payouts_callback_handler(
     query: types.CallbackQuery,
     callback_data: typing.Dict[str, str],
     user: UserRepository,
     _: dict,
 ):
     account_id = callback_data["id"]
+    page = int(callback_data['page'])
 
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
     
@@ -28,8 +29,8 @@ async def notification_callback_handler(
             btn_list.append(
                 types.InlineKeyboardButton(
                     f"{Coin(coin.coin_id).name}",
-                    callback_data=notification_cb.new(
-                        id=account_id, type=coin.coin_id, action='_'
+                    callback_data=payouts_cb.new(
+                        id=account_id, page=page, type=coin.coin_id,
                     ),
                 ),
             )
@@ -46,61 +47,70 @@ async def notification_callback_handler(
     )
     
     await query.message.edit_text(
-        _["notification_choose_coin"],
+        _["payouts_choose_coin"],
         reply_markup=keyboard_markup,
     )
 
 
-async def notificaion_enable_callback_handler(
+async def payouts_info_callback_handler(
     query: types.CallbackQuery,
     callback_data: typing.Dict[str, str],
     user: UserRepository,
     _: dict,
 ):
     account_id = callback_data["id"]
-    coin_id = callback_data['type']
-    action = callback_data['action']
+    coind_id = callback_data['type']
+    page = int(callback_data['page'])
 
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
     
     account = next((acc for acc in await user.get_accounts(query.from_user.id) if str(acc.account_id) == account_id), None,)
 
-    account_coin = next((i for i in await user.get_account_coins(query.from_user.id, account_id) if i.coin_id == coin_id), None,)
+    payouts = None
+    async with EmcdClient(account_id) as client:
+        payouts = await client.get_payouts(coind_id)
 
-    notification_setting = await user.get_notification_setting_for_account(account_coin.id)
+    message_text = ""
 
-    new_setting_value = not notification_setting.is_enabled
+    buttons = []
 
-    keyboard_markup.row(
+    if (page > 1):
+        buttons.append(
+            types.InlineKeyboardButton(
+                _["prev_button"],
+                callback_data=payouts_cb.new(
+                    id=account_id, page=page - 1, type=coind_id,
+                ),
+            ),
+        )
+
+    buttons.append(
         types.InlineKeyboardButton(
-            _['setting_notification_set'][int(new_setting_value)],
-            callback_data=notification_cb.new(
-                id=account_id, type=coin_id, action=new_setting_value
+            _["back_to_payouts"],
+            callback_data=payouts_cb.new(
+                id=account_id, page=page, type='s_coin',
             ),
         ),
     )
-    
-    if (action != "_"):
-        await user.update_notification_setting_for_account(account_coin.id, new_setting_value)
 
-    notification_setting = await user.get_notification_setting_for_account(account_coin.id)
+    if (payouts):
+        for payout in payouts.payouts[(page - 1) * PER_PAGE: page * PER_PAGE]:
+            message_text += f'\n{payout.gmt_time} {payout.amount} {payout.txid[:10]}'
 
-    message_text = _['notification_change_descr'].format(
-        account_name=account.username,
-        setting=_['setting_notification'][notification_setting.is_enabled]
-    )
-
-
-    keyboard_markup.row(
-        types.InlineKeyboardButton(
-            _["back_to_notif"],
-            callback_data=notification_cb.new(
-                id=account_id, action="_", type='s_coin',
-            ),
-        ),
-    )
+        if (len(payouts.payouts) > page * PER_PAGE):
+            buttons.append(
+                types.InlineKeyboardButton(
+                    _["next_button"],
+                    callback_data=payouts_cb.new(
+                        id=account_id, page=page + 1, type=coind_id,
+                    ),
+                ),
+            )
+        
+    keyboard_markup.row(*buttons)
     
     await query.message.edit_text(
         message_text,
         reply_markup=keyboard_markup,
     )
+
