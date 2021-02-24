@@ -1,15 +1,9 @@
 from enum import Enum
+import os
 
-postgres = {
-    'host':     '194.99.21.140',
-    'user':     'postgres',
-    'password': 'werdwerd2012',
-    'database': 'Emcd',
-    'port':      5433,
-}
+postgres = os.environ.get('CONNECTION_STRING')
 
-TOKEN = "666922879:AAEWkOwKYH-Sz7pBm9fLtXDlDV1fSGiNbwo"
-
+TOKEN = os.environ.get('TOKEN')
 
 texts = {
     'ru': {

@@ -16,14 +16,24 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
-            "console": "externalTerminal"
+            "console": "externalTerminal",
+            "env": {
+                "TOKEN": "666922879:AAEWkOwKYH-Sz7pBm9fLtXDlDV1fSGiNbwo",
+                "CONNECTION_STRING": "postgres://postgres:werdwerd2012@194.99.21.140:5433/Emcd",
+                "ENV_NAME": "debug",
+            },
         },
         {
             "name": "Python: Service",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/service.py",
-            "console": "externalTerminal"
+            "console": "externalTerminal",
+            "env": {
+                "TOKEN": "666922879:AAEWkOwKYH-Sz7pBm9fLtXDlDV1fSGiNbwo",
+                "CONNECTION_STRING": "postgres://postgres:werdwerd2012@194.99.21.140:5433/Emcd",
+                "ENV_NAME": "debug",
+            },
         }
     ]
 }

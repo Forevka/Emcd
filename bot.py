@@ -23,20 +23,16 @@ def init_dispatcher(bot: Bot):
 
 
 async def on_startup(dp: Dispatcher):
-    config = dp["db_config"]
     dp["db_pool"] = await get_pool(
-        config["host"],
-        config["port"],
-        config["database"],
-        config["user"],
-        config["password"],
+        dp["connection_string"],
     )
 
 
-def start_polling(token: str, db_config: dict):
+def start_polling(token: str, connection_string: str):
     bot = init_bot(token)
     dp = init_dispatcher(bot)
-    dp["db_config"] = db_config
+
+    dp["connection_string"] = connection_string
 
     dp.middleware.setup(LoggingMiddleware())
     dp.middleware.setup(DatabaseProviderMiddleware(dp))

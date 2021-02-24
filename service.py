@@ -97,7 +97,7 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
 async def job():
     notifier = TelegramNotifier(TOKEN)
 
-    pool = await get_pool(**postgres)
+    pool = await get_pool(postgres)
     logger.info(f'Job started')
     user_repo = UserRepository(await pool.acquire())
     accounts = await user_repo.get_all_account_to_refresh()
