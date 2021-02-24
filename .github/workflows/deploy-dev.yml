@@ -35,7 +35,7 @@ jobs:
           target: "${{env.directoryName}}/"
 
   deploy:
-    needs: build
+    needs: pass-envfile
     environment: dev
     runs-on: ubuntu-18.04
 
