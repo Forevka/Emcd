@@ -16,6 +16,13 @@ class UserRepository:
     def __init__(self, con: Connection):
         self.connection = con
 
+    async def update_user_lang(self, user_id: int, lang_id: int):
+        sql = '''
+        update "user" set lang_id = $1 where "id" = $2
+        '''
+
+        await self.connection.execute(sql, lang_id, user_id,)
+
     async def update_notification_setting_for_account(self, account_coin_id: int, new_value: bool):
         sql = '''
         update account_coin_notification set is_enabled = $1 where account_coin_id = $2

@@ -1,5 +1,7 @@
 from aiogram.utils.callback_data import CallbackData
 
+lang_cb = CallbackData('lang', 'id')
+
 menu_cb = CallbackData('menu', 'type', 'action', 'id')  # menu:<type>:<action>
 #menu:account:add:_
 #menu:account:open:0

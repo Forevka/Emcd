@@ -1,9 +1,9 @@
 from typing import Any
+from aiogram.types import Update
 
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.middlewares import LifetimeControllerMiddleware
-from asyncpg.pool import Pool
-from config import texts
+from config import DEFAULT_LANG, Lang, texts
 
 
 class I18nDataProviderMiddleware(LifetimeControllerMiddleware):
@@ -16,4 +16,9 @@ class I18nDataProviderMiddleware(LifetimeControllerMiddleware):
         self.dp = dp
 
     async def pre_process(self, message: Any, data: dict,):
-        data['_'] = texts['ru']
+        if (isinstance(message, Update)): return
+        user = await data['user'].get_user(message.from_user.id)
+        if (user):
+            data['_'] = texts[Lang(user.lang_id).name]
+        else:
+            data['_'] = texts[DEFAULT_LANG.name]

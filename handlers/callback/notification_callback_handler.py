@@ -3,8 +3,7 @@ import typing
 from aiogram import types
 from config import Coin
 from database.user_repo import UserRepository
-from emcd_client.client import EmcdClient
-from keyboard_fabrics import income_cb, menu_cb, notification_cb
+from keyboard_fabrics import menu_cb, notification_cb
 from utils import grouper
 
 PER_PAGE = 5

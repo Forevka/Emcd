@@ -1,24 +1,11 @@
 from aiogram import types
-from config import DEFAULT_LANG, Lang
+from config import Lang
 from database.user_repo import UserRepository
 from keyboard_fabrics import lang_cb
 
-
-async def cmd_start(message: types.Message, user: UserRepository, _: dict):
-    """
-    Conversation's entry point
-    """
-
-    await user.create(message.from_user.id, int(DEFAULT_LANG.value))
-
-    keyboard_markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-
-    btns_text = (_['cabinet'], _['faq'])
-    keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
-    keyboard_markup.row(_['language'])
-
-    await message.answer(_['hello'], reply_markup=keyboard_markup)
-    
+async def cmd_lang(
+    message: types.Message, user: UserRepository, _: dict
+):
     inline_keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
 
     inline_keyboard_markup.row(
@@ -40,3 +27,4 @@ async def cmd_start(message: types.Message, user: UserRepository, _: dict):
     )
 
     await message.answer(_['choose_lang'], reply_markup=inline_keyboard_markup)
+    
