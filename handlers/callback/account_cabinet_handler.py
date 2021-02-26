@@ -4,7 +4,7 @@ from aiogram import types
 from config import Coin
 from database.user_repo import UserRepository
 from keyboard_fabrics import (delete_account_cb, income_cb, menu_cb,
-                              notification_cb, payouts_cb, worker_cb)
+                              notification_cb, payouts_cb, worker_cb, statistic_cb)
 
 
 async def account_cabinet_callback_handler(
@@ -20,12 +20,6 @@ async def account_cabinet_callback_handler(
 
     keyboard_markup.add(
         types.InlineKeyboardButton(
-            _["change_coins_button"],
-            callback_data=menu_cb.new(
-                id=account_id, type="account", action="c_coins"
-            ),
-        ),
-        types.InlineKeyboardButton(
             _["workers_stat_button"],
             callback_data=worker_cb.new(
                 id=account_id, page=1, type="s_coin" #s_coin = select_coin shorthand
@@ -35,30 +29,15 @@ async def account_cabinet_callback_handler(
 
     keyboard_markup.add(
         types.InlineKeyboardButton(
-            _["income_stat_button"],
-            callback_data=income_cb.new(
-                id=account_id, page=1, type="s_coin" #s_coin = select_coin shorthand
+            _["statistic_button"],
+            callback_data=statistic_cb.new(
+                id=account_id, type="s_coin" #s_coin = select_coin shorthand
             ),
         ),
         types.InlineKeyboardButton(
-            _["payouts_stat_button"],
+            _["finance_button"],
             callback_data=payouts_cb.new(
                 id=account_id, page=1, type='s_coin', #s_coin = select_coin shorthand
-            ),
-        ),
-    )
-    
-    keyboard_markup.add(
-        types.InlineKeyboardButton(
-            _["notifcation_button"],
-            callback_data=notification_cb.new(
-                id=account_id, action="_", type='s_coin', #s_coin = select_coin shorthand
-            ),
-        ),
-        types.InlineKeyboardButton(
-            _["delete_account"],
-            callback_data=delete_account_cb.new(
-                id=account_id, action="choose"
             ),
         ),
     )
@@ -73,16 +52,11 @@ async def account_cabinet_callback_handler(
         ),
     )
 
-    coins_list = ""
-    for coin in await user.get_account_coins(query.from_user.id, account_id):
-        if coin.is_active:
-            coins_list += f"\n{Coin(coin.coin_id).name}"
-
     account = next((acc for acc in await user.get_accounts(query.from_user.id) if str(acc.account_id) == account_id), None,)
 
     await query.message.edit_text(
         _["account_cabinet"].format(
-            account_name=account.username, coins_list=coins_list
+            account_name=account.username
         ),
         reply_markup=keyboard_markup,
     )

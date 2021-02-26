@@ -4,7 +4,35 @@ from aiogram import types
 from config import Lang
 from database.user_repo import UserRepository
 from config import texts
+from keyboard_fabrics import lang_cb
 
+async def lang_list_callback_handler(
+    query: types.CallbackQuery,
+    callback_data: typing.Dict[str, str],
+    user: UserRepository,
+    _: dict,
+):
+    inline_keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
+
+    inline_keyboard_markup.row(
+        types.InlineKeyboardButton(
+            "Русский",
+            callback_data=lang_cb.new(
+                id=Lang.ru.value,
+            ),
+        ),
+    )
+    
+    inline_keyboard_markup.row(
+        types.InlineKeyboardButton(
+            "English",
+            callback_data=lang_cb.new(
+                id=Lang.en.value,
+            ),
+        ),
+    )
+
+    await query.message.edit_text(_['choose_lang'], reply_markup=inline_keyboard_markup)
 
 async def lang_callback_handler(
     query: types.CallbackQuery,
@@ -22,7 +50,7 @@ async def lang_callback_handler(
 
     btns_text = (_['cabinet'], _['faq'])
     keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
-    keyboard_markup.row(_['language'])
+    keyboard_markup.row(_['setting'])
 
     await query.message.delete()
 

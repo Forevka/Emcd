@@ -1,4 +1,5 @@
-from handlers.callback.lang_callback_handler import lang_callback_handler
+from handlers.callback.statistic_callback_handler import statistic_callback_handler, statistic_info_callback_handler
+from handlers.callback.lang_callback_handler import lang_callback_handler, lang_list_callback_handler
 from aiogram import Dispatcher
 
 from handlers.callback.notification_callback_handler import notificaion_enable_callback_handler, notification_callback_handler
@@ -13,10 +14,16 @@ from handlers.callback.account_cabinet_handler import account_cabinet_callback_h
 from handlers.callback.add_ccount_handler import add_account_callback_handler
 
 
-from keyboard_fabrics import menu_cb, coin_account_cb, payouts_cb, income_cb, worker_cb, delete_account_cb, notification_cb, lang_cb
+from keyboard_fabrics import menu_cb, coin_account_cb, payouts_cb, income_cb, worker_cb, delete_account_cb, notification_cb, lang_cb, statistic_cb
 
 
 def register_callback_handlers(dp: Dispatcher):
+    dp.register_callback_query_handler(
+        lang_list_callback_handler,
+        lang_cb.filter(id="_"),
+        state="*"
+    )
+
     dp.register_callback_query_handler(
         lang_callback_handler,
         lang_cb.filter(),
@@ -62,6 +69,18 @@ def register_callback_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(
         payouts_info_callback_handler,
         payouts_cb.filter(),
+        state="*"
+    )
+
+    dp.register_callback_query_handler(
+        statistic_callback_handler,
+        statistic_cb.filter(type='s_coin'),
+        state="*"
+    )
+
+    dp.register_callback_query_handler(
+        statistic_info_callback_handler,
+        statistic_cb.filter(),
         state="*"
     )
 

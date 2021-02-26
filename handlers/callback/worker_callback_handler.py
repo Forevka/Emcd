@@ -1,4 +1,7 @@
+from emcd_client.models.coin_workers import CoinWorker
 import typing
+from tabulate import tabulate
+from math import floor
 
 from aiogram import types
 from config import Coin
@@ -52,6 +55,21 @@ async def worker_callback_handler(
     )
 
 
+def format_worker_info(worker: CoinWorker, locales: typing.Dict[str, str]) -> str:
+    emoji = "🟢"
+    if (worker.status_id == -1):
+        emoji = "🔴"
+
+    headers = [locales['hashrate'], 'FPPS']
+
+    table = [
+        [locales['current'], format_rate(worker.hashrate)],
+        [locales['1_hour'], format_rate(worker.hashrate1_h)],
+        [locales['24_hour'], format_rate(worker.hashrate24_h)],
+    ]
+
+    return f'{emoji} {worker.worker}\n<code>{tabulate(table, headers, tablefmt="psql")}</code>'
+
 async def worker_info_callback_handler(
     query: types.CallbackQuery,
     callback_data: typing.Dict[str, str],
@@ -84,20 +102,26 @@ async def worker_info_callback_handler(
             ),
         )
 
+    workers_normalized = workers.get_all_workers(0)
+
     buttons.append(
         types.InlineKeyboardButton(
-            _["back_to_workers"],
-            callback_data=worker_cb.new(
-                id=account_id, page=page, type='s_coin',
-            ),
+            f"{page}/{floor(len(workers_normalized) / PER_PAGE)}",
+            callback_data="do_nothing"
         ),
     )
 
-    workers_normalized = workers.get_all_workers(0)
+
+    locales = {
+        'hashrate': _['hashrate'],
+        'current': _['current'],
+        '1_hour': _['1_hour'],
+        '24_hour': _['24_hour'],
+    }
 
     if (workers):
         for worker in workers_normalized[(page - 1) * PER_PAGE: page * PER_PAGE]:
-            message_text += f'\n{_["status"][worker.status_id]} {worker.worker} {format_rate(worker.hashrate)} {format_rate(worker.hashrate1_h)} {format_rate(worker.hashrate24_h)}'
+            message_text += '\n' + format_worker_info(worker, locales)
 
         if (len(workers_normalized) > page * PER_PAGE):
             buttons.append(
@@ -111,9 +135,21 @@ async def worker_info_callback_handler(
         
     keyboard_markup.row(*buttons)
     
+    keyboard_markup.row(
+        types.InlineKeyboardButton(
+            _["back_to_workers"],
+            callback_data=worker_cb.new(
+                id=account_id, page=page, type='s_coin',
+            ),
+        ),
+    )
+    
+
     await query.message.edit_text(
         _['worker_info_descr'].format(
-            account_name=account.username,
+            hashrate=format_rate(workers.total_hashrate.hashrate),
+            hashrate1h=format_rate(workers.total_hashrate.hashrate1_h),
+            hashrate24h=format_rate(workers.total_hashrate.hashrate24_h),
             total=len(workers_normalized),
             dead=len([i for i in workers_normalized if i.status_id == -1]),
             active=len([i for i in workers_normalized if i.status_id == 1]),

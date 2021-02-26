@@ -4,39 +4,37 @@ from database.user_repo import UserRepository
 from keyboard_fabrics import lang_cb
 
 
-async def cmd_start(message: types.Message, user: UserRepository, _: dict):
-    """
-    Conversation's entry point
-    """
-
-    await user.create(message.from_user.id, int(DEFAULT_LANG.value))
-
-    keyboard_markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-
-    btns_text = (_['cabinet'], _['faq'])
-    keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
-    keyboard_markup.row(_['setting'])
-
-    await message.answer(_['hello'], reply_markup=keyboard_markup)
-    
+async def cmd_settings(message: types.Message, user: UserRepository, _: dict):
     inline_keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
 
     inline_keyboard_markup.row(
         types.InlineKeyboardButton(
-            "Русский",
+            _["delete_account"],
             callback_data=lang_cb.new(
                 id=Lang.ru.value,
             ),
         ),
+        types.InlineKeyboardButton(
+            _['language'],
+            callback_data=lang_cb.new(
+                id="_",
+            ),
+        ),
     )
-    
+
     inline_keyboard_markup.row(
         types.InlineKeyboardButton(
-            "English",
+            _["notifcation_button"],
+            callback_data=lang_cb.new(
+                id=Lang.ru.value,
+            ),
+        ),
+        types.InlineKeyboardButton(
+            _['change_coins_button'],
             callback_data=lang_cb.new(
                 id=Lang.en.value,
             ),
         ),
     )
-
+    
     await message.answer(_['choose_lang'], reply_markup=inline_keyboard_markup)

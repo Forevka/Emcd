@@ -1,3 +1,4 @@
+from handlers.text.settings_command import cmd_settings
 from aiogram import Dispatcher
 from config import texts
 from finite_state_machine import Form
@@ -13,9 +14,13 @@ def register_command_handlers(dp: Dispatcher):
 
     cabinet_triggers = [texts['ru']['cabinet'], texts['en']['cabinet']]
     language_triggers = [texts['ru']['language'], texts['en']['language']]
+    setting_triggers = [texts['ru']['setting'], texts['en']['setting']]
+    #setting
 
     dp.register_message_handler(cmd_start, commands=['start'], state='*')
     dp.register_message_handler(cmd_cabinet, text=cabinet_triggers, state='*')
     dp.register_message_handler(cmd_lang, text=language_triggers, state='*')
+    dp.register_message_handler(cmd_settings, text=setting_triggers, state='*')
+
     
     dp.register_message_handler(account_id_add_handler, state=Form.waiting_for_account_id)
