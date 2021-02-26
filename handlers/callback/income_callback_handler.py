@@ -97,7 +97,7 @@ async def income_info_callback_handler(
         for income in incomes.income[(page - 1) * PER_PAGE: page * PER_PAGE]:
             message_text += '\n' + _['income_template'].format(
                 datetime=income.gmt_time,
-                amount=income.total_hashrate
+                amount=income.income,
             )
 
         if (len(incomes.income) > page * PER_PAGE):

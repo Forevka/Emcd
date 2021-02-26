@@ -7,6 +7,7 @@ from emcd_client.client import EmcdClient
 from keyboard_fabrics import income_cb, menu_cb, statistic_cb
 from math import floor
 from utils import grouper
+from babel.numbers import format_currency
 
 PER_PAGE = 5
 
@@ -121,11 +122,11 @@ async def statistic_info_callback_handler(
         account_name=account.username,
         address=account_coin.address,
         current_balance=coin_info.balance,
-        current_balance_dol=round(coin_info.balance * currency['USD']['last'], 4),
+        current_balance_dol=format_currency(round(coin_info.balance * currency['USD']['last'], 4), '', locale="en_US"),
         total_paid=coin_info.total_paid,
-        total_paid_dol=round(coin_info.total_paid * currency['USD']['last'], 4),
-        course_dol=round(currency['USD']['last'], 2),
-        course_rub=round(currency['RUB']['last'], 2),
+        total_paid_dol=format_currency(round(coin_info.total_paid * currency['USD']['last'], 4), '', locale="en_US"),
+        course_dol=format_currency(round(currency['USD']['last'], 2), '', locale="en_US"),
+        course_rub=format_currency(round(currency['RUB']['last'], 2), '', locale="en_US"),
     )
 
     await query.message.edit_text(
