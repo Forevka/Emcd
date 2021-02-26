@@ -5,6 +5,7 @@ from config import Coin
 from database.user_repo import UserRepository
 from emcd_client.client import EmcdClient
 from keyboard_fabrics import income_cb, menu_cb, statistic_cb
+from math import floor
 from utils import grouper
 
 PER_PAGE = 5
@@ -107,16 +108,24 @@ async def statistic_info_callback_handler(
             )
     '''
     keyboard_markup.row(*buttons)
-    
+
+    account_api = None
+    currency = None
+    async with EmcdClient(account_id) as client:
+        account_api = await client.get_info()
+        currency = await client.get_currency()
+
+    coin_info = account_api.get_coins()[coin_id]
+
     message_text = _['statistic_descr'].format(
         account_name=account.username,
         address=account_coin.address,
-        current_balance=0.0,
-        current_balance_dol=0.0,
-        total_paid=0.0,
-        total_paid_dol=0.0,
-        course_dol=0.0,
-        course_rub=0.0,
+        current_balance=coin_info.balance,
+        current_balance_dol=round(coin_info.balance * currency['USD']['last'], 4),
+        total_paid=coin_info.total_paid,
+        total_paid_dol=round(coin_info.total_paid * currency['USD']['last'], 4),
+        course_dol=round(currency['USD']['last'], 2),
+        course_rub=round(currency['RUB']['last'], 2),
     )
 
     await query.message.edit_text(
