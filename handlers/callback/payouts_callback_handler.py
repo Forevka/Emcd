@@ -4,10 +4,11 @@ from aiogram import types
 from config import Coin
 from database.user_repo import UserRepository
 from emcd_client.client import EmcdClient
-from keyboard_fabrics import menu_cb, payouts_cb
+from keyboard_fabrics import menu_cb, payouts_cb, income_cb
 from utils import grouper
+from math import ceil
 
-PER_PAGE = 5
+PER_PAGE = 3
 
 async def payouts_callback_handler(
     query: types.CallbackQuery,
@@ -62,6 +63,8 @@ async def payouts_info_callback_handler(
     coind_id = callback_data['type']
     page = int(callback_data['page'])
 
+    coin_name = Coin(coind_id).name.lower()
+
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
     
     account = next((acc for acc in await user.get_accounts(query.from_user.id) if str(acc.account_id) == account_id), None,)
@@ -70,7 +73,7 @@ async def payouts_info_callback_handler(
     async with EmcdClient(account_id) as client:
         payouts = await client.get_payouts(coind_id)
 
-    message_text = ""
+    message_text = _['payouts']
 
     buttons = []
 
@@ -86,16 +89,18 @@ async def payouts_info_callback_handler(
 
     buttons.append(
         types.InlineKeyboardButton(
-            _["back_to_payouts"],
-            callback_data=payouts_cb.new(
-                id=account_id, page=page, type='s_coin',
-            ),
+            f"{page}/{ceil(len(payouts.payouts) / PER_PAGE)}",
+            callback_data="do_nothing"
         ),
     )
 
     if (payouts):
         for payout in payouts.payouts[(page - 1) * PER_PAGE: page * PER_PAGE]:
-            message_text += f'\n{payout.gmt_time} {payout.amount} {payout.txid[:10]}'
+            message_text += '\n' + _['payouts_template'].format(
+                datetime=payout.gmt_time,
+                amount=payout.amount,
+                transaction_link=f'<a href="https://blockchair.com/{coin_name}/transaction/{payout.txid}">{payout.txid[8:]}</a>'
+            )
 
         if (len(payouts.payouts) > page * PER_PAGE):
             buttons.append(
@@ -108,9 +113,22 @@ async def payouts_info_callback_handler(
             )
         
     keyboard_markup.row(*buttons)
+
+    keyboard_markup.row(
+        types.InlineKeyboardButton(
+            _["income_stat_button"],
+            callback_data=income_cb.new(
+                id=account_id, page=1, type=coind_id,
+            ),
+        ),
+        types.InlineKeyboardButton(
+            _['back_to_account_button'],
+            callback_data=menu_cb.new(id=account.account_id, type="account", action='open'),
+        ),
+    )
     
     await query.message.edit_text(
         message_text,
         reply_markup=keyboard_markup,
+        disable_web_page_preview=True,
     )
-

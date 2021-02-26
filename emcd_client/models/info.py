@@ -138,19 +138,19 @@ class AccountInfo:
     
     def get_coins(self,) -> Dict[Coin, CoinInfo]:
         coins = {}
-        coins.update({Coin.Bitcoin: self.bitcoin})
+        coins.update({Coin.Bitcoin.value: self.bitcoin})
     
-        coins.update({Coin.Litecoin: self.litecoin})
+        coins.update({Coin.Litecoin.value: self.litecoin})
 
-        coins.update({Coin.BitcoinHash: self.bitcoin_cash})
+        coins.update({Coin.BitcoinHash.value: self.bitcoin_cash})
 
-        coins.update({Coin.BitcoinSV: self.bitcoin_sv})
+        coins.update({Coin.BitcoinSV.value: self.bitcoin_sv})
 
-        coins.update({Coin.Dash: self.dash})
+        coins.update({Coin.Dash.value: self.dash})
 
-        coins.update({Coin.Ethereum: self.eth})
+        coins.update({Coin.Ethereum.value: self.eth})
 
-        coins.update({Coin.EthereumClassic: self.etc})
+        coins.update({Coin.EthereumClassic.value: self.etc})
         
         return coins;
 

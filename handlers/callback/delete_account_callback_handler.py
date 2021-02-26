@@ -15,8 +15,25 @@ async def delete_account_callback_handler(
     account_id = callback_data["id"]
 
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
+
+    if (account_id == "_"):
+        user_accounts = await user.get_accounts(query.from_user.id)
+        for i, account in enumerate(user_accounts):
+            keyboard_markup.add(
+                types.InlineKeyboardButton(
+                    f"#{i + 1} - {account.username}",
+                    callback_data=delete_account_cb.new(id=account.account_id, action='choose'),
+                )
+            )
+        
+        return await query.message.edit_text(
+            _["choose_account_to_delete"],
+            reply_markup=keyboard_markup,
+        )
+        
     
     account = next((acc for acc in await user.get_accounts(query.from_user.id) if str(acc.account_id) == account_id), None,)
+    
 
     keyboard_markup.add(
         types.InlineKeyboardButton(

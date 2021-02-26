@@ -14,7 +14,11 @@ coin_account_cb = CallbackData('c_acc', 'action', 'id') # c_acc:<action>:<id>
 payouts_cb = CallbackData('payouts', 'id', 'page', 'type')
 income_cb = CallbackData('income', 'id', 'page', 'type')
 worker_cb = CallbackData('worker', 'id', 'page', 'type')
-notification_cb = CallbackData('notif', 'id', 'type', 'action') #action - on/off
+notification_cb = CallbackData('notif', 'action') #action - on/off
 statistic_cb = CallbackData('stat', 'id', 'type')
+
+coins_cb = CallbackData('ch_c', 'id', 'action')
+
+finance_cb = CallbackData('fin', 'id', 'type', 'action', 'page')
 
 delete_account_cb = CallbackData('del_acc', 'id', 'action')

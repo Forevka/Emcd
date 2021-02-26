@@ -1,13 +1,13 @@
-from emcd_client.models.coin_workers import CoinWorker
 import typing
-from tabulate import tabulate
-from math import floor
+from math import ceil
 
 from aiogram import types
 from config import Coin
 from database.user_repo import UserRepository
 from emcd_client.client import EmcdClient
+from emcd_client.models.coin_workers import CoinWorker
 from keyboard_fabrics import menu_cb, worker_cb
+from tabulate import tabulate
 from utils import format_rate, grouper
 
 PER_PAGE = 5
@@ -106,7 +106,7 @@ async def worker_info_callback_handler(
 
     buttons.append(
         types.InlineKeyboardButton(
-            f"{page}/{floor(len(workers_normalized) / PER_PAGE)}",
+            f"{page}/{ceil(len(workers_normalized) / PER_PAGE)}",
             callback_data="do_nothing"
         ),
     )
@@ -143,7 +143,6 @@ async def worker_info_callback_handler(
             ),
         ),
     )
-    
 
     await query.message.edit_text(
         _['worker_info_descr'].format(

@@ -1,10 +1,11 @@
+from math import ceil
 import typing
 
 from aiogram import types
 from config import Coin
 from database.user_repo import UserRepository
 from emcd_client.client import EmcdClient
-from keyboard_fabrics import income_cb, menu_cb
+from keyboard_fabrics import income_cb, menu_cb, payouts_cb
 from utils import grouper
 
 PER_PAGE = 5
@@ -70,7 +71,7 @@ async def income_info_callback_handler(
     async with EmcdClient(account_id) as client:
         incomes = await client.get_rewards(coind_id)
 
-    message_text = ""
+    message_text = _['income']
 
     buttons = []
 
@@ -84,18 +85,20 @@ async def income_info_callback_handler(
             ),
         )
 
+
     buttons.append(
         types.InlineKeyboardButton(
-            _["back_to_income"],
-            callback_data=income_cb.new(
-                id=account_id, page=page, type='s_coin',
-            ),
+            f"{page}/{ceil(len(incomes.income) / PER_PAGE)}",
+            callback_data="do_nothing"
         ),
     )
 
     if (incomes):
         for income in incomes.income[(page - 1) * PER_PAGE: page * PER_PAGE]:
-            message_text += f'\n{income.gmt_time} {_["income_names"][income.type.name.lower()]} {income.total_hashrate} {income.income}'
+            message_text += '\n' + _['income_template'].format(
+                datetime=income.gmt_time,
+                amount=income.total_hashrate
+            )
 
         if (len(incomes.income) > page * PER_PAGE):
             buttons.append(
@@ -108,6 +111,19 @@ async def income_info_callback_handler(
             )
         
     keyboard_markup.row(*buttons)
+
+    keyboard_markup.row(
+        types.InlineKeyboardButton(
+            _["payouts_stat_button"],
+            callback_data=payouts_cb.new(
+                id=account_id, page=1, type=coind_id,
+            ),
+        ),
+        types.InlineKeyboardButton(
+            _['back_to_account_button'],
+            callback_data=menu_cb.new(id=account.account_id, type="account", action='open'),
+        ),
+    )
     
     await query.message.edit_text(
         message_text,

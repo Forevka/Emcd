@@ -1,5 +1,5 @@
 from aiogram import types
-from config import DEFAULT_LANG, Lang
+from config import Coin, DEFAULT_LANG, Lang
 from database.user_repo import UserRepository
 from keyboard_fabrics import lang_cb
 
@@ -40,3 +40,11 @@ async def cmd_start(message: types.Message, user: UserRepository, _: dict):
     )
 
     await message.answer(_['choose_lang'], reply_markup=inline_keyboard_markup)
+    
+    await user.add_user_coin(message.from_user.id, Coin.Bitcoin.value, True)
+    await user.add_user_coin(message.from_user.id, Coin.BitcoinHash.value, False)
+    await user.add_user_coin(message.from_user.id, Coin.BitcoinSV.value, False)
+    await user.add_user_coin(message.from_user.id, Coin.Ethereum.value, False)
+    await user.add_user_coin(message.from_user.id, Coin.EthereumClassic.value, False)
+    await user.add_user_coin(message.from_user.id, Coin.Litecoin.value, False)
+    await user.add_user_coin(message.from_user.id, Coin.Dash.value, False)

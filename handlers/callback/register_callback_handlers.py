@@ -1,8 +1,9 @@
+from handlers.callback.finance_callback_handler import finance_callback_handler
 from handlers.callback.statistic_callback_handler import statistic_callback_handler, statistic_info_callback_handler
 from handlers.callback.lang_callback_handler import lang_callback_handler, lang_list_callback_handler
 from aiogram import Dispatcher
 
-from handlers.callback.notification_callback_handler import notificaion_enable_callback_handler, notification_callback_handler
+from handlers.callback.notification_callback_handler import notificaion_enable_callback_handler
 from handlers.callback.delete_account_callback_handler import delete_account_callback_handler, delete_account_confirmation_callback_handler
 from handlers.callback.worker_callback_handler import worker_callback_handler, worker_info_callback_handler
 from handlers.callback.income_callback_handler import income_callback_handler, income_info_callback_handler
@@ -14,10 +15,16 @@ from handlers.callback.account_cabinet_handler import account_cabinet_callback_h
 from handlers.callback.add_ccount_handler import add_account_callback_handler
 
 
-from keyboard_fabrics import menu_cb, coin_account_cb, payouts_cb, income_cb, worker_cb, delete_account_cb, notification_cb, lang_cb, statistic_cb
+from keyboard_fabrics import menu_cb, coin_account_cb, payouts_cb, income_cb, worker_cb, delete_account_cb, notification_cb, lang_cb, statistic_cb, finance_cb
 
 
 def register_callback_handlers(dp: Dispatcher):
+    dp.register_callback_query_handler(
+        finance_callback_handler,
+        finance_cb.filter(type='s_coin'),
+        state="*"
+    )
+
     dp.register_callback_query_handler(
         lang_list_callback_handler,
         lang_cb.filter(id="_"),
@@ -68,6 +75,12 @@ def register_callback_handlers(dp: Dispatcher):
 
     dp.register_callback_query_handler(
         payouts_info_callback_handler,
+        finance_cb.filter(action="payouts"),
+        state="*"
+    )
+
+    dp.register_callback_query_handler(
+        payouts_info_callback_handler,
         payouts_cb.filter(),
         state="*"
     )
@@ -105,12 +118,6 @@ def register_callback_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(
         worker_info_callback_handler,
         worker_cb.filter(),
-        state="*"
-    )
-
-    dp.register_callback_query_handler(
-        notification_callback_handler,
-        notification_cb.filter(type='s_coin'),
         state="*"
     )
 

@@ -1,3 +1,4 @@
+from database.models.user_notification import UserNotification
 from datetime import datetime
 from typing import List
 
@@ -9,12 +10,20 @@ from database.models.account import Account
 from database.models.account_coin import AccountCoin
 from database.models.account_coin_notification import AccountCoinNotification
 from database.models.user import User
+from database.models.user_coin import UserCoin
 from database.models.worker_account_history import WorkerAccountHistoryForUser
 
 
 class UserRepository:
     def __init__(self, con: Connection):
         self.connection = con
+
+    async def get_coins(self, user_id: int) -> UserCoin:
+        sql = '''
+        select user_id, coin_id, is_enabled from user_coin where user_id = $1
+        '''
+
+        return [UserCoin(**acc) for acc in await self.connection.fetch(sql, user_id)]
 
     async def update_user_lang(self, user_id: int, lang_id: int):
         sql = '''
@@ -23,21 +32,21 @@ class UserRepository:
 
         await self.connection.execute(sql, lang_id, user_id,)
 
-    async def update_notification_setting_for_account(self, account_coin_id: int, new_value: bool):
+    async def update_notification_setting(self, user_id: int, new_value: bool):
         sql = '''
-        update account_coin_notification set is_enabled = $1 where account_coin_id = $2
+        update user_notification set is_enabled = $1 where user_id = $2
         '''
 
-        await self.connection.execute(sql, new_value, account_coin_id,)
+        await self.connection.execute(sql, new_value, user_id,)
 
-    async def get_notification_setting_for_account(self, account_coin_id: int,) -> AccountCoinNotification:
+    async def get_notification_setting_for_user(self, user_id: int,) -> UserNotification:
         sql = f'''
-        {AccountCoinNotification.__select__} where account_coin_id = $1
+        select user_id, is_enabled from user_notification where user_id = $1
         '''
         
-        raw = await self.connection.fetchrow(sql, account_coin_id,)
+        raw = await self.connection.fetchrow(sql, user_id,)
         if (raw):
-            return AccountCoinNotification(**raw)
+            return UserNotification(**raw)
 
 
     async def delete_account_notification_settings_account(self, account_id: int, user_id: int):
@@ -90,9 +99,8 @@ class UserRepository:
                 , latest_record.hashrate1h
                 , latest_record.hashrate24h
                 , latest_record.reject
-                , ac.user_id
+                , u."id" as user_id
         FROM worker_account_history wah 
-        join account_coin_notification acn on acn.account_coin_id = wah.account_coin_id and wah.account_coin_id = $1 and acn.is_enabled = TRUE
         LEFT JOIN LATERAL (
             SELECT 
                 wah2.worker_id
@@ -109,6 +117,8 @@ class UserRepository:
             FETCH FIRST 1  ROW ONLY
         ) latest_record ON true
         join account_coin ac on ac.id = latest_record.account_coin_id
+        join "user" u on u."id" = ac.user_id
+		join user_notification ui on ui.user_id = u."id" and ui.is_enabled = true
         '''
         
         return [WorkerAccountHistoryForUser(**acc) for acc in await self.connection.fetch(sql, account_coin_id)]
@@ -138,6 +148,15 @@ class UserRepository:
 
         await self.connection.execute(sql, user_id, lang_id)
 
+        
+    async def add_user_coin(self, user_id: int, coin_id: int, is_enabled: bool):
+        sql = '''
+        insert into "user_coin" (user_id, coin_id, is_enabled) values($1, $2, $3)
+        on conflict do nothing;
+        '''
+
+        await self.connection.execute(sql, user_id, coin_id, is_enabled)
+
     async def get_accounts(self, user_id: int) -> List[Account]:
         sql = f"{Account.__select__} where user_id = $1"
 
@@ -163,8 +182,6 @@ class UserRepository:
 
         await self.connection.execute(sql, account_id, user_id, coin_id, coin_info.address, 0, 0, 0, 0, is_active, 0, 0, 0)
 
-        await self.add_notification_setting(user_id, account_id, is_active, coin_id)
-
     async def update_account_coin(self, _id: int, user_id: int, account_id: str, coin_id: str, address: str, coin_workers: CoinWorkers, is_active: bool, last_update_datetime: datetime):
         sql = '''
         update "account_coin" set  user_id = $2, coin_id = $3, 
@@ -180,21 +197,30 @@ class UserRepository:
         await self.connection.execute(sql, _id, user_id, coin_id, address, len(workers), len([i for i in workers if i.status_id == 1]), len([i for i in workers if i.status_id == 0]), len([i for i in workers if i.status_id == -1]), is_active, coin_workers.total_hashrate.hashrate, coin_workers.total_hashrate.hashrate1_h, coin_workers.total_hashrate.hashrate24_h, last_update_datetime)
 
 
-    async def add_notification_setting(self, user_id: int, account_id: str, is_active: bool, coin_id: str,):
+    async def add_notification_setting(self, user_id: int, is_enabled: bool,):
         sql = '''
-        insert into "account_coin_notification" (account_coin_id, is_enabled)
-        select id, $3 from "account_coin" where account_id = $1 and user_id = $2 and coin_id = $4 LIMIT 1
+        insert into "user_notification" (user_id, is_enabled)
+        values($1, $2)
+        on conflict do nothing;
         '''
 
-        await self.connection.execute(sql, account_id, user_id, is_active, coin_id,)
+        await self.connection.execute(sql, user_id, is_enabled,)
 
-    async def change_coin_enabled(self, coin_account_id: int, is_active: bool, ):
+    async def change_account_coin_enabled(self, user_id: int, coin_id: str, is_enabled: bool,):
         sql = '''
-        update "account_coin" set is_active = $1, last_update_datetime = CURRENT_TIMESTAMP
-        where id = $2
+        update account_coin set is_active = $1 where user_id = $2 and coin_id = $3
         '''
 
-        await self.connection.execute(sql, is_active, coin_account_id,)
+        await self.connection.execute(sql, is_enabled, user_id, coin_id,)
+
+
+    async def change_coin_enabled(self, user_id: int, coin_id: str, is_enabled: bool, ):
+        sql = '''
+        update "user_coin" set is_enabled = $1
+        where user_id = $2 and coin_id = $3
+        '''
+
+        await self.connection.execute(sql, is_enabled, user_id, coin_id,)
 
     async def get_account_coins_by_id(self, coin_account_id) -> AccountCoin:
         sql = f"{AccountCoin.__select__} where id = $1"

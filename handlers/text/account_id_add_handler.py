@@ -1,3 +1,4 @@
+from config import Coin
 from uuid import UUID
 
 from aiogram import types
@@ -32,17 +33,15 @@ async def account_id_add_handler(message: types.Message, user: UserRepository, _
 
                 if (account):
                     await user.add_account(message.from_user.id, UUID(account_id, version=4), account.username)
+                    await user.add_notification_setting(message.from_user.id, True)
 
-                    coins_list = ""
-                    for coin in account.get_coins().items():
-                        active = coin[1].address is not None
-                        if (active):
-                            coins_list += f"\n{coin[0].name}"
-                        
-                        await user.add_account_coin(message.from_user.id, UUID(account_id, version=4), coin[0].value, coin[1], active)
+                    coins_api = account.get_coins()
 
+                    for coin in await user.get_coins(message.from_user.id):
+                        c = coins_api[coin.coin_id]
+                        await user.add_account_coin(message.from_user.id, UUID(account_id, version=4), coin.coin_id, c, coin.is_enabled)
 
-                    await message.answer(_['account_added'].format(account_name=account.username, coins_list=coins_list))
+                    await message.answer(_['account_added'].format(account_name=account.username))
 
                     return
         else:
