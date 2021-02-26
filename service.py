@@ -2,6 +2,7 @@ import asyncio
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict
+from aiogram import exceptions
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from asyncpg.pool import Pool
@@ -87,6 +88,8 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
 
                     await user_repo.store_coin_account_worker_history(workers, now)
                     logger.info(f'{account.account_id}|{account.coin_id} - Stored')
+        except exceptions.TelegramAPIError as e:
+            logger.error(f'aiogram error {e}')
         except Exception as e:
             logger.exception(e)
         finally:

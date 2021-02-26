@@ -99,7 +99,7 @@ class UserRepository:
                 , latest_record.hashrate1h
                 , latest_record.hashrate24h
                 , latest_record.reject
-                , u."id" as user_id
+                , ac.user_id
         FROM worker_account_history wah 
         LEFT JOIN LATERAL (
             SELECT 
@@ -116,9 +116,7 @@ class UserRepository:
             order by wah2.stored_datetime desc
             FETCH FIRST 1  ROW ONLY
         ) latest_record ON true
-        join account_coin ac on ac.id = latest_record.account_coin_id
-        join "user" u on u."id" = ac.user_id
-		join user_notification ui on ui.user_id = u."id" and ui.is_enabled = true
+        join account_coin ac on ac.id = latest_record.account_coin_id and ac.id = $1
         '''
         
         return [WorkerAccountHistoryForUser(**acc) for acc in await self.connection.fetch(sql, account_coin_id)]
@@ -126,7 +124,7 @@ class UserRepository:
     async def get_all_account_to_refresh(self,) -> List[AccountCoin]:
         sql = '''
         SELECT ac.* from account_coin ac
-        join account_coin_notification acn on acn.account_coin_id = ac."id" and acn.is_enabled = TRUE
+        join user_notification un on un.user_id = ac.user_id and un.is_enabled = true and ac.is_active = true
         '''
         
         return [AccountCoin(**acc) for acc in await self.connection.fetch(sql,)]
