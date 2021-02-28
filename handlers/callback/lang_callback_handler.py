@@ -1,9 +1,12 @@
 import typing
 
 from aiogram import types
-from config import Lang
+from config import POEDITOR_ID, POEDITOR_TOKEN, Lang, language_map
 from database.user_repo import UserRepository
 from keyboard_fabrics import lang_cb
+from poeditor_client.client import PoeditorClient
+from utils import grouper
+
 
 async def lang_list_callback_handler(
     query: types.CallbackQuery,
@@ -11,25 +14,28 @@ async def lang_list_callback_handler(
     user: UserRepository,
     _: dict,
 ):
+    btn_list = []
     inline_keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
 
-    inline_keyboard_markup.row(
-        types.InlineKeyboardButton(
-            "Русский",
-            callback_data=lang_cb.new(
-                id=Lang.ru.value,
-            ),
-        ),
-    )
-    
-    inline_keyboard_markup.row(
-        types.InlineKeyboardButton(
-            "English",
-            callback_data=lang_cb.new(
-                id=Lang.en.value,
-            ),
-        ),
-    )
+    langs = None
+    async with PoeditorClient(POEDITOR_TOKEN, POEDITOR_ID,) as client:
+        langs = await client.get_available_languages()
+        for lang in langs.result.languages:
+            lang_id = next((l.value for l in Lang if l.name == lang.code), None)
+            if (lang_id is None):
+                continue
+
+            btn_list.append(
+                types.InlineKeyboardButton(
+                    language_map[lang.name],
+                    callback_data=lang_cb.new(
+                        id=lang_id,
+                    ),
+                ),
+            )
+
+    for i in grouper(2, btn_list):
+        inline_keyboard_markup.row(*i)
 
     await query.message.edit_text(_['choose_lang'], reply_markup=inline_keyboard_markup)
 

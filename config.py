@@ -11,6 +11,11 @@ postgres = os.environ.get('CONNECTION_STRING')
 
 TOKEN = os.environ.get('TOKEN')
 
+language_map = {
+    'Russian': "Русский",
+    'English': "English",
+}
+
 # placeholder for langs
 texts = {}
 reversed_locales = {}
