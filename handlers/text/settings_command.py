@@ -37,4 +37,4 @@ async def cmd_settings(message: types.Message, user: UserRepository, _: dict):
         ),
     )
     
-    await message.answer(_['setting'], reply_markup=inline_keyboard_markup)
+    await message.answer(_['setting_descr'], reply_markup=inline_keyboard_markup)

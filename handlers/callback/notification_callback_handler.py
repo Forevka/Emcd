@@ -26,7 +26,7 @@ async def notificaion_enable_callback_handler(
 
     keyboard_markup.row(
         types.InlineKeyboardButton(
-            _['setting_notification_set'][int(not notification_setting.is_enabled)],
+            _[f'setting_notification_set_{int(not notification_setting.is_enabled)}'],
             callback_data=notification_cb.new(
                 action=new_setting_value
             ),
@@ -34,7 +34,7 @@ async def notificaion_enable_callback_handler(
     )
 
     message_text = _['notification_change_descr'].format(
-        setting=_['setting_notification'][notification_setting.is_enabled]
+        setting=_[f'setting_notification_{int(notification_setting.is_enabled)}']
     )
     
     await query.message.edit_text(

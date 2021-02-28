@@ -22,11 +22,11 @@ class WorkerChangeStatusDataModel:
     new_status: int
     name: str
 
-    def to_description(self, text: str, status_names: Dict[int, str]) -> str:
+    def to_description(self, text: str, localisation: Dict[str, str]) -> str:
         return text.format(
             worker_name=self.name, 
-            previous_status=status_names[self.old_status], 
-            new_status=status_names[self.new_status],
+            previous_status=localisation[f'status_{self.old_status}'], 
+            new_status=localisation[f'status_{self.new_status}'],
         )
 
 async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: AccountCoin, pool: Pool, notifier: TelegramNotifier,):

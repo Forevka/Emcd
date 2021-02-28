@@ -75,7 +75,7 @@ texts = {
 ⏺ Мертвых: {dead}
 - - - - - - - - - - - - - - - - - - - - - - - 
 {description}
-''',#"Статистика по воркерам аккаунта {account_name}\nВсего: {total}\nАктивных: {active}\nМёртвых: {dead}\nНеактивных: {inactive}\n{description}",
+''',
         'statistic_descr': '''Статистика аккаунта {account_name}
 💶 Текущий Баланс: {current_balance} ({current_balance_dol}$)
 🕔 Всего выплачено: {total_paid} ({total_paid_dol}$)
@@ -88,17 +88,10 @@ texts = {
         'delete_account': "Удаление аккаунтов",
         'worker_changed_status_descr': "{worker_name} - ({previous_status}) на ({new_status})",
         'worker_changed_status_body': "Произошла смена статуса воркеров на аккаунте {account_name}\n\n{description}",
-        'status': {
-            -1: "Мёртвый",
-            0: "Не активный",
-            1: "Активный",
-            2: "Нестабильный",
-        },
-        'income_names': {
-            "donation": "donation",
-            "fpps": "fpps",
-            "referral": "referral",
-        },
+        'status_-1': "Мёртвый",
+        'status_0': "Не активный",
+        'status_1': "Активный",
+        'status_2': "Нестабильный",
         "back_to_account_button": "Назад к аккаунту",
         "back_to_account_list_button": "Назад к списку аккаунтов",
         "next_button": "▶️",
@@ -111,19 +104,16 @@ texts = {
         "delete_account_descr": "Вы хотите удалить {account_name}\nПосле этого действия все настройки удалятся и вам перестанут приходить оповещения\n\nПодтвердите нажав кнопку внизу",
         "account_deleted_descr": "Аккаунт успешно удален",
         "notification_change_descr": "Настройки уведомлений\nСейчас уведомления о смене статуса воркеров {setting}",
-        "setting_notification": {
-            1: "Включены",
-            0: "Выключены",
-        },
-        "setting_notification_set": {
-            0: "Выключить",
-            1: "Включить",
-        },
+        "setting_notification_0": "Выключены",
+        "setting_notification_1": "Включены",
+        "setting_notification_set_0": "Выключить",
+        "setting_notification_set_1": "Включить",
         "yes": "Да",
         "no": "Нет",
     },
     'en': {
         'statistic_button': "Statistic",
+        'setting_descr': "Here you can change global settings",
         'choose_account_to_delete': "Choose account to delete",
         'finance_button': "Finances",
         'finance_payouts': "Finances",
@@ -178,7 +168,7 @@ Workers
 ⏺ Dead: {dead}
 - - - - - - - - - - - - - - - - - - - - - - - 
 {description}
-''',#"Статистика по воркерам аккаунта {account_name}\nВсего: {total}\nАктивных: {active}\nМёртвых: {dead}\nНеактивных: {inactive}\n{description}",
+''',
         'statistic_descr': '''Account stats {account_name}
 💶 Current balance: {current_balance} ({current_balance_dol}$)
 🕔 Paid total: {total_paid} ({total_paid_dol}$)
@@ -186,8 +176,6 @@ Workers
 📊 Course: {course_dol}$ ({course_rub} RUB)
         ''',
         'workers_stat_button': "Workers",
-        'income_stat_button': "Income",
-        'payouts_stat_button': "Payouts",
         'finance_choose_coin': "Choose coin to see finances\nList of available coins you can change in 'Settings'",
         'statistic_choose_coin': "Choose coin to see stats\nList of available coins you can change in 'Settings'",
         'payouts_choose_coin': "Choose coin to see payouts\nList of available coins you can change in 'Settings'",
@@ -200,17 +188,10 @@ Workers
         'delete_account': "Delete account",
         'worker_changed_status_descr': "{worker_name} - ({previous_status}) to ({new_status})",
         'worker_changed_status_body': "Workers changed their status {account_name}\n\n{description}",
-        'status': {
-            -1: "Dead",
-            0: "Inactive",
-            1: "Active",
-            2: "Non stable",
-        },
-        'income_names': {
-            "donation": "donation",
-            "fpps": "fpps",
-            "referral": "referral",
-        },
+        'status_-1': "Dead",
+        'status_0': "Inactive",
+        'status_1': "Active",
+        'status_2': "Non stable",
         "back_to_account_button": "Back to account",
         "back_to_account_list_button": "Back to account list",
         "next_button": "▶️",
@@ -223,14 +204,10 @@ Workers
         "delete_account_descr": "You wan't to delete {account_name}\nAfter this action bot will erase all settings related to this account\n\nIf you agree please tap on button below",
         "account_deleted_descr": "Account succesfully deleted",
         "notification_change_descr": "Notification setting\nNotification are: {setting}",
-        "setting_notification": {
-            1: "Enabled",
-            0: "Disabled",
-        },
-        "setting_notification_set": {
-            0: "Disable",
-            1: "Enable",
-        },
+        "setting_notification_0": "Disabled",
+        "setting_notification_1": "Enabled",
+        "setting_notification_set_0": "Disable",
+        "setting_notification_set_1": "Enable",
         "yes": "Yes",
         "no": "No",
         'income_stat_button': "⏺ Incomes",

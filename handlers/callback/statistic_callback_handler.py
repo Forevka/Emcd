@@ -91,21 +91,6 @@ async def statistic_info_callback_handler(
         ),
     )
 
-    '''
-    if (incomes):
-        for income in incomes.income[(page - 1) * PER_PAGE: page * PER_PAGE]:
-            message_text += f'\n{income.gmt_time} {_["income_names"][income.type.name.lower()]} {income.total_hashrate} {income.income}'
-
-        if (len(incomes.income) > page * PER_PAGE):
-            buttons.append(
-                types.InlineKeyboardButton(
-                    _["next_button"],
-                    callback_data=income_cb.new(
-                        id=account_id, page=page + 1, type=coind_id,
-                    ),
-                ),
-            )
-    '''
     keyboard_markup.row(*buttons)
     
     message_text = _['statistic_descr'].format(
