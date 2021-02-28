@@ -79,8 +79,10 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
                     if (change_status_descr):
                         descr = [st.to_description(translation['worker_changed_status_descr'], translation) for st in change_status_descr]
                         message_text = translation['worker_changed_status_body'].format(account_name=user_account.username, description='\n'.join([i for i in descr]))
-                        await notifier.notify(user_db.id, message_text)
-
+                        try:
+                            await notifier.notify(user_db.id, message_text)
+                        except exceptions.TelegramAPIError as e:
+                            logger.error(f'aiogram error {e}')
 
                     logger.info(f'{account.account_id}|{account.coin_id} - Clean up worker history {account.id}')
                     await user_repo.cleanup_worker_history_for_account(account.id)
@@ -89,8 +91,6 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
 
                     await user_repo.store_coin_account_worker_history(workers, now)
                     logger.info(f'{account.account_id}|{account.coin_id} - Stored')
-        except exceptions.TelegramAPIError as e:
-            logger.error(f'aiogram error {e}')
         except Exception as e:
             logger.exception(e)
         finally:
