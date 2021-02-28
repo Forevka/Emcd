@@ -77,7 +77,7 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
 
                     logger.info(f'{account.account_id}|{account.coin_id} - Sending notification {account.id}')
                     if (change_status_descr):
-                        descr = [st.to_description(translation['worker_changed_status_descr'], translation['status']) for st in change_status_descr]
+                        descr = [st.to_description(translation['worker_changed_status_descr'], translation) for st in change_status_descr]
                         message_text = translation['worker_changed_status_body'].format(account_name=user_account.username, description='\n'.join([i for i in descr]))
                         await notifier.notify(user_db.id, message_text)
 
