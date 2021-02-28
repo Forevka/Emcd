@@ -1,6 +1,7 @@
+from handlers.text.locales_command import cmd_locales
+from filters.I18nCommandFilter import I18nCommandFilter
 from handlers.text.settings_command import cmd_settings
 from aiogram import Dispatcher
-from config import texts
 from finite_state_machine import Form
 from handlers.text.account_id_add_handler import account_id_add_handler
 from handlers.text.cabinet_command_handler import cmd_cabinet
@@ -11,16 +12,11 @@ from handlers.text.version_command import cmd_version
 
 def register_command_handlers(dp: Dispatcher):
     dp.register_message_handler(cmd_version, commands=['version'], state='*')
-
-    cabinet_triggers = [texts['ru']['cabinet'], texts['en']['cabinet']]
-    language_triggers = [texts['ru']['language'], texts['en']['language']]
-    setting_triggers = [texts['ru']['setting'], texts['en']['setting']]
-    #setting
-
     dp.register_message_handler(cmd_start, commands=['start'], state='*')
-    dp.register_message_handler(cmd_cabinet, text=cabinet_triggers, state='*')
-    dp.register_message_handler(cmd_lang, text=language_triggers, state='*')
-    dp.register_message_handler(cmd_settings, text=setting_triggers, state='*')
+    dp.register_message_handler(cmd_locales, commands=['locales'], state='*')
 
+    dp.register_message_handler(cmd_cabinet, I18nCommandFilter('cabinet'), state='*')
+    dp.register_message_handler(cmd_lang, I18nCommandFilter('language'), state='*')
+    dp.register_message_handler(cmd_settings, I18nCommandFilter('setting'), state='*')
     
     dp.register_message_handler(account_id_add_handler, state=Form.waiting_for_account_id)

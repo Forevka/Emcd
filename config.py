@@ -2,218 +2,24 @@ import datetime
 import os
 from enum import Enum
 
+POEDITOR_ID = 418393
+POEDITOR_TOKEN = os.environ.get('POEDITOR_TOKEN')
+
 START_TIME = datetime.datetime.now()
 
 postgres = os.environ.get('CONNECTION_STRING')
 
 TOKEN = os.environ.get('TOKEN')
 
-texts = {
-    'ru': {
-        'choose_account_to_delete': "Выбери какой аккаунт нужно удалить",
-        'setting_descr': "Здесь вы можете изменить глобальные настройки",
-        'setting': "Настройки",
-        'lang_changed': "Окей, твой язык теперь русский",
-        'choose_lang': "Пожалуйста выбери свой язык",
-        'language': "Язык/Language",
-        'hello': "Привет, я бот для мониторинга системы ECMD\n\nКнопка 'Кабинет' для работы с аккаунтами\nКнопка 'База данных' если у тебя есть вопроc",
-        'cabinet_msg': "У тебя {account_count} подключенных аккаунтов. Здесь ты можешь управлять подключенными аккаунтами",
-        'add_account': "Попробуй добавить новые аккаунты при помощи кнопки 'Добавить'\n<code>Здесь будет ссылка с инструкцией где взять апи ключ</code>",
-        'cabinet': 'Меню',
-        'faq': 'База данных',
-        'add_account_btn': 'Добавить аккаунт',
-        'add_account_descr': 'Отправь мне токен от своего аккаунта',
-        'account_added': "Окей, я добавил этот аккаунт. Он будет называться {account_name}\nИзменить список монет ты сможешь через 'Настройки'",
-        'account_id_invalid': 'Твой апи ключ не валидный или аккаунта с таким ключом не существует, обратись в поддержку или попробуй ещё раз',
-        'account_id_already_registered': "Аккаунт с таким апи ключом уже зарегистрирован за вами его имя {account_name}. Проверьте валидность ключа или напишите в поддержку.\nУправление аккаунтом через кнопку 'Кабинет'",
-        'again_button': 'Ещё раз',
-        'account_cabinet': 'Меню и статистика аккаунта {account_name}\n\nЗдесь ты можешь посмотреть статистику аккаунта',
-        'change_coins_button': "Изменить список монет",
-        'coin_list_descr': "Список подключенных монет",
-        'coin_disabled': "Монета выключена ❌",
-        'coin_enabled': "Монета включена ✅",
-        "payouts": "Выплаты",
-        "payouts_template": '''
-🕔 Время: {datetime}
-💰 Сумма: {amount}
-⚙️ Транзакция: {transaction_link}
-        ''',
-        "income": "Начисления",
-        "income_template": '''
-🕔 Время: {datetime}
-💰 Награда: {amount}
-        ''',
-        'finance_button': "Финансы",
-        'finance_payouts': "Финансы",
-        'statistic_button': "Статистика",
-        'workers_stat_button': "Устройства(Воркеры)",
-        'income_stat_button': "⏺ Начисления",
-        'payouts_stat_button': "⏺ Выплаты",
-        'finance_choose_coin': "Выберите по какой монете вы хотите посмотреть финансы\nИзменить список монет можно в меню аккаунта",
-        'statistic_choose_coin': "Выберите по какой монете вы хотите посмотреть статистику\nИзменить список монет можно в меню аккаунта",
-        'payouts_choose_coin': "Выберите по какой монете вы хотите посмотреть выплаты\nИзменить список монет можно в меню аккаунта",
-        'income_choose_coin': "Выберите по какой монете вы хотите посмотреть начисления\nИзменить список монет можно в меню аккаунта",
-        'worker_choose_coin': "Выберите по какой монете вы хотите посмотреть статистику воркеров\nИзменить список монет можно в меню аккаунта",
-        'notification_choose_coin': "Выберите по какой монете вы хотите изменить настройки уведомлений\nИзменить список монет можно в меню аккаунта",
-        'hashrate': "Хешрейт",
-        'current': "Текущий",
-        '1_hour': "1 час",
-        '24_hour': "24 часа",
-        'worker_info_descr': '''Общая статистика аккаунта
-- - - - - - - - - - - - - - - - - - - - - - - 
-⏺ Текущий: {hashrate}
-⏺ 1 час: {hashrate1h}
-⏺ 24 часа: {hashrate24h}
-- - - - - - - - - - - - - - - - - - - - - - - 
+# placeholder for langs
+texts = {}
+reversed_locales = {}
 
-
-Воркеры
-- - - - - - - - - - - - - - - - - - - - - - - 
-⏺ Всего: {total}
-⏺ Активных: {active}
-⏺ Неактивные: {inactive}
-⏺ Мертвых: {dead}
-- - - - - - - - - - - - - - - - - - - - - - - 
-{description}
-''',
-        'statistic_descr': '''Статистика аккаунта {account_name}
-💶 Текущий Баланс: {current_balance} ({current_balance_dol}$)
-🕔 Всего выплачено: {total_paid} ({total_paid_dol}$)
-📬 Адрес выплаты: {address}
-📊 Курс: {course_dol}$ ({course_rub} RUB)
-        ''',
-        'notifcation_button': "Уведомления",
-        'notification_on': "Оповещения вкл. ✅",
-        'notification_off': "Оповещения выкл. ❌",
-        'delete_account': "Удаление аккаунтов",
-        'worker_changed_status_descr': "{worker_name} - ({previous_status}) на ({new_status})",
-        'worker_changed_status_body': "Произошла смена статуса воркеров на аккаунте {account_name}\n\n{description}",
-        'status_-1': "Мёртвый",
-        'status_0': "Не активный",
-        'status_1': "Активный",
-        'status_2': "Нестабильный",
-        "back_to_account_button": "Назад к аккаунту",
-        "back_to_account_list_button": "Назад к списку аккаунтов",
-        "next_button": "▶️",
-        "prev_button": "◀️",
-        "back_to_payouts": "К монетам",
-        "back_to_statistic": "К монетам",
-        "back_to_income": "К монетам",
-        "back_to_workers": "К монетам",
-        "back_to_notif": "К монетам",
-        "delete_account_descr": "Вы хотите удалить {account_name}\nПосле этого действия все настройки удалятся и вам перестанут приходить оповещения\n\nПодтвердите нажав кнопку внизу",
-        "account_deleted_descr": "Аккаунт успешно удален",
-        "notification_change_descr": "Настройки уведомлений\nСейчас уведомления о смене статуса воркеров {setting}",
-        "setting_notification_0": "Выключены",
-        "setting_notification_1": "Включены",
-        "setting_notification_set_0": "Выключить",
-        "setting_notification_set_1": "Включить",
-        "yes": "Да",
-        "no": "Нет",
-    },
-    'en': {
-        'statistic_button': "Statistic",
-        'setting_descr': "Here you can change global settings",
-        'choose_account_to_delete': "Choose account to delete",
-        'finance_button': "Finances",
-        'finance_payouts': "Finances",
-        'setting': "Settings",
-        'lang_changed': "Ok, your language changed to english",
-        'choose_lang': "Please choose your language from below",
-        'language': "Language/Язык",
-        'hello': "Hello! I'm monitoring bot for EMCD system\n\nButton 'Account' for work with accounts\nButton 'FAQ' if you have a question",
-        'cabinet_msg': "You have {account_count} registered accounts. Here you can manage them",
-        'add_account': "Try to register new account with button 'Add'\n<code>Here will be instruction which describe how to obtain api-key</code>",
-        'cabinet': 'Menu',
-        'faq': 'FAQ',
-        'add_account_btn': 'Add account',
-        'add_account_descr': 'Please send me token from your account',
-        'account_added': "Ok, i've added your account. They will be named {account_name}\nYou can change list of coins in 'Settings' button",
-        'account_id_invalid': 'Your api key is invalid. Please check this key or message to support',
-        'account_id_already_registered': "You already registered this account, they named as {account_name}. Please check this key for validity or message support.\nAccount management in 'Account' button",
-        'again_button': 'Try again',
-        'account_cabinet': 'Account statistic for {account_name}\n\nHere you can check account stats',
-        'change_coins_button': "Change coin list",
-        'coin_list_descr': "List of linked coins to account  {account_name}:",
-        'coin_disabled': "Coin are disabled ❌",
-        'coin_enabled': "Coin are enabled ✅",
-        "payouts": "Payouts",
-        'hashrate': "Hashrate",
-        'current': "Current",
-        '1_hour': "1 hour",
-        '24_hour': "24 hours",
-        "payouts_template": '''
-🕔 Time: {datetime}
-💰 Amount: {amount}
-⚙️ Transaction: {transaction_link}
-        ''',
-        "income": "Income",
-        "income_template": '''
-🕔 Time: {datetime}
-💰 Reward: {amount}
-        ''',
-        'worker_info_descr': '''General worker stats
-- - - - - - - - - - - - - - - - - - - - - - - 
-⏺ Current: {hashrate}
-⏺ 1 hour: {hashrate1h}
-⏺ 24 hours: {hashrate24h}
-- - - - - - - - - - - - - - - - - - - - - - - 
-
-
-Workers
-- - - - - - - - - - - - - - - - - - - - - - - 
-⏺ Total: {total}
-⏺ Active: {active}
-⏺ Inactive: {inactive}
-⏺ Dead: {dead}
-- - - - - - - - - - - - - - - - - - - - - - - 
-{description}
-''',
-        'statistic_descr': '''Account stats {account_name}
-💶 Current balance: {current_balance} ({current_balance_dol}$)
-🕔 Paid total: {total_paid} ({total_paid_dol}$)
-📬 Address: {address}
-📊 Course: {course_dol}$ ({course_rub} RUB)
-        ''',
-        'workers_stat_button': "Workers",
-        'finance_choose_coin': "Choose coin to see finances\nList of available coins you can change in 'Settings'",
-        'statistic_choose_coin': "Choose coin to see stats\nList of available coins you can change in 'Settings'",
-        'payouts_choose_coin': "Choose coin to see payouts\nList of available coins you can change in 'Settings'",
-        'income_choose_coin': "Choose coin to see incomes\nList of available coins you can change in 'Settings'",
-        'worker_choose_coin': "Choose coin to see worker statistic\nList of available coins you can change in 'Settings'",
-        'notification_choose_coin': "Choose coin to see notification setting\nList of available coins you can change in 'Settings'",
-        'notifcation_button': "Notifications",
-        'notification_on': "Enable notifications ✅",
-        'notification_off': "Disable notifications ❌",
-        'delete_account': "Delete account",
-        'worker_changed_status_descr': "{worker_name} - ({previous_status}) to ({new_status})",
-        'worker_changed_status_body': "Workers changed their status {account_name}\n\n{description}",
-        'status_-1': "Dead",
-        'status_0': "Inactive",
-        'status_1': "Active",
-        'status_2': "Non stable",
-        "back_to_account_button": "Back to account",
-        "back_to_account_list_button": "Back to account list",
-        "next_button": "▶️",
-        "prev_button": "◀️",
-        "back_to_payouts": "To coins",
-        "back_to_income": "To coins",
-        "back_to_workers": "To coins",
-        "back_to_notif": "To coins",
-        "back_to_statistic": "To coins",
-        "delete_account_descr": "You wan't to delete {account_name}\nAfter this action bot will erase all settings related to this account\n\nIf you agree please tap on button below",
-        "account_deleted_descr": "Account succesfully deleted",
-        "notification_change_descr": "Notification setting\nNotification are: {setting}",
-        "setting_notification_0": "Disabled",
-        "setting_notification_1": "Enabled",
-        "setting_notification_set_0": "Disable",
-        "setting_notification_set_1": "Enable",
-        "yes": "Yes",
-        "no": "No",
-        'income_stat_button': "⏺ Incomes",
-        'payouts_stat_button': "⏺ Payouts",
-    }
-}
+def update_texts(data: dict):
+    global texts, reversed_locales
+    texts = data
+    for lang_code, terms in texts.items():
+        reversed_locales[lang_code] = dict((v.lower(), k.lower()) for k,v in terms.items()) # exchange key with values
 
 class Lang(Enum):
     ru = 1

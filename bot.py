@@ -1,4 +1,7 @@
 import logging
+from utils import load_translations
+
+from loguru import logger
 
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -23,6 +26,12 @@ def init_dispatcher(bot: Bot):
 
 
 async def on_startup(dp: Dispatcher):
+    logger.info('Loading locales')
+
+    from config import update_texts, POEDITOR_ID, POEDITOR_TOKEN
+
+    update_texts(await load_translations(POEDITOR_ID, POEDITOR_TOKEN))
+
     dp["db_pool"] = await get_pool(
         dp["connection_string"],
     )

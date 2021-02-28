@@ -1,4 +1,5 @@
 import itertools
+from poeditor_client.client import PoeditorClient
 from typing import Dict
 import json
 
@@ -30,6 +31,19 @@ def dict_to_poeditor_locale(data: Dict[str, str], locale: str):
     ]
     '''
     return [{"term": term, "definition": translation} for term, translation in data[locale].items()]
+
+async def load_translations(poeditor_id: int, poeditor_token: str,):
+    translations = {}
+
+    async with PoeditorClient(poeditor_token, poeditor_id,) as client:
+        langs = await client.get_available_languages()
+        for lang in langs.result.languages:
+            translation_file = await client.get_language_file_url(lang.code)
+            translation = await client.download_translation_file(translation_file.result.url)
+            translations[lang.code] = json.loads(translation)
+
+    return translations
+
 
 if __name__ == "__main__":
     from config import texts

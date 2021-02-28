@@ -3,7 +3,7 @@ from aiogram.types import Update
 
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.middlewares import LifetimeControllerMiddleware
-from config import DEFAULT_LANG, Lang, texts
+from config import DEFAULT_LANG, Lang
 
 
 class I18nDataProviderMiddleware(LifetimeControllerMiddleware):
@@ -17,8 +17,13 @@ class I18nDataProviderMiddleware(LifetimeControllerMiddleware):
 
     async def pre_process(self, message: Any, data: dict,):
         if (isinstance(message, Update)): return
+
+        from config import texts
+
         user = await data['user'].get_user(message.from_user.id)
         if (user):
+            message.c_user_locale_code = Lang(user.lang_id).name
             data['_'] = texts[Lang(user.lang_id).name]
         else:
+            message.c_user_locale_code = DEFAULT_LANG.name
             data['_'] = texts[DEFAULT_LANG.name]
