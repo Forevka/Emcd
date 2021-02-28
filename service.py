@@ -2,13 +2,14 @@ import asyncio
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict
+from utils import load_translations
 from aiogram import exceptions
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from asyncpg.pool import Pool
 from loguru import logger
 
-from config import TOKEN, Lang, postgres, texts
+from config import POEDITOR_ID, POEDITOR_TOKEN, TOKEN, Lang, postgres
 from database.db import get_pool
 from database.models.account_coin import AccountCoin
 from database.user_repo import UserRepository
@@ -29,7 +30,7 @@ class WorkerChangeStatusDataModel:
             new_status=localisation[f'status_{self.new_status}'],
         )
 
-async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: AccountCoin, pool: Pool, notifier: TelegramNotifier,):
+async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: AccountCoin, pool: Pool, notifier: TelegramNotifier, texts: Dict,):
     async with semaphore:
         logger.info(f'{account.account_id}|{account.coin_id} - Scraping workers info')
         con = await pool.acquire()
@@ -101,6 +102,7 @@ async def job():
     notifier = TelegramNotifier(TOKEN)
 
     pool = await get_pool(postgres)
+    locales = await load_translations(POEDITOR_ID, POEDITOR_TOKEN)
     logger.info(f'Job started')
     user_repo = UserRepository(await pool.acquire())
     accounts = await user_repo.get_all_account_to_refresh()
@@ -111,7 +113,7 @@ async def job():
     tasks = []
 
     for account in accounts:
-        tasks.append(asyncio.ensure_future(update_account_data(semaphore, account, pool, notifier,)))
+        tasks.append(asyncio.ensure_future(update_account_data(semaphore, account, pool, notifier, locales)))
 
     await asyncio.gather(*tasks)
     logger.info(f'Terminating pool')
