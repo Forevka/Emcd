@@ -13,7 +13,7 @@ def grouper(n, iterable):
 def format_rate(rate: int) -> str:
     power = 1000
     n = 0
-    power_labels = {0 : '', 1: 'K', 2: 'M', 3: 'G', 4: 'T'}
+    power_labels = {0 : '', 1: 'K', 2: 'M', 3: 'G', 4: 'T', 5: 'P', 6: 'E', 7: 'Z'}
     while rate > power:
         rate /= power
         n += 1

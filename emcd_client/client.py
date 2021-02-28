@@ -1,9 +1,10 @@
+from emcd_client.models.currency import CurrencyValue, currency_from_dict
 from emcd_client.models.payouts import Payouts, payouts_from_dict
 from emcd_client.models.income_rewards import IncomeRewards, income_rewards_from_dict
 from emcd_client.models.coin_workers import CoinWorkers, coin_workers_from_dict
 from emcd_client.models.info import AccountInfo, account_info_from_dict
 from types import TracebackType
-from typing import Optional, Type
+from typing import Any, Dict, Optional, Type
 
 import aiohttp
 from yarl import URL
@@ -33,6 +34,12 @@ class EmcdClient:
 
     def _make_url(self, path: str) -> URL:
         return self._base_url / path
+
+    async def get_currency(self,) -> Dict[str, Any]:
+        async with self._client.get("https://blockchain.info/ticker", raise_for_status=False) as resp:
+            if (resp.status == 200):
+                return await resp.json()
+            return None
 
     async def get_info(self,) -> AccountInfo:
         async with self._client.get(self._make_url(f"v{API_VERSION}/info/{self._account_id}"), raise_for_status=False) as resp:
