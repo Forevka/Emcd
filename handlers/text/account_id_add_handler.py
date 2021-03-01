@@ -1,4 +1,3 @@
-from config import Coin
 from uuid import UUID
 
 from aiogram import types

@@ -1,7 +1,12 @@
 from aiogram import types
-from config import Coin, DEFAULT_LANG, Lang
+from config import DEFAULT_LANG, POEDITOR_ID, POEDITOR_TOKEN
 from database.user_repo import UserRepository
+from enums.coin import Coin
+from enums.lang import Lang
 from keyboard_fabrics import lang_cb
+from lang import language_map
+from poeditor_client.client import PoeditorClient
+from utils import grouper
 
 
 async def cmd_start(message: types.Message, user: UserRepository, _: dict):
@@ -19,25 +24,28 @@ async def cmd_start(message: types.Message, user: UserRepository, _: dict):
 
     await message.answer(_['hello'], reply_markup=keyboard_markup)
     
+    btn_list = []
     inline_keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
 
-    inline_keyboard_markup.row(
-        types.InlineKeyboardButton(
-            "Русский",
-            callback_data=lang_cb.new(
-                id=Lang.ru.value,
-            ),
-        ),
-    )
-    
-    inline_keyboard_markup.row(
-        types.InlineKeyboardButton(
-            "English",
-            callback_data=lang_cb.new(
-                id=Lang.en.value,
-            ),
-        ),
-    )
+    langs = None
+    async with PoeditorClient(POEDITOR_TOKEN, POEDITOR_ID,) as client:
+        langs = await client.get_available_languages()
+        for lang in langs.result.languages:
+            lang_id = next((l.value for l in Lang if l.name == lang.code), None)
+            if (lang_id is None):
+                continue
+
+            btn_list.append(
+                types.InlineKeyboardButton(
+                    language_map[lang.name],
+                    callback_data=lang_cb.new(
+                        id=lang_id,
+                    ),
+                ),
+            )
+
+    for i in grouper(2, btn_list):
+        inline_keyboard_markup.row(*i)
 
     await message.answer(_['choose_lang'], reply_markup=inline_keyboard_markup)
     

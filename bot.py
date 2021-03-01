@@ -1,17 +1,18 @@
 import logging
-from utils import load_translations
-
-from loguru import logger
 
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
+from loguru import logger
 
+from config import POEDITOR_ID, POEDITOR_TOKEN
 from database.db import get_pool
 from handlers.register_handlers import register_handlers
+from lang import update_texts
 from middlewares.database_provider_middleware import DatabaseProviderMiddleware
 from middlewares.i18n_data_provider_midleware import I18nDataProviderMiddleware
+from utils import load_translations
 
 logging.basicConfig(level=logging.INFO)
 
@@ -28,7 +29,6 @@ def init_dispatcher(bot: Bot):
 async def on_startup(dp: Dispatcher):
     logger.info('Loading locales')
 
-    from config import update_texts, POEDITOR_ID, POEDITOR_TOKEN
 
     update_texts(await load_translations(POEDITOR_ID, POEDITOR_TOKEN))
 

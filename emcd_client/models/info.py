@@ -6,7 +6,7 @@
 #
 #     result = account_info_from_dict(json.loads(json_string))
 
-from config import Coin
+from enums.coin import Coin
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Any, Tuple, TypeVar, Type, cast
 

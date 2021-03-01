@@ -1,7 +1,7 @@
 import typing
 
 from aiogram import types
-from config import Coin
+from enums.coin import Coin
 from database.user_repo import UserRepository
 from handlers.callback.finance_callback_handler import finance_callback_handler
 from keyboard_fabrics import finance_cb, menu_cb, statistic_cb, worker_cb

@@ -5,7 +5,7 @@ class I18nCommandFilter(BoundFilter):
         self.command_code = command_code
 
     async def check(self, obj):
-        from config import reversed_locales
+        from lang import reversed_locales
         
         c_user_locale_code = obj.c_user_locale_code
         

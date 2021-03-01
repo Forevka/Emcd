@@ -2,7 +2,7 @@ import typing
 from math import ceil
 
 from aiogram import types
-from config import Coin
+from enums.coin import Coin
 from database.user_repo import UserRepository
 from emcd_client.client import EmcdClient
 from keyboard_fabrics import income_cb, menu_cb, payouts_cb

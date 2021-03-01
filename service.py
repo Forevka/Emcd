@@ -2,19 +2,19 @@ import asyncio
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict
-from utils import load_translations
-from aiogram import exceptions
 
+from aiogram import exceptions
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from asyncpg.pool import Pool
 from loguru import logger
 
-from config import POEDITOR_ID, POEDITOR_TOKEN, TOKEN, Lang, postgres
+from config import CONNECTION_STRING, POEDITOR_ID, POEDITOR_TOKEN, TOKEN, Lang
 from database.db import get_pool
 from database.models.account_coin import AccountCoin
 from database.user_repo import UserRepository
 from emcd_client.client import EmcdClient
 from notifier.telegram_notifier import TelegramNotifier
+from utils import load_translations
 
 
 @dataclass
@@ -101,7 +101,7 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
 async def job():
     notifier = TelegramNotifier(TOKEN)
 
-    pool = await get_pool(postgres)
+    pool = await get_pool(CONNECTION_STRING)
     locales = await load_translations(POEDITOR_ID, POEDITOR_TOKEN)
     logger.info(f'Job started')
     user_repo = UserRepository(await pool.acquire())

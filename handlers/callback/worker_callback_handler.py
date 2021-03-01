@@ -2,7 +2,7 @@ import typing
 from math import ceil
 
 from aiogram import types
-from config import Coin
+from enums.coin import Coin
 from database.user_repo import UserRepository
 from emcd_client.client import EmcdClient
 from emcd_client.models.coin_workers import CoinWorker

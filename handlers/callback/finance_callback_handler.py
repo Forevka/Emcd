@@ -1,10 +1,9 @@
-from config import Coin
+from enums.coin import Coin
 import typing
 
 from aiogram import types
 from database.user_repo import UserRepository
-from emcd_client.client import EmcdClient
-from keyboard_fabrics import menu_cb, payouts_cb, finance_cb
+from keyboard_fabrics import menu_cb, finance_cb
 from utils import grouper
 
 PER_PAGE = 5

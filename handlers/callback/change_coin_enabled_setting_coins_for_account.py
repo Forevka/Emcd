@@ -1,7 +1,7 @@
 import typing
 
 from aiogram import types
-from config import Coin
+from enums.coin import Coin
 from database.user_repo import UserRepository
 from keyboard_fabrics import coin_account_cb, menu_cb
 from utils import grouper
