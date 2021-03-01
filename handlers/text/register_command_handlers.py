@@ -1,3 +1,4 @@
+from handlers.text.faq_command_handler import cmd_faq
 from handlers.text.locales_command import cmd_locales
 from filters.I18nCommandFilter import I18nCommandFilter
 from handlers.text.settings_command import cmd_settings
@@ -5,7 +6,7 @@ from aiogram import Dispatcher
 from finite_state_machine import Form
 from handlers.text.account_id_add_handler import account_id_add_handler
 from handlers.text.cabinet_command_handler import cmd_cabinet
-from handlers.text.lang_command_handler import cmd_lang
+from handlers.text.lang_command import cmd_lang
 from handlers.text.start_command import cmd_start
 from handlers.text.version_command import cmd_version
 
@@ -15,6 +16,7 @@ def register_command_handlers(dp: Dispatcher):
     dp.register_message_handler(cmd_start, commands=['start'], state='*')
     dp.register_message_handler(cmd_locales, commands=['locales'], state='*')
 
+    dp.register_message_handler(cmd_faq, I18nCommandFilter('faq'), state='*')
     dp.register_message_handler(cmd_cabinet, I18nCommandFilter('cabinet'), state='*')
     dp.register_message_handler(cmd_lang, I18nCommandFilter('language'), state='*')
     dp.register_message_handler(cmd_settings, I18nCommandFilter('setting'), state='*')

@@ -1,4 +1,4 @@
-from aiogram import Bot, Dispatcher
+from aiogram import Dispatcher
 
 from handlers.callback.register_callback_handlers import \
     register_callback_handlers

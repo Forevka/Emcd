@@ -22,3 +22,5 @@ coins_cb = CallbackData('ch_c', 'id', 'action')
 finance_cb = CallbackData('fin', 'id', 'type', 'action', 'page')
 
 delete_account_cb = CallbackData('del_acc', 'id', 'action')
+
+question_answer_cb = CallbackData('faq', 'id', 'page', 'action')
