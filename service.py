@@ -101,25 +101,31 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
 async def job():
     notifier = TelegramNotifier(TOKEN)
 
-    pool = await get_pool(CONNECTION_STRING)
-    locales = await load_translations(POEDITOR_ID, POEDITOR_TOKEN)
-    logger.info(f'Job started')
-    user_repo = UserRepository(await pool.acquire())
-    accounts = await user_repo.get_all_account_to_refresh()
-    logger.info(f'Total accounts to scrap {len(accounts)}')
-    await pool.release(user_repo.connection)
+    pool = None
+    try:
+        pool = await get_pool(CONNECTION_STRING)
+        locales = await load_translations(POEDITOR_ID, POEDITOR_TOKEN)
+        logger.info(f'Job started')
+        user_repo = UserRepository(await pool.acquire())
+        accounts = await user_repo.get_all_account_to_refresh()
+        logger.info(f'Total accounts to scrap {len(accounts)}')
+        await pool.release(user_repo.connection)
 
-    semaphore = asyncio.BoundedSemaphore(10)
-    tasks = []
+        semaphore = asyncio.BoundedSemaphore(10)
+        tasks = []
 
-    for account in accounts:
-        tasks.append(asyncio.ensure_future(update_account_data(semaphore, account, pool, notifier, locales)))
+        for account in accounts:
+            tasks.append(asyncio.ensure_future(update_account_data(semaphore, account, pool, notifier, locales)))
 
-    await asyncio.gather(*tasks)
-    logger.info(f'Terminating pool')
-    await pool.close()
+        await asyncio.gather(*tasks)
+    except Exception as e:
+        logger.exception(e)
+    finally:
+        logger.info(f'Terminating pool')
+        if pool is not None:
+            await pool.close()
 
-    await notifier.bot.session.close()
+        await notifier.bot.session.close()
 
 
 if (__name__ == "__main__"):

@@ -23,6 +23,16 @@ def from_int(x: Any) -> int:
     return x
 
 
+def from_float(x: Any) -> float:
+    assert isinstance(x, (float, int)) and not isinstance(x, bool)
+    return float(x)
+
+
+def to_float(x: Any) -> float:
+    assert isinstance(x, float)
+    return x
+
+
 def from_list(f: Callable[[Any], T], x: Any) -> List[T]:
     assert isinstance(x, list)
     return [f(y) for y in x]
@@ -60,7 +70,7 @@ class Language:
     name: str
     code: str
     translations: int
-    percentage: int
+    percentage: float
     updated: str
 
     @staticmethod
@@ -69,7 +79,7 @@ class Language:
         name = from_str(obj.get("name"))
         code = from_str(obj.get("code"))
         translations = from_int(obj.get("translations"))
-        percentage = from_int(obj.get("percentage"))
+        percentage = from_float(obj.get("percentage"))
         updated = from_str(obj.get("updated"))
         return Language(name, code, translations, percentage, updated)
 
@@ -78,7 +88,7 @@ class Language:
         result["name"] = from_str(self.name)
         result["code"] = from_str(self.code)
         result["translations"] = from_int(self.translations)
-        result["percentage"] = from_int(self.percentage)
+        result["percentage"] = to_float(self.percentage)
         result["updated"] = from_str(self.updated)
         return result
 
