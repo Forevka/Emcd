@@ -29,9 +29,9 @@ async def cmd_start(message: types.Message, user: UserRepository, _: dict):
 
     langs = None
     async with PoeditorClient(POEDITOR_TOKEN, POEDITOR_ID,) as client:
-        langs = await client.get_available_languages()
-        for lang in langs.result.languages:
-            lang_id = next((l.value for l in Lang if l.name == lang.code), None)
+        langs = [Lang.ru, Lang.en]
+        for lang in langs:
+            lang_id = lang.value
             if (lang_id is None):
                 continue
 

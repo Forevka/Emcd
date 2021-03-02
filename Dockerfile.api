@@ -11,4 +11,4 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y git
     
-CMD [ "uvicorn", "api:app", "--host", "0.0.0.0", "--port", "3000"]
+CMD [ "uvicorn", "api:app", "--host", "0.0.0.0", "--port", "3029"]

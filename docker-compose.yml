@@ -23,6 +23,6 @@ services:
     env_file:
     - ./.env
     ports:
-      - "3000:3000"
+      - "3029:3029"
     expose:
-      - "3000"
+      - "3029"
