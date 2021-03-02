@@ -14,3 +14,15 @@ services:
       dockerfile: ./Dockerfile.service
     env_file:
     - ./.env
+
+    
+  api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.api
+    env_file:
+    - ./.env
+    ports:
+      - "3000:3000"
+    expose:
+      - "3000"

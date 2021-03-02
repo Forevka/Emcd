@@ -24,6 +24,7 @@ jobs:
           envkey_TOKEN: ${{ secrets.TOKEN }}
           envkey_ENV_NAME: ${{ secrets.ENV_NAME }}
           envkey_POEDITOR_TOKEN: ${{ secrets.POEDITOR_TOKEN }}
+          envkey_JWT_SECRET: ${{ secrets.JWT_SECRET }}
           file_name: .env
 
       - name: Move envfile to host
