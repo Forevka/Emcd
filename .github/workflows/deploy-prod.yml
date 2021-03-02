@@ -1,0 +1,66 @@
+name: Deploy Bot Prod
+
+env:
+  directoryName: 'Emcd.Bot.Prod'
+
+on:
+  push:
+    branches: 
+      - 'releases/*'
+  workflow_dispatch:
+
+
+jobs:
+
+  pass-envfile:
+    environment: prod
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+          envkey_TOKEN: ${{ secrets.TOKEN }}
+          envkey_ENV_NAME: ${{ secrets.ENV_NAME }}
+          envkey_POEDITOR_TOKEN: ${{ secrets.POEDITOR_TOKEN }}
+          file_name: .env
+
+      - name: Move envfile to host
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          source: ".env"
+          target: "${{env.directoryName}}/"
+
+  deploy:
+    needs: pass-envfile
+    environment: prod
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: Checkout on host
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: cd ${{env.directoryName}} && git submodule update --init --recursive && git fetch && git checkout ${{ steps.extract_branch.outputs.branch }} && git pull
+
+      - name: Docker compose restart
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: cd ${{env.directoryName}} && docker-compose pull && docker-compose up -d --force-recreate --no-deps --build

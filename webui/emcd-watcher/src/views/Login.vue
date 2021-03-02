@@ -1,5 +1,6 @@
 <template>
-  <div class="home">
+  <div class="login">
+    <span>EMCD-watcher bot</span>
     <telegram-login-button
     mode="callback"
     telegram-login="MakeForMeBot"
@@ -17,7 +18,7 @@ import { TelegramAuthModel } from '@/models/TelegramAuthModel';
     TelegramLoginButton
   },
 })
-export default class Home extends Vue {
+export default class Login extends Vue {
   userLogged (user: TelegramAuthModel) {
     console.log(user)
   }
