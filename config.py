@@ -11,4 +11,6 @@ CONNECTION_STRING = os.environ.get('CONNECTION_STRING')
 
 TOKEN = os.environ.get('TOKEN')
 
+ENVIRONMENT = os.environ.get('ENV_NAME', 'debug')
+
 DEFAULT_LANG = Lang.ru

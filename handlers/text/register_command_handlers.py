@@ -1,3 +1,4 @@
+from filters.DisableFeatureOnEnvironmentFilter import DisableFeatureOnEnvironmentFilter
 from handlers.text.faq_command_handler import cmd_faq
 from handlers.text.locales_command import cmd_locales
 from filters.I18nCommandFilter import I18nCommandFilter
@@ -16,7 +17,7 @@ def register_command_handlers(dp: Dispatcher):
     dp.register_message_handler(cmd_start, commands=['start'], state='*')
     dp.register_message_handler(cmd_locales, commands=['locales'], state='*')
 
-    dp.register_message_handler(cmd_faq, I18nCommandFilter('faq'), state='*')
+    dp.register_message_handler(cmd_faq, I18nCommandFilter('faq'), DisableFeatureOnEnvironmentFilter('production'), state='*')
     dp.register_message_handler(cmd_cabinet, I18nCommandFilter('cabinet'), state='*')
     dp.register_message_handler(cmd_lang, I18nCommandFilter('language'), state='*')
     dp.register_message_handler(cmd_settings, I18nCommandFilter('setting'), state='*')
