@@ -4,3 +4,6 @@ apscheduler
 loguru
 gitpython
 tabulate
+fastapi
+fastapi-jwt-auth
+pydantic
