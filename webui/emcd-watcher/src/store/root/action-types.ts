@@ -1,0 +1,4 @@
+export enum ActionTypes {
+    UPDATE_VERSION = "UPDATE_VERSION",
+    SET_ROOT_DISPATCH = "SET_ROOT_DISPATCH"
+  }
