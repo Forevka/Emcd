@@ -38,10 +38,12 @@ export interface RootActionsTypes {
 
 export interface IUserGettersTypes {
   getToken(state: UserState): string | null;
+  getUser(state: UserState): TelegramAuthModel | null;
 }
 
 export type UserMutationsTypes<S = UserState> = {
   [UserMTypes.UPDATE_TOKEN](state: S, payload: string): void;
+  [UserMTypes.UPDATE_USER](state: S, payload: TelegramAuthModel): void;
 }
 
 

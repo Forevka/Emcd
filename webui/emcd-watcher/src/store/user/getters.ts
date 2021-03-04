@@ -7,4 +7,7 @@ export const getters: GetterTree<UserState, IRootState> & IUserGettersTypes = {
   getToken: (state: UserState) => {
     return state.token;
   },
+  getUser: (state: UserState) => {
+    return state.user
+  },  
 };

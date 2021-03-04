@@ -6,6 +6,7 @@ import { IRootState } from "../root/state";
 import { MutationTypes } from "./mutations";
 import { UserState } from "./state";
 import { apiCall, apiRoutes } from '@/utils/api';
+import router from "@/router";
 
 export enum ActionTypes {
     USER_LOGIN = "USER_LOGIN",
@@ -22,6 +23,11 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
         apiCall<{access_token: string}>({url: apiRoutes.user.login, method: 'POST', data: payload})
         .then((x) => {
             commit(MutationTypes.UPDATE_TOKEN, x.access_token)
+            commit(MutationTypes.UPDATE_USER, payload)
+
+            router.push('admin')
+        }).catch(() => {
+            alert("Sorry you can't be admin")
         })
     },
 };

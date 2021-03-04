@@ -5,7 +5,7 @@ const API_SERVER = settings.API_SERVER;
 
 export const apiRoutes = {
   user: {
-    login: API_SERVER + "token",
+    login: API_SERVER + "auth/token",
   },
 };
 
@@ -14,7 +14,7 @@ export function apiCall<T>({ url, method, ...args }: AxiosRequestConfig): Promis
     const token = localStorage.getItem("user-token") || "";
 
     if (token)
-      axios.defaults.headers.common["Authorization"] = token;
+      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 
     try {
       axios({

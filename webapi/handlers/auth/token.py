@@ -1,6 +1,7 @@
 import collections
 import hashlib
 import hmac
+import json
 
 from config import TOKEN
 from database.user_repo import UserRepository
@@ -32,5 +33,5 @@ async def login(request: Request, user: TelegramAuthModel, Authorize: AuthJWT = 
     if (db_user.role_id == 1):
         raise HTTPException(status_code=401, detail="Sorry you don't have permission")
 
-    access_token = Authorize.create_access_token(subject=f'{user.id}|{user.username}|{user.hash}')
+    access_token = Authorize.create_access_token(subject=json.dumps(user.dict()))
     return {"access_token": access_token}

@@ -23,4 +23,7 @@
     }
   }
 }
+
+@import './css/sb-admin.css';
+@import './css/fontawesome/all.min.css';
 </style>

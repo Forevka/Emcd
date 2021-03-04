@@ -1,3 +1,4 @@
+from webapi.handlers.auth.me import me
 from fastapi import FastAPI
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from webapi.handlers.auth.exception import exception_handler
@@ -12,4 +13,11 @@ def register(app: FastAPI):
         login,
         tags=['Auth'],
         methods=['POST'],
+    )
+
+    app.add_api_route(
+        '/auth/me',
+        me,
+        tags=['Auth'],
+        methods=['GET'],
     )
