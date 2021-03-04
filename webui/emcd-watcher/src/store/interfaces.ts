@@ -64,6 +64,9 @@ export interface UserActionsTypes {
     { commit }: AugmentedActionContextUser,
     payload: TelegramAuthModel
   ): void;
+  [UserATypes.UPDATE_USER](
+    { commit }: AugmentedActionContextUser
+  ): void;
 }
 
 

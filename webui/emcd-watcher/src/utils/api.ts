@@ -6,6 +6,7 @@ const API_SERVER = settings.API_SERVER;
 export const apiRoutes = {
   user: {
     login: API_SERVER + "auth/token",
+    me: API_SERVER + "auth/me",
   },
 };
 

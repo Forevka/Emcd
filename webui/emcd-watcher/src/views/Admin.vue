@@ -205,7 +205,7 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">{{user.username}}</h1>
+                    <h1 class="h3 mb-4 text-gray-800"></h1>
 
                 </div>
                 <!-- /.container-fluid -->
@@ -249,16 +249,18 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { TelegramAuthModel } from '@/models/TelegramAuthModel';
+import {ActionTypes as UserActions} from "@/store/user/actions"
 
 @Options({
   components: {
   }
 })
 export default class Admin extends Vue {
-    private user!: TelegramAuthModel;
 
     mounted() {
-        this.user = this.$store.getters.getUser
+        this.$store.dispatch(UserActions.UPDATE_USER).then(() => {
+            console.log(this.$store)
+        })
     }
 }
 </script>
