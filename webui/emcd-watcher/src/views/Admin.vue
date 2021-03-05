@@ -3,124 +3,7 @@
     <!-- Page Wrapper -->
     <div id="wrapper">
 
-        <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
-            </a>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
-
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="index.html">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Interface
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Components</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Utilities Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                    aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Utilities</span>
-                </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Utilities:</h6>
-                        <a class="collapse-item" href="utilities-color.html">Colors</a>
-                        <a class="collapse-item" href="utilities-border.html">Borders</a>
-                        <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                        <a class="collapse-item" href="utilities-other.html">Other</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Addons
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item active">
-                <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
-                    aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>Pages</span>
-                </a>
-                <div id="collapsePages" class="collapse show" aria-labelledby="headingPages"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
-                        <a class="collapse-item" href="register.html">Register</a>
-                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="404.html">404 Page</a>
-                        <a class="collapse-item active" href="blank.html">Blank Page</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Charts -->
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Charts</span></a>
-            </li>
-
-            <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="tables.html">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
-
-        </ul>
-        <!-- End of Sidebar -->
+        <sidebar/>
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -136,7 +19,7 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
-                    <!-- Topbar Search -->
+                    <!-- Topbar Search 
                     <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
@@ -149,6 +32,7 @@
                             </div>
                         </div>
                     </form>
+                    -->
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -178,17 +62,16 @@
                         </li>
 
                         <!-- Nav Item - User Information -->
-                        <li class="nav-item dropdown no-arrow">
+                        <li class="nav-item dropdown no-arrow" v-if="user != null">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{user.first_name}}</span>
                                 <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                                    :src="user.photo_url">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
@@ -204,8 +87,9 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
-                    <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800"></h1>
+                    <router-view>
+                        
+                    </router-view>
 
                 </div>
                 <!-- /.container-fluid -->
@@ -219,10 +103,10 @@
     </div>
     <!-- End of Page Wrapper -->
 
-    <!-- Scroll to Top Button-->
+    <!-- Scroll to Top Button
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
-    </a>
+    </a>-->
 
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -238,7 +122,7 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <router-link class="btn btn-primary" to="/">Logout</router-link>
                 </div>
             </div>
         </div>
@@ -250,17 +134,87 @@
 import { Options, Vue } from "vue-class-component";
 import { TelegramAuthModel } from '@/models/TelegramAuthModel';
 import {ActionTypes as UserActions} from "@/store/user/actions"
+import Sidebar from '@/components/Sidebar.vue';
 
 @Options({
   components: {
+      Sidebar
   }
 })
 export default class Admin extends Vue {
 
     mounted() {
-        this.$store.dispatch(UserActions.UPDATE_USER).then(() => {
-            console.log(this.$store)
-        })
+        this.$store.dispatch(UserActions.UPDATE_USER)
+
+        // Close any open menu accordions when window is resized below 768px
+        // @ts-ignore
+        window.$(window).resize(function() {
+            // @ts-ignore
+            if (window.$(window).width() < 768) {
+            // @ts-ignore
+            window.$('.sidebar .collapse').collapse('hide');
+            }
+            
+            // Toggle the side navigation when window is resized below 480px
+            // @ts-ignore
+            if (window.$(window).width() < 480 && !window.$(".sidebar").hasClass("toggled")) {
+                // @ts-ignore
+            window.$("body").addClass("sidebar-toggled");
+            // @ts-ignore
+            window.$(".sidebar").addClass("toggled");
+            // @ts-ignore
+            window.$('.sidebar .collapse').collapse('hide');
+            }
+        });
+
+        // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
+        // @ts-ignore
+        window.$('body.fixed-nav .sidebar').on('mousewheel DOMMouseScroll wheel', function(e) {
+            // @ts-ignore
+            if (window.$(window).width() > 768) {
+            // @ts-ignore
+            const e0 = e.originalEvent,
+                delta = e0.wheelDelta || -e0.detail;
+            // @ts-ignore
+            this.scrollTop += (delta < 0 ? 1 : -1) * 30;
+            e.preventDefault();
+            }
+        });
+
+        // Scroll to top button appear
+        // @ts-ignore
+        window.$(document).on('scroll', function() {
+            // @ts-ignore
+            const scrollDistance = window.$(this).scrollTop();
+            // @ts-ignore
+            if (scrollDistance > 100) {
+                // @ts-ignore
+            window.$('.scroll-to-top').fadeIn();
+            // @ts-ignore
+            } else {
+            // @ts-ignore
+            window.$('.scroll-to-top').fadeOut();
+            }
+        });
+
+        // Smooth scrolling using jQuery easing
+        // @ts-ignore
+        window.$(document).on('click', 'a.scroll-to-top', function(e) {
+            // @ts-ignore
+            const $anchor = window.$(this);
+            // @ts-ignore
+            window.$('html, body').stop().animate({
+            // @ts-ignore
+            scrollTop: (window.$($anchor.attr('href')).offset().top)
+            }, 1000, 'easeInOutExpo');
+            // @ts-ignore
+            e.preventDefault();
+        });
+    }
+
+
+    get user(){
+        return this.$store.getters.getUser
     }
 }
 </script>

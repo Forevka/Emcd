@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Login from '../views/Login.vue'
+import Dashboard from '../views/Admin/Dashboard.vue';
+import FAQ from '../views/Admin/FAQ.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -15,7 +17,11 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/admin',
     name: 'Admin',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Admin.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Admin.vue'),
+    children: [
+      { path: '', component: Dashboard },
+      { path: 'faq', component: FAQ },
+    ]
   }
 ]
 
