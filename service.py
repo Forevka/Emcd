@@ -77,6 +77,9 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
                                     )
                                 else:
                                     logger.info(f'{account.account_id}|{account.coin_id} - {worker.worker} blacklisted')
+                                    if (worker.status_id == -1):
+                                        logger.info(f'{account.account_id}|{account.coin_id} - {worker.worker} dead, need to delete from blacklist')
+                                        await user_repo.toggle_worker_blacklist(account.user_id, worker.worker)
 
 
                     logger.info(f'{account.account_id}|{account.coin_id} - Sending notification {account.id}')
