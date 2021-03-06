@@ -1,6 +1,6 @@
 from coincap_client.models.exchange_coin_to_currency import ExchangeCoinToCurrency
 from coincap_client.client import CoinCapClient
-from config import SELECT_COIN_CB
+from config import FALLBACK_CURRENCY, SELECT_COIN_CB
 import typing
 
 from aiogram import types
@@ -114,14 +114,33 @@ async def statistic_info_callback_handler(
     async with EmcdClient(account_id) as client:
         account_api = await client.get_info()
 
+    is_fallback = False
+
     async with CoinCapClient() as client:
-        currency_list = await client.get_info_for_exchange(coin_id, user_currency.currency_code)        
+        c_id = coin_id
+        if (c_id == 'bchn'):
+            c_id = 'bch'
+
+        currency_list = await client.get_info_for_exchange(c_id, user_currency.currency_code)        
+
+        if (len(currency_list.data) == 0):
+            currency_list = await client.get_info_for_exchange(c_id, FALLBACK_CURRENCY)
+            is_fallback = True
+
 
     curr = sorted(currency_list.data, key=take_update_timestamp)[0]
 
     coin_info = account_api.get_coins()[coin_id]
 
-    message_text = _['statistic_descr'].format(
+    message_text = ""
+
+    if (is_fallback):
+        message_text = _['currency_not_found'].format(
+            currency_code=user_currency.currency_code,
+            fallback_currency_code=FALLBACK_CURRENCY,
+        ) + '\n'
+
+    message_text += _['statistic_descr'].format(
         account_name=account.username,
         address=account_coin.address,
 
