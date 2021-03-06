@@ -56,7 +56,12 @@ async def statistic_callback_handler(
 
 # take second element for sort
 def take_update_timestamp(elem: ExchangeCoinToCurrency):
-    return elem.updated
+    '''
+        COIN cap have bug
+        fields updated and trades_count24_hr are swapped
+        lol
+    '''
+    return elem.trades_count24_hr #WTF
 
 async def statistic_info_callback_handler(
     query: types.CallbackQuery,
