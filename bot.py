@@ -6,13 +6,13 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
 from loguru import logger
 
-from config import POEDITOR_ID, POEDITOR_TOKEN
+from config import ENVIRONMENT, POEDITOR_ID, POEDITOR_TOKEN
 from database.db import get_pool
 from handlers.register_handlers import register_handlers
 from lang import update_texts
 from middlewares.database_provider_middleware import DatabaseProviderMiddleware
 from middlewares.i18n_data_provider_midleware import I18nDataProviderMiddleware
-from utils import load_translations
+from utils import load_translations, load_translations_from_file
 
 logging.basicConfig(level=logging.INFO)
 
@@ -29,8 +29,12 @@ def init_dispatcher(bot: Bot):
 async def on_startup(dp: Dispatcher):
     logger.info('Loading locales')
 
+    trans = await load_translations_from_file()
+    if (ENVIRONMENT != 'debug'):
+        logger.info('Loading from poeditor')
+        trans = await load_translations(POEDITOR_ID, POEDITOR_TOKEN)
 
-    update_texts(await load_translations(POEDITOR_ID, POEDITOR_TOKEN))
+    update_texts(trans)
 
     dp["db_pool"] = await get_pool(
         dp["connection_string"],
