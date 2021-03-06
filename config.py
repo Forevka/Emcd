@@ -14,3 +14,5 @@ TOKEN = os.environ.get('TOKEN')
 ENVIRONMENT = os.environ.get('ENV_NAME', 'debug')
 
 DEFAULT_LANG = Lang.ru
+
+SELECT_COIN_CB = 's_coin'

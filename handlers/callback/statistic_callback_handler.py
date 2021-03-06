@@ -1,3 +1,4 @@
+from config import SELECT_COIN_CB
 import typing
 
 from aiogram import types
@@ -71,26 +72,27 @@ async def statistic_info_callback_handler(
     #    incomes = await client.get_rewards(coin_id)
 
     buttons = []
-    '''
-    if (page > 1):
+    
+    coins = [coin for coin in await user.get_account_coins(query.from_user.id, account_id) if coin.is_active]
+
+    if (len(coins) == 1): #in case if enabled only one coin we treat them as default
         buttons.append(
             types.InlineKeyboardButton(
-                _["prev_button"],
-                callback_data=income_cb.new(
-                    id=account_id, page=page - 1, type=coind_id,
+                _["cabinet"],
+                callback_data=menu_cb.new(
+                    id=account_id, type="account", action="open"
                 ),
             ),
         )
-    '''
-
-    buttons.append(
-        types.InlineKeyboardButton(
-            _["back_to_statistic"],
-            callback_data=statistic_cb.new(
-                id=account_id, type='s_coin',
+    else:
+        buttons.append(
+            types.InlineKeyboardButton(
+                _["back_to_statistic"],
+                callback_data=statistic_cb.new(
+                    id=account_id, type=SELECT_COIN_CB,
+                ),
             ),
-        ),
-    )
+        )
 
     keyboard_markup.row(*buttons)
 

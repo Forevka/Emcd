@@ -1,3 +1,4 @@
+from config import SELECT_COIN_CB
 import typing
 
 from aiogram import types
@@ -17,12 +18,18 @@ async def account_cabinet_callback_handler(
     account_id = callback_data["id"]
 
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
+    action_type = SELECT_COIN_CB
+
+    coins = [coin for coin in await user.get_account_coins(query.from_user.id, account_id) if coin.is_active]
+
+    if (len(coins) == 1): #in case if enabled only one coin we treat them as default
+        action_type = coins[0].coin_id
 
     keyboard_markup.add(
         types.InlineKeyboardButton(
             _["workers_stat_button"],
             callback_data=worker_cb.new(
-                id=account_id, page=1, type="s_coin" #s_coin = select_coin shorthand
+                id=account_id, page=1, type=action_type,
             ),
         ),
     )
@@ -31,13 +38,13 @@ async def account_cabinet_callback_handler(
         types.InlineKeyboardButton(
             _["statistic_button"],
             callback_data=statistic_cb.new(
-                id=account_id, type="s_coin" #s_coin = select_coin shorthand
+                id=account_id, type=action_type,
             ),
         ),
         types.InlineKeyboardButton(
             _["finance_button"],
             callback_data=finance_cb.new(
-                id=account_id, type='s_coin', action="_", page=1, #s_coin = select_coin shorthand
+                id=account_id, type=action_type, action="_" if action_type == SELECT_COIN_CB else "payouts", page=1, #id=account_id, type=coin.coin_id, action=, page=page,
             ),
         ),
     )

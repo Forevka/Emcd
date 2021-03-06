@@ -1,3 +1,4 @@
+from config import SELECT_COIN_CB
 import typing
 from math import ceil
 
@@ -135,14 +136,26 @@ async def worker_info_callback_handler(
         
     keyboard_markup.row(*buttons)
     
-    keyboard_markup.row(
-        types.InlineKeyboardButton(
-            _["back_to_workers"],
-            callback_data=worker_cb.new(
-                id=account_id, page=page, type='s_coin',
+    coins = [coin for coin in await user.get_account_coins(query.from_user.id, account_id) if coin.is_active]
+
+    if (len(coins) == 1): #in case if enabled only one coin we treat them as default
+        keyboard_markup.row(
+            types.InlineKeyboardButton(
+                _["cabinet"],
+                callback_data=menu_cb.new(
+                    id=account_id, type="account", action="open"
+                ),
             ),
-        ),
-    )
+        )
+    else:
+        keyboard_markup.row(
+            types.InlineKeyboardButton(
+                _["back_to_workers"],
+                callback_data=worker_cb.new(
+                    id=account_id, page=page, type=SELECT_COIN_CB,
+                ),
+            ),
+        )
 
     await query.message.edit_text(
         _['worker_info_descr'].format(

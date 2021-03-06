@@ -1,3 +1,4 @@
+from config import SELECT_COIN_CB
 from handlers.callback.faq_callback import faq_callback_handler, faq_info_callback_handler
 from handlers.callback.finance_callback_handler import finance_callback_handler
 from handlers.callback.statistic_callback_handler import statistic_callback_handler, statistic_info_callback_handler
@@ -22,7 +23,7 @@ from keyboard_fabrics import menu_cb, coin_account_cb, payouts_cb, income_cb, wo
 def register_callback_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(
         finance_callback_handler,
-        finance_cb.filter(type='s_coin'),
+        finance_cb.filter(type=SELECT_COIN_CB),
         state="*"
     )
 
@@ -70,7 +71,7 @@ def register_callback_handlers(dp: Dispatcher):
     
     dp.register_callback_query_handler(
         payouts_callback_handler,
-        payouts_cb.filter(type='s_coin'),
+        payouts_cb.filter(type=SELECT_COIN_CB),
         state="*"
     )
 
@@ -88,7 +89,7 @@ def register_callback_handlers(dp: Dispatcher):
 
     dp.register_callback_query_handler(
         statistic_callback_handler,
-        statistic_cb.filter(type='s_coin'),
+        statistic_cb.filter(type=SELECT_COIN_CB),
         state="*"
     )
 
@@ -112,7 +113,7 @@ def register_callback_handlers(dp: Dispatcher):
 
     dp.register_callback_query_handler(
         income_callback_handler,
-        income_cb.filter(type='s_coin'),
+        income_cb.filter(type=SELECT_COIN_CB),
         state="*"
     )
 
@@ -124,7 +125,7 @@ def register_callback_handlers(dp: Dispatcher):
 
     dp.register_callback_query_handler(
         worker_callback_handler,
-        worker_cb.filter(type='s_coin'),
+        worker_cb.filter(type=SELECT_COIN_CB),
         state="*"
     )
 

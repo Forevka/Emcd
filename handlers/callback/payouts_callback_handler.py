@@ -1,3 +1,4 @@
+from config import SELECT_COIN_CB
 import typing
 from math import ceil
 
@@ -5,7 +6,7 @@ from aiogram import types
 from enums.coin import Coin
 from database.user_repo import UserRepository
 from emcd_client.client import EmcdClient
-from keyboard_fabrics import income_cb, menu_cb, payouts_cb
+from keyboard_fabrics import income_cb, menu_cb, payouts_cb, finance_cb
 from utils import grouper
 
 PER_PAGE = 3
@@ -113,6 +114,12 @@ async def payouts_info_callback_handler(
             )
         
     keyboard_markup.row(*buttons)
+    action_type = SELECT_COIN_CB
+
+    coins = [coin for coin in await user.get_account_coins(query.from_user.id, account_id) if coin.is_active]
+
+    if (len(coins) == 1): #in case if enabled only one coin we treat them as default
+        action_type = coins[0].coin_id
 
     keyboard_markup.row(
         types.InlineKeyboardButton(
@@ -124,6 +131,11 @@ async def payouts_info_callback_handler(
         types.InlineKeyboardButton(
             _['back_to_account_button'],
             callback_data=menu_cb.new(id=account.account_id, type="account", action='open'),
+        ) if len(coins) == 1 else types.InlineKeyboardButton(
+            _["back_to_payouts"],
+            callback_data=finance_cb.new(
+                id=account_id, type=action_type, action=SELECT_COIN_CB, page=page, #id=account_id, type=coin.coin_id, action=, page=page,
+            ),
         ),
     )
     

@@ -227,7 +227,7 @@ class UserRepository:
         if (res):
             return AccountCoin(**res)
 
-    async def get_account_coins(self, user_id: int, account_id: str) -> AccountCoin:
+    async def get_account_coins(self, user_id: int, account_id: str) -> List[AccountCoin]:
         sql = f"{AccountCoin.__select__} where user_id = $1 and account_id = $2 order by coin_id asc"
 
         return [AccountCoin(**acc) for acc in await self.connection.fetch(sql, user_id, account_id)]
