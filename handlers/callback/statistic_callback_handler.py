@@ -1,3 +1,5 @@
+from coincap_client.models.exchange_coin_to_currency import ExchangeCoinToCurrency
+from coincap_client.client import CoinCapClient
 from config import SELECT_COIN_CB
 import typing
 
@@ -52,6 +54,9 @@ async def statistic_callback_handler(
         reply_markup=keyboard_markup,
     )
 
+# take second element for sort
+def take_update_timestamp(elem: ExchangeCoinToCurrency):
+    return elem.updated
 
 async def statistic_info_callback_handler(
     query: types.CallbackQuery,
@@ -97,22 +102,37 @@ async def statistic_info_callback_handler(
     keyboard_markup.row(*buttons)
 
     account_api = None
-    currency = None
+    currency_list = None
+
+    user_currency = await user.get_user_currency(query.from_user.id)
+
     async with EmcdClient(account_id) as client:
         account_api = await client.get_info()
-        currency = await client.get_currency()
+
+    async with CoinCapClient() as client:
+        currency_list = await client.get_info_for_exchange(coin_id, user_currency.currency_code)        
+
+    curr = sorted(currency_list.data, key=take_update_timestamp)[0]
 
     coin_info = account_api.get_coins()[coin_id]
 
     message_text = _['statistic_descr'].format(
         account_name=account.username,
         address=account_coin.address,
+
         current_balance=coin_info.balance,
-        current_balance_dol=format_currency(round(coin_info.balance * currency['USD']['last'], 4), '', locale="en_US"),
+        current_balance_dol=format_currency(round(coin_info.balance * curr.price_usd, 4), '', locale="en_US"),
+        current_balance_sec=format_currency(round(coin_info.balance * curr.price_quote, 4), '', locale="en_US"),
+        current_balance_sec_symbol=curr.quote_symbol,
+
         total_paid=coin_info.total_paid,
-        total_paid_dol=format_currency(round(coin_info.total_paid * currency['USD']['last'], 4), '', locale="en_US"),
-        course_dol=format_currency(round(currency['USD']['last'], 2), '', locale="en_US"),
-        course_rub=format_currency(round(currency['RUB']['last'], 2), '', locale="en_US"),
+        total_paid_dol=format_currency(round(coin_info.total_paid * curr.price_usd, 4), '', locale="en_US"),
+        total_paid_sec=format_currency(round(coin_info.total_paid * curr.price_quote, 4), '', locale="en_US"),
+        total_paid_sec_symbol=curr.quote_symbol,
+
+        currency_dol=format_currency(round(curr.price_usd, 2), '', locale="en_US"),
+        currency_sec=format_currency(round(curr.price_quote, 2), '', locale="en_US"),
+        currency_sec_symbol=curr.quote_symbol,
     )
 
     await query.message.edit_text(

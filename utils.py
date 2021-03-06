@@ -2,12 +2,13 @@ import itertools
 import json
 from os import listdir
 from os.path import isfile, join, splitext
-from typing import Dict
+from typing import Dict, List, Tuple, TypeVar
 
 from poeditor_client.client import PoeditorClient
 
+T = TypeVar("T")
 
-def grouper(n, iterable):
+def grouper(n: int, iterable: List[T]) -> Tuple[T]:
     it = iter(iterable)
     while True:
         chunk = tuple(itertools.islice(it, n))

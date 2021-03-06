@@ -16,6 +16,7 @@ income_cb = CallbackData('income', 'id', 'page', 'type')
 worker_cb = CallbackData('worker', 'id', 'page', 'type')
 notification_cb = CallbackData('notif', 'action') #action - on/off
 statistic_cb = CallbackData('stat', 'id', 'type')
+currency_cb = CallbackData('curr', 'id', 'action')
 
 coins_cb = CallbackData('ch_c', 'id', 'action')
 

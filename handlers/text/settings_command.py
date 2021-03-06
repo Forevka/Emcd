@@ -1,7 +1,7 @@
 from aiogram import types
 from config import DEFAULT_LANG, Lang
 from database.user_repo import UserRepository
-from keyboard_fabrics import lang_cb, delete_account_cb, notification_cb, coins_cb, menu_cb
+from keyboard_fabrics import lang_cb, delete_account_cb, notification_cb, coins_cb, menu_cb, currency_cb
 
 
 async def cmd_settings(message: types.Message, user: UserRepository, _: dict):
@@ -33,6 +33,15 @@ async def cmd_settings(message: types.Message, user: UserRepository, _: dict):
             _['change_coins_button'],
             callback_data=menu_cb.new(
                 id="_", type="account", action="c_coins"
+            ),
+        ),
+    )
+
+    inline_keyboard_markup.row(
+        types.InlineKeyboardButton(
+            _["curr_list_button"],
+            callback_data=currency_cb.new(
+                action="open", id="_",
             ),
         ),
     )

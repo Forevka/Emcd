@@ -1,3 +1,5 @@
+from database.models.user_currency import UserCurrency
+from database.models.currency import Currency
 from database.models.user_notification import UserNotification
 from datetime import datetime
 from typing import List
@@ -231,3 +233,26 @@ class UserRepository:
         sql = f"{AccountCoin.__select__} where user_id = $1 and account_id = $2 order by coin_id asc"
 
         return [AccountCoin(**acc) for acc in await self.connection.fetch(sql, user_id, account_id)]
+
+
+    async def get_available_currency(self,) -> List[Currency]:
+        sql = Currency.__select__
+
+        return [Currency(**acc) for acc in await self.connection.fetch(sql,)]
+
+        
+    async def get_user_currency(self, user_id: int) -> UserCurrency:
+        sql = f"{UserCurrency.__select__} where \"user_id\" = $1"
+
+        res = await self.connection.fetchrow(sql, user_id)
+        if (res):
+            return UserCurrency(**res)
+
+    async def update_user_currency(self, user_id: int, currency_id: int):
+        sql = """
+        update "user_currency"
+        set currency_id = $1
+        where user_id = $2
+        """
+
+        await self.connection.execute(sql, currency_id, user_id,)

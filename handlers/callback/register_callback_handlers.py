@@ -1,3 +1,4 @@
+from handlers.callback.currency_callback_handler import currency_callback_handler, currency_update_callback_handler
 from config import SELECT_COIN_CB
 from handlers.callback.faq_callback import faq_callback_handler, faq_info_callback_handler
 from handlers.callback.finance_callback_handler import finance_callback_handler
@@ -17,10 +18,24 @@ from handlers.callback.account_cabinet_handler import account_cabinet_callback_h
 from handlers.callback.add_ccount_handler import add_account_callback_handler
 
 
-from keyboard_fabrics import menu_cb, coin_account_cb, payouts_cb, income_cb, worker_cb, delete_account_cb, notification_cb, lang_cb, statistic_cb, finance_cb, question_answer_cb
+from keyboard_fabrics import currency_cb, menu_cb, coin_account_cb, payouts_cb, income_cb, worker_cb, delete_account_cb, notification_cb, lang_cb, statistic_cb, finance_cb, question_answer_cb
 
 
 def register_callback_handlers(dp: Dispatcher):
+    #action="open", id="_",
+    dp.register_callback_query_handler(
+        currency_callback_handler,
+        currency_cb.filter(action="open", id="_",),
+        state="*"
+    )
+
+    
+    dp.register_callback_query_handler(
+        currency_update_callback_handler,
+        currency_cb.filter(),
+        state="*"
+    )
+
     dp.register_callback_query_handler(
         finance_callback_handler,
         finance_cb.filter(type=SELECT_COIN_CB),
