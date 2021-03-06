@@ -9,6 +9,7 @@
 from enum import Enum
 from dataclasses import dataclass
 from typing import Optional, Any, List, TypeVar, Type, Callable, cast
+from decimal import Decimal
 
 
 T = TypeVar("T")
@@ -29,6 +30,8 @@ def from_float(x: Any) -> float:
     assert isinstance(x, (float, int)) and not isinstance(x, bool)
     return float(x)
 
+def from_decimal(x: Any) -> float:
+    return Decimal(x)
 
 def from_none(x: Any) -> Any:
     assert x is None
@@ -74,7 +77,7 @@ class TypeEnum(Enum):
 class Income:
     timestamp: int
     gmt_time: str
-    income: float
+    income: Decimal
     type: TypeEnum
     total_hashrate: Optional[int] = None
 
@@ -83,7 +86,7 @@ class Income:
         assert isinstance(obj, dict)
         timestamp = from_int(obj.get("timestamp"))
         gmt_time = from_str(obj.get("gmt_time"))
-        income = from_float(obj.get("income"))
+        income = from_decimal(obj.get("income"))
         type = TypeEnum(obj.get("type"))
         total_hashrate = from_union([from_none, from_int], obj.get("total_hashrate"))
         return Income(timestamp, gmt_time, income, type, total_hashrate)
@@ -92,7 +95,7 @@ class Income:
         result: dict = {}
         result["timestamp"] = from_int(self.timestamp)
         result["gmt_time"] = from_str(self.gmt_time)
-        result["income"] = to_float(self.income)
+        result["income"] = self.income
         result["type"] = to_enum(TypeEnum, self.type)
         result["total_hashrate"] = from_union([from_none, from_int], self.total_hashrate)
         return result
