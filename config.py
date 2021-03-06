@@ -18,3 +18,12 @@ DEFAULT_LANG = Lang.ru
 SELECT_COIN_CB = 's_coin'
 
 FALLBACK_CURRENCY = 'USD'
+
+# 1 active 0 inactive -1 dead 2 nonstable
+WORKER_STATUS_CAROUSEL = {
+    3: -1, #all - dead
+    -1: 0, #dead - inactive
+    0: 1, #inactive - active
+    #1: 2, #active - nonstable
+    1: 3, #nonstable - all
+}

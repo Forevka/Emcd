@@ -2,10 +2,8 @@ from config import SELECT_COIN_CB
 import typing
 
 from aiogram import types
-from enums.coin import Coin
 from database.user_repo import UserRepository
-from handlers.callback.finance_callback_handler import finance_callback_handler
-from keyboard_fabrics import finance_cb, menu_cb, statistic_cb, worker_cb
+from keyboard_fabrics import finance_cb, menu_cb, statistic_cb, worker_cb, worker_black_cb
 
 
 async def account_cabinet_callback_handler(
@@ -29,7 +27,13 @@ async def account_cabinet_callback_handler(
         types.InlineKeyboardButton(
             _["workers_stat_button"],
             callback_data=worker_cb.new(
-                id=account_id, page=1, type=action_type,
+                id=account_id, page=1, type=action_type, status_id="_",
+            ),
+        ),
+        types.InlineKeyboardButton(
+            _["workers_black_list_button"],
+            callback_data=worker_black_cb.new(
+                id=account_id, page=1, type=action_type, action="_",
             ),
         ),
     )

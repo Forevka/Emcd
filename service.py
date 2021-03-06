@@ -59,6 +59,7 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
                     translation = texts[user_locale.name]
 
                     change_status_descr = []
+                    blacklisted_workers = [w.worker_id for w in await user_repo.get_blacklisted_workers(account.user_id)]
 
                     previous_worker_state = await user_repo.get_previous_worker_state_for_account(account.id)
                     for worker in workers:
@@ -66,14 +67,17 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
                         if (previous_state):
                             if (previous_state.status_id != worker.status_id):
                                 logger.info(f'{account.account_id}|{account.coin_id} - worker changed status {worker.worker}')
-
-                                change_status_descr.append(
-                                    WorkerChangeStatusDataModel(
-                                        previous_state.status_id,
-                                        worker.status_id,
-                                        previous_state.worker_id
+                                if (worker.worker not in blacklisted_workers):
+                                    change_status_descr.append(
+                                        WorkerChangeStatusDataModel(
+                                            previous_state.status_id,
+                                            worker.status_id,
+                                            previous_state.worker_id
+                                        )
                                     )
-                                )
+                                else:
+                                    logger.info(f'{account.account_id}|{account.coin_id} - {worker.worker} blacklisted')
+
 
                     logger.info(f'{account.account_id}|{account.coin_id} - Sending notification {account.id}')
                     if (change_status_descr):

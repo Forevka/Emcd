@@ -1,3 +1,4 @@
+from database.models.worker_blacklist import WorkerBlacklist
 from database.models.user_currency import UserCurrency
 from database.models.currency import Currency
 from database.models.user_notification import UserNotification
@@ -256,3 +257,24 @@ class UserRepository:
         """
 
         await self.connection.execute(sql, currency_id, user_id,)
+
+    async def get_blacklisted_workers(self, user_id: int,) -> List[WorkerBlacklist]:
+        sql = f"{WorkerBlacklist.__select__} where user_id = $1"
+
+        return [WorkerBlacklist(**acc) for acc in await self.connection.fetch(sql, user_id,)]
+
+    async def toggle_worker_blacklist(self, user_id: int, worker_id: str):
+        workers = [w.worker_id for w in await self.get_blacklisted_workers(user_id)]
+        sql = """
+        insert into worker_blacklist(user_id, worker_id)
+        values ($1, $2)
+        """
+        is_blacklisted = True
+        if (worker_id in workers):
+            sql = """
+            delete from worker_blacklist where user_id = $1 and worker_id = $2
+            """
+            is_blacklisted = False
+
+        await self.connection.execute(sql, user_id, worker_id,)
+        return is_blacklisted

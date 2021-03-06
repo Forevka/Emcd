@@ -13,7 +13,8 @@ coin_account_cb = CallbackData('c_acc', 'action', 'id') # c_acc:<action>:<id>
 
 payouts_cb = CallbackData('payouts', 'id', 'page', 'type')
 income_cb = CallbackData('income', 'id', 'page', 'type')
-worker_cb = CallbackData('worker', 'id', 'page', 'type')
+worker_cb = CallbackData('worker', 'id', 'page', 'type', 'status_id')
+worker_black_cb = CallbackData('w_bl', 'id', 'page', 'type', 'action')
 notification_cb = CallbackData('notif', 'action') #action - on/off
 statistic_cb = CallbackData('stat', 'id', 'type')
 currency_cb = CallbackData('curr', 'id', 'action')

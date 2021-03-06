@@ -1,4 +1,4 @@
-from config import SELECT_COIN_CB
+from config import SELECT_COIN_CB, WORKER_STATUS_CAROUSEL
 import typing
 from math import ceil
 
@@ -34,7 +34,7 @@ async def worker_callback_handler(
                 types.InlineKeyboardButton(
                     f"{Coin(coin.coin_id).name}",
                     callback_data=worker_cb.new(
-                        id=account_id, page=page, type=coin.coin_id,
+                        id=account_id, page=page, type=coin.coin_id, status_id=3,
                     ),
                 ),
             )
@@ -80,6 +80,7 @@ async def worker_info_callback_handler(
     account_id = callback_data["id"]
     coind_id = callback_data['type']
     page = int(callback_data['page'])
+    status_id = int(callback_data['status_id'])
 
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
     
@@ -98,12 +99,12 @@ async def worker_info_callback_handler(
             types.InlineKeyboardButton(
                 _["prev_button"],
                 callback_data=worker_cb.new(
-                    id=account_id, page=page - 1, type=coind_id,
+                    id=account_id, page=page - 1, type=coind_id, status_id=status_id,
                 ),
             ),
         )
 
-    workers_normalized = workers.get_all_workers(0)
+    workers_normalized = workers.get_all_workers_by_status(0, status_id)
 
     buttons.append(
         types.InlineKeyboardButton(
@@ -129,7 +130,7 @@ async def worker_info_callback_handler(
                 types.InlineKeyboardButton(
                     _["next_button"],
                     callback_data=worker_cb.new(
-                        id=account_id, page=page + 1, type=coind_id,
+                        id=account_id, page=page + 1, type=coind_id, status_id=status_id,
                     ),
                 ),
             )
@@ -138,35 +139,72 @@ async def worker_info_callback_handler(
     
     coins = [coin for coin in await user.get_account_coins(query.from_user.id, account_id) if coin.is_active]
 
+    filter_text = _['show_dead_workers']
+    new_status_id = WORKER_STATUS_CAROUSEL[status_id]
+    if (new_status_id == -1):
+        filter_text = _['show_dead_workers']
+    elif (new_status_id == 0):
+        filter_text = _['show_inactive_workers']
+    elif (new_status_id == 1):
+        filter_text = _['show_active_workers']
+    elif (new_status_id == 3):
+        filter_text = _['show_all_workers']
+
     if (len(coins) == 1): #in case if enabled only one coin we treat them as default
         keyboard_markup.row(
             types.InlineKeyboardButton(
+                filter_text,
+                callback_data=worker_cb.new(
+                    id=account_id, page=page, type=coind_id, status_id=new_status_id,
+                ),
+            ),
+            types.InlineKeyboardButton(
                 _["cabinet"],
                 callback_data=menu_cb.new(
-                    id=account_id, type="account", action="open"
+                    id=account_id, type="account", action="open", status_id=status_id,
                 ),
             ),
         )
     else:
         keyboard_markup.row(
             types.InlineKeyboardButton(
+                filter_text,
+                callback_data=worker_cb.new(
+                    id=account_id, page=page, type=coind_id, status_id=new_status_id,
+                ),
+            ),
+            types.InlineKeyboardButton(
                 _["back_to_workers"],
                 callback_data=worker_cb.new(
-                    id=account_id, page=page, type=SELECT_COIN_CB,
+                    id=account_id, page=page, type=SELECT_COIN_CB, status_id=status_id,
                 ),
             ),
         )
+        
+
+    workers_all = workers.get_all_workers(0)
 
     await query.message.edit_text(
         _['worker_info_descr'].format(
             hashrate=format_rate(workers.total_hashrate.hashrate),
             hashrate1h=format_rate(workers.total_hashrate.hashrate1_h),
             hashrate24h=format_rate(workers.total_hashrate.hashrate24_h),
-            total=len(workers_normalized),
-            dead=len([i for i in workers_normalized if i.status_id == -1]),
-            active=len([i for i in workers_normalized if i.status_id == 1]),
-            inactive=len([i for i in workers_normalized if i.status_id == 0]),
+            total=str(len(workers_all)) + (_['show_workers_filter_pointer'] if status_id == 3 else ''),
+            dead=str(len([i for i in workers_all if i.status_id == -1])) + (_['show_workers_filter_pointer'] if status_id == -1 else ''),
+            active=str(len([i for i in workers_all if i.status_id == 1])) + (_['show_workers_filter_pointer'] if status_id == 1 else ''),
+            inactive=str(len([i for i in workers_all if i.status_id == 0])) + (_['show_workers_filter_pointer'] if status_id == 0 else ''),
             description=message_text,
         ),
         reply_markup=keyboard_markup,
     )
+
+async def worker_info_change_status_callback_handler(
+    query: types.CallbackQuery,
+    callback_data: typing.Dict[str, str],
+    user: UserRepository,
+    _: dict,
+):
+    account_id = callback_data["id"]
+    coind_id = callback_data['type']
+    page = int(callback_data['page'])
+    status_id = int(callback_data['status_id'])

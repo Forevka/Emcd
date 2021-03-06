@@ -185,6 +185,17 @@ class CoinWorkers:
 
         return workers
 
+    def get_all_workers_by_status(self, account_coin_id: int, status_id: int) -> typing.List[CoinWorker]:
+        workers: typing.List[CoinWorker] = []
+        for raw_worker in self.details:
+            workers.append(CoinWorker(account_coin_id, raw_worker.user, raw_worker.worker, raw_worker.hashrate, raw_worker.hashrate1_h, raw_worker.hashrate24_h, raw_worker.reject, raw_worker.lastbeat, raw_worker.active))
+
+        for dead_worker_id, dead_worker_lastbeat in self.details_dead.items():
+            workers.append(CoinWorker(account_coin_id, '', dead_worker_id, 0, 0, 0, 0.0, dead_worker_lastbeat, -1))
+
+        if (status_id == 3): return workers
+        return [i for i in workers if i.status_id == status_id]
+
 def coin_workers_from_dict(s: Any) -> CoinWorkers:
     return CoinWorkers.from_dict(s)
 

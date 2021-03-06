@@ -144,12 +144,12 @@ async def statistic_info_callback_handler(
         account_name=account.username,
         address=account_coin.address,
 
-        current_balance=coin_info.balance,
+        current_balance=format(coin_info.balance, '.8f'),
         current_balance_dol=format_currency(round(coin_info.balance * curr.price_usd, 4), '', locale="en_US"),
         current_balance_sec=format_currency(round(coin_info.balance * curr.price_quote, 4), '', locale="en_US"),
         current_balance_sec_symbol=curr.quote_symbol,
 
-        total_paid=coin_info.total_paid,
+        total_paid=format(coin_info.total_paid, '.8f'),
         total_paid_dol=format_currency(round(coin_info.total_paid * curr.price_usd, 4), '', locale="en_US"),
         total_paid_sec=format_currency(round(coin_info.total_paid * curr.price_quote, 4), '', locale="en_US"),
         total_paid_sec_symbol=curr.quote_symbol,
