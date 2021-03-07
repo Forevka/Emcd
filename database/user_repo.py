@@ -278,3 +278,19 @@ class UserRepository:
 
         await self.connection.execute(sql, user_id, worker_id,)
         return is_blacklisted
+    
+    async def is_payout_notified(self, account_coin_id: int, timestamp: int) -> bool:
+        sql = """
+        select true from user_account_coin_payout where account_coin_id = $1 and payout_datetime = $2
+        """
+
+        return await self.connection.fetchrow(sql, account_coin_id, datetime.fromtimestamp(timestamp)) == True
+        
+    async def mark_payout_as_notified(self, account_coin_id: int, timestamp: int) -> bool:
+        sql = """
+        insert into user_account_coin_payout(account_coin_id, payout_datetime)
+        values($1, $2)
+        on conflict do nothing;
+        """
+
+        await self.connection.execute(sql, account_coin_id, datetime.fromtimestamp(timestamp))

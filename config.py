@@ -27,3 +27,5 @@ WORKER_STATUS_CAROUSEL = {
     #1: 2, #active - nonstable
     1: 3, #nonstable - all
 }
+
+PAYOUTS_CHECK_START_DATETIME = datetime.datetime(2021, 3, 7, 15, 0, 0, 0).timestamp()

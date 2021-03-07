@@ -88,5 +88,6 @@
     "blacklist_pointer": "⬛️",
     "back_to_workers_blacklist": "К монетам",
     "worker_blacklisted": "Устройство {worker} добавлен в черный список",
-    "worker_not_blacklisted": "Устройство {worker} убрано из черного списка"
+    "worker_not_blacklisted": "Устройство {worker} убрано из черного списка",
+    "new_payout_received": "На аккаунт {account} поступила новая выплата {link}\nВремя: {time}\nСумма: {amount}"
 }
