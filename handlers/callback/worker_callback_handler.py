@@ -161,7 +161,7 @@ async def worker_info_callback_handler(
             types.InlineKeyboardButton(
                 _["cabinet"],
                 callback_data=menu_cb.new(
-                    id=account_id, type="account", action="open", status_id=status_id,
+                    id=account_id, type="account", action="open",
                 ),
             ),
         )

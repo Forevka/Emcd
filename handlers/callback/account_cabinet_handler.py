@@ -27,7 +27,7 @@ async def account_cabinet_callback_handler(
         types.InlineKeyboardButton(
             _["workers_stat_button"],
             callback_data=worker_cb.new(
-                id=account_id, page=1, type=action_type, status_id="_",
+                id=account_id, page=1, type=action_type, status_id=3,
             ),
         ),
         types.InlineKeyboardButton(
