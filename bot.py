@@ -1,4 +1,7 @@
 import logging
+import datetime
+from utils.intercept_standart_logger import InterceptStandartHandler
+from utils.log_rotator import LogRotator
 
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -12,9 +15,10 @@ from handlers.register_handlers import register_handlers
 from lang import update_texts
 from middlewares.database_provider_middleware import DatabaseProviderMiddleware
 from middlewares.i18n_data_provider_midleware import I18nDataProviderMiddleware
-from utils import load_translations, load_translations_from_file
+from utils.utils import load_translations, load_translations_from_file
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.INFO)
+logger.add("logs/bot_{time}.log", rotation="12:00")
 
 def init_bot(token: str):
     return Bot(token=token, parse_mode='HTML')

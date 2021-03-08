@@ -1,4 +1,4 @@
-from utils import load_translations
+from utils.utils import load_translations
 from aiogram import types
 from database.user_repo import UserRepository
 from config import POEDITOR_ID, POEDITOR_TOKEN

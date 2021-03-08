@@ -1,7 +1,9 @@
 import asyncio
 from dataclasses import dataclass
 from datetime import datetime
+import logging
 from typing import Dict
+from utils.intercept_standart_logger import InterceptStandartHandler
 
 from aiogram import exceptions
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -14,9 +16,11 @@ from database.models.account_coin import AccountCoin
 from database.user_repo import UserRepository
 from emcd_client.client import EmcdClient
 from notifier.telegram_notifier import TelegramNotifier
-from utils import load_translations, load_translations_from_file
+from utils.utils import load_translations, load_translations_from_file
 from enums.coin import Coin
 
+logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.INFO)
+logger.add("logs/service_{time}.log", rotation="12:00")
 
 @dataclass
 class WorkerChangeStatusDataModel:
@@ -172,7 +176,7 @@ async def job():
 
 if (__name__ == "__main__"):
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(job, "interval", seconds=10)
+    scheduler.add_job(job, "interval", seconds=30)
 
     scheduler.start()
 

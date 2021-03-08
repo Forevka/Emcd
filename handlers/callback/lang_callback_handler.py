@@ -7,7 +7,7 @@ from enums.lang import Lang
 from database.user_repo import UserRepository
 from keyboard_fabrics import lang_cb
 from poeditor_client.client import PoeditorClient
-from utils import grouper
+from utils.utils import grouper
 
 
 async def lang_list_callback_handler(

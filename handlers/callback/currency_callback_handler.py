@@ -1,5 +1,5 @@
 import typing
-from utils import grouper
+from utils.utils import grouper
 
 from aiogram import types
 from database.user_repo import UserRepository

@@ -6,7 +6,7 @@ from enums.lang import Lang
 from keyboard_fabrics import lang_cb
 from lang import language_map
 from poeditor_client.client import PoeditorClient
-from utils import grouper
+from utils.utils import grouper
 
 
 async def cmd_start(message: types.Message, user: UserRepository, _: dict):

@@ -9,7 +9,7 @@ from emcd_client.client import EmcdClient
 from emcd_client.models.coin_workers import CoinWorker
 from keyboard_fabrics import menu_cb, worker_cb
 from tabulate import tabulate
-from utils import format_rate, grouper
+from utils.utils import format_rate, grouper
 
 PER_PAGE = 5
 

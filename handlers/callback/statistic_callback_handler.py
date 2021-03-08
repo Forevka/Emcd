@@ -8,7 +8,7 @@ from enums.coin import Coin
 from database.user_repo import UserRepository
 from emcd_client.client import EmcdClient
 from keyboard_fabrics import menu_cb, statistic_cb
-from utils import grouper
+from utils.utils import grouper
 from babel.numbers import format_currency
 
 PER_PAGE = 5

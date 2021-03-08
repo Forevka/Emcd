@@ -7,7 +7,7 @@ from enums.coin import Coin
 from database.user_repo import UserRepository
 from emcd_client.client import EmcdClient
 from keyboard_fabrics import income_cb, menu_cb, payouts_cb, finance_cb
-from utils import grouper
+from utils.utils import grouper
 
 PER_PAGE = 3
 

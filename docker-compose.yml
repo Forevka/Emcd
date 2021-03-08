@@ -7,6 +7,8 @@ services:
       dockerfile: ./Dockerfile.bot
     env_file:
     - ./.env
+    volumes:
+      - ./logs:/home/logs
       
   service:
     build:
@@ -14,6 +16,8 @@ services:
       dockerfile: ./Dockerfile.service
     env_file:
     - ./.env
+    volumes:
+      - ./logs:/home/logs
 
     
   api:
@@ -26,3 +30,5 @@ services:
       - "3029:3029"
     expose:
       - "3029"
+    volumes:
+      - ./logs:/home/logs

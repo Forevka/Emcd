@@ -1,6 +1,6 @@
 from config import SELECT_COIN_CB
 from emcd_client.client import EmcdClient
-from utils import grouper
+from utils.utils import grouper
 from math import ceil
 from enums.coin import Coin
 import typing
