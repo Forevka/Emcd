@@ -1,3 +1,4 @@
+from database.models.user_enabled_notification import UserEnabledNotification
 from database.models.worker_blacklist import WorkerBlacklist
 from database.models.user_currency import UserCurrency
 from database.models.currency import Currency
@@ -15,8 +16,6 @@ from database.models.account_coin_notification import AccountCoinNotification
 from database.models.user import User
 from database.models.user_coin import UserCoin
 from database.models.worker_account_history import WorkerAccountHistoryForUser
-
-
 class UserRepository:
     def __init__(self, con: Connection):
         self.connection = con
@@ -281,16 +280,27 @@ class UserRepository:
     
     async def is_payout_notified(self, account_coin_id: int, timestamp: int) -> bool:
         sql = """
-        select true from user_account_coin_payout where account_coin_id = $1 and payout_datetime = $2
+        select * from user_account_coin_payout where account_coin_id = $1 and payout_datetime = to_timestamp($2)
         """
 
-        return await self.connection.fetchrow(sql, account_coin_id, datetime.fromtimestamp(timestamp)) == True
+        return len(await self.connection.fetch(sql, account_coin_id, timestamp)) >= 1
         
     async def mark_payout_as_notified(self, account_coin_id: int, timestamp: int) -> bool:
         sql = """
         insert into user_account_coin_payout(account_coin_id, payout_datetime)
-        values($1, $2)
+        values($1, to_timestamp($2))
         on conflict do nothing;
         """
 
-        await self.connection.execute(sql, account_coin_id, datetime.fromtimestamp(timestamp))
+        await self.connection.execute(sql, account_coin_id, timestamp)
+
+        
+    async def get_users_with_enabled_notifications(self, ) -> List[UserEnabledNotification]:
+        sql = """
+        select un.user_id, u.lang_id from user_notification un
+        join "user" u on u.id = un.user_id
+        join 
+        where un.is_enabled = true
+        """
+
+        await [UserEnabledNotification(**acc) for acc in await self.connection.fetch(sql,)]

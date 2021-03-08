@@ -104,10 +104,6 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
                     await user_repo.store_coin_account_worker_history(workers, now)
                     logger.info(f'{account.account_id}|{account.coin_id} - Stored')
                 
-
-                user_db = await user_repo.get_user(account.user_id)
-                if (user_db.id != 383492784): return
-
                 payouts = await client.get_payouts(account.coin_id)
 
                 actual_payouts = [p for p in payouts.payouts if p.timestamp > PAYOUTS_CHECK_START_DATETIME and p.txid is not None and p.txid != '']
