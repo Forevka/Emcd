@@ -121,7 +121,6 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
                                 account=user_account.username,
                                 link=f'<a href="https://blockchair.com/{coin.name.lower()}/transaction/{payout.txid}">{payout.txid[8:]}</a>',
                                 amount=payout.amount,
-                                time=datetime.now().strftime("%b %d %Y %H:%M:%S"),
                             )
                             try:
                                 await notifier.notify(user_db.id, msg_text)
