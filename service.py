@@ -105,11 +105,17 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
                     logger.info(f'{account.account_id}|{account.coin_id} - Stored')
                 
                 payouts = await client.get_payouts(account.coin_id)
+                user_db = await user_repo.get_user(account.user_id)
 
-                actual_payouts = [p for p in payouts.payouts if p.timestamp > PAYOUTS_CHECK_START_DATETIME and p.txid is not None and p.txid != '']
+                actual_payouts = [
+                    p for p in payouts.payouts 
+                    if p.timestamp > PAYOUTS_CHECK_START_DATETIME 
+                    and p.timestamp > user_db.created_datetime.timestamp() 
+                    and p.txid is not None 
+                    and p.txid != ''
+                ]
 
                 if (actual_payouts):
-                    user_db = await user_repo.get_user(account.user_id)
 
                     user_locale = Lang(user_db.lang_id)
                     translation = texts[user_locale.name]
@@ -125,7 +131,7 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
                                 account=user_account.username,
                                 link=f'<a href="https://blockchair.com/{coin.name.lower()}/transaction/{payout.txid}">{payout.txid[8:]}</a>',
                                 amount=payout.amount,
-                                current_balance=latest_coin_data.balance,
+                                current_balance=format(latest_coin_data.balance, '.8f'),
                             )
                             try:
                                 await notifier.notify(user_db.id, msg_text)
