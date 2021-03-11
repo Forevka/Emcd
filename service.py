@@ -20,7 +20,7 @@ from utils.utils import load_translations, load_translations_from_file
 from enums.coin import Coin
 
 logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.INFO)
-logger.add("logs/service_{time}.log", rotation="12:00")
+logger.add("logs/service_{time}.log", rotation="12:00", serialize=True)
 
 @dataclass
 class WorkerChangeStatusDataModel:

@@ -10,7 +10,7 @@ from webapi.middleware.database_provider_middleware import \
     DatabaseProviderMiddleware
 
 logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.INFO)
-logger.add("logs/api_{time}.log", rotation="12:00")
+logger.add("logs/api_{time}.log", rotation="12:00", serialize=True)
 
 app = FastAPI()
 

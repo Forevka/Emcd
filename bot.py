@@ -18,7 +18,7 @@ from middlewares.i18n_data_provider_midleware import I18nDataProviderMiddleware
 from utils.utils import load_translations, load_translations_from_file
 
 logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.INFO)
-logger.add("logs/bot_{time}.log", rotation="12:00")
+logger.add("logs/bot_{time}.log", rotation="12:00", serialize=True)
 
 def init_bot(token: str):
     return Bot(token=token, parse_mode='HTML')
