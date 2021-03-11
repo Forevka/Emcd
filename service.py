@@ -117,10 +117,15 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
                         is_payout_notified = await user_repo.is_payout_notified(account.id, payout.timestamp,)
                         if (is_payout_notified == False):
                             coin = Coin(account.coin_id)
+
+                            latest_account_data = await client.get_info()
+                            latest_coin_data = latest_account_data.get_coins()[account.coin_id]
+
                             msg_text = translation['new_payout_received'].format(
                                 account=user_account.username,
                                 link=f'<a href="https://blockchair.com/{coin.name.lower()}/transaction/{payout.txid}">{payout.txid[8:]}</a>',
                                 amount=payout.amount,
+                                current_balance=latest_coin_data.balance,
                             )
                             try:
                                 await notifier.notify(user_db.id, msg_text)
