@@ -100,7 +100,7 @@ async def payouts_info_callback_handler(
             message_text += '\n' + _['payouts_template'].format(
                 datetime=payout.gmt_time,
                 amount=payout.amount,
-                transaction_link=f'<a href="https://blockchair.com/{coin_name}/transaction/{payout.txid}">{payout.txid[8:]}</a>'
+                transaction_link=(f'<a href="https://blockchair.com/{coin_name}/transaction/{payout.txid}">{payout.txid[8:]}</a>') if payout.txid else _['no_link']
             )
 
         if (len(payouts.payouts) > page * PER_PAGE):

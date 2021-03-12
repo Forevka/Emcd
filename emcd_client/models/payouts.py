@@ -7,7 +7,7 @@
 #     result = payouts_from_dict(json.loads(json_string))
 
 from dataclasses import dataclass
-from typing import Any, List, TypeVar, Callable, Type, cast
+from typing import Any, List, TypeVar, Callable, Type, cast, Optional
 
 
 T = TypeVar("T")
@@ -48,7 +48,7 @@ class Payout:
     timestamp: int
     gmt_time: str
     amount: float
-    txid: str
+    txid: Optional[str]
 
     @staticmethod
     def from_dict(obj: Any) -> 'Payout':
@@ -56,7 +56,7 @@ class Payout:
         timestamp = from_int(obj.get("timestamp"))
         gmt_time = from_str(obj.get("gmt_time"))
         amount = from_float(obj.get("amount"))
-        txid = from_str(obj.get("txid"))
+        txid = obj.get("txid")
         return Payout(timestamp, gmt_time, amount, txid)
 
     def to_dict(self) -> dict:
