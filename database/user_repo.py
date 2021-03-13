@@ -15,10 +15,20 @@ from database.models.account_coin import AccountCoin
 from database.models.account_coin_notification import AccountCoinNotification
 from database.models.user import User
 from database.models.user_coin import UserCoin
+from database.models.lang import Lang
 from database.models.worker_account_history import WorkerAccountHistoryForUser
+
+
 class UserRepository:
     def __init__(self, con: Connection):
         self.connection = con
+
+    async def get_all_langs(self,) -> Lang:
+        sql = f"""
+        {Lang.__select__}
+        """
+        
+        return [Lang(**acc) for acc in await self.connection.fetch(sql,)]
 
     async def get_coins(self, user_id: int) -> UserCoin:
         sql = '''
