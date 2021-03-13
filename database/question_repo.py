@@ -32,7 +32,7 @@ class QuestionRepository:
 
         await self.connection.execute(sql, q_id, lang_id, answer_translation,)
 
-        return q_id
+        return q_id['id']
 
     async def update_question_by_lang_id_question_id(self, lang_id: int, question_id: int, question_translation: str, answer_translation: str):
         sql = """
