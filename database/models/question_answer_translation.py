@@ -6,10 +6,12 @@ class QuestionAnswerTranslate:
     lang_id: int
     question_text: str
     answer_text: str
+    status: int
 
     __select__ = '''
     select
         q."id",
+        q."status"
         qt.lang_id,
         qt."translation" as question_text,
         qat."translation" as answer_text
