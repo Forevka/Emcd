@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException, Request
 from fastapi import Depends
 from fastapi_jwt_auth import AuthJWT
 
-def lang_list(request: Request, Authorize: AuthJWT = Depends()):
+async def lang_list(request: Request, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
     user_repo = UserRepository(request.state.connection)
