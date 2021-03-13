@@ -13,3 +13,4 @@ def update_texts(data: dict):
     texts = data
     for lang_code, terms in texts.items():
         reversed_locales[lang_code] = dict((v.lower(), k.lower()) for k,v in terms.items()) # exchange key with values
+        
