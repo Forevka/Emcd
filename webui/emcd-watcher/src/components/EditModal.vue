@@ -34,6 +34,8 @@
 import { Options, Vue } from "vue-class-component";
 import { emitter } from '@/utils/bus';
 import { FAQQuestionAnswerModel } from '@/models/FAQQuestionAnswerModel';
+import { apiCall, apiRoutes } from '@/utils/api';
+import {ActionTypes as UserActions} from "@/store/user/actions"
 
 @Options({
   components: {
@@ -48,10 +50,13 @@ export default class EditModal extends Vue {
         statusId: 1,
     };
 
-    save() {
+    async save() {
         // @ts-ignore
         window.$('#faqEditModal').modal('hide')
         console.log(this.question)
+        if (!this.isEditing) {
+            this.$store.dispatch(UserActions.ADD_QUESTION, this.question)
+        }
     }
 
     mounted() {

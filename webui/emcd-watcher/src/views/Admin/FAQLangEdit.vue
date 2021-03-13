@@ -46,35 +46,16 @@ import { Options, Vue } from "vue-class-component";
 import {FAQQuestionAnswerModel} from '@/models/FAQQuestionAnswerModel';
 import { Lang } from '@/models/Lang';
 import {emitter} from '@/utils/bus';
+import {ActionTypes as UserActions} from "@/store/user/actions"
+import {MutationTypes as UserMutations} from "@/store/user/mutations"
 
 @Options({
   components: {
   }
 })
 export default class FAQLangEdit extends Vue {
-    questions: FAQQuestionAnswerModel[] = [
-        {
-            questionId: 1,
-            langId: 1,
-            questionTranslation: "test",
-            answerTranslation: "answer",
-            statusId: 1,
-        },
-        {
-            questionId: 2,
-            langId: 1,
-            questionTranslation: "test2111111111111111",
-            answerTranslation: "answer2",
-            statusId: 1,
-        },
-        {
-            questionId: 2,
-            langId: 1,
-            questionTranslation: "test2111111111111111",
-            answerTranslation: "answer2",
-            statusId: 2,
-        },
-    ]
+    unsubscribeQuestions!: () => void;
+    questions: FAQQuestionAnswerModel[] = []
 
     openModal(questionId: number) {
         if (questionId === 0) {
@@ -91,6 +72,21 @@ export default class FAQLangEdit extends Vue {
         emitter.emit('faqEditModalOpen', qq)
     }
     
+    created() {
+        this.unsubscribeQuestions = this.$store.subscribe((mutation: {type: string; payload: FAQQuestionAnswerModel[]}) => {
+            console.log(mutation)
+            if (mutation.type == UserMutations.UPDATE_QUESTIONS) {
+                this.questions = mutation.payload;
+            }
+        })
+
+        this.$store.dispatch(UserActions.UPDATE_QUESTIONS, this.langId)
+    }
+
+    unmounted() {
+        this.unsubscribeQuestions()
+    }
+
     get langId() {
         return Number(this.$route.params.langId)
     }

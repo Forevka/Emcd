@@ -1,9 +1,12 @@
 export enum MutationTypes {
     UPDATE_TOKEN = "UPDATE_TOKEN",
     UPDATE_USER = "UPDATE_USER",
-    UPDATE_LANGS = "UPDATE_LANGS"
+    UPDATE_LANGS = "UPDATE_LANGS",
+    ADD_QUESTION = "ADD_QUESTION",
+    UPDATE_QUESTIONS = "UPDATE_QUESTIONS",
 }
 
+import { FAQQuestionAnswerModel } from "@/models/FAQQuestionAnswerModel";
 import { Lang } from "@/models/Lang";
 import { TelegramAuthModel } from "@/models/TelegramAuthModel";
 import { MutationTree } from "vuex";
@@ -20,5 +23,11 @@ export const mutations: MutationTree<UserState> & UserMutationsTypes = {
   },
   [MutationTypes.UPDATE_LANGS](state: UserState, payload: Lang[]) {
     state.langs = payload;
+  },
+  [MutationTypes.ADD_QUESTION](state: UserState, payload: FAQQuestionAnswerModel) {
+    state.questions.push(payload);
+  },
+  [MutationTypes.UPDATE_QUESTIONS](state: UserState, payload: FAQQuestionAnswerModel[]) {
+    state.questions = payload;
   },
 };

@@ -11,6 +11,10 @@ export const apiRoutes = {
   },
   lang: {
     list: API_SERVER + "lang/list",
+  },
+  question: {
+    add: API_SERVER + "question",
+    list: API_SERVER + "question",
   }
 };
 

@@ -8,12 +8,15 @@ import { UserState } from "./state";
 import { apiCall, apiRoutes } from '@/utils/api';
 import router from "@/router";
 import { Lang } from "@/models/Lang";
+import { FAQQuestionAnswerModel } from "@/models/FAQQuestionAnswerModel";
 
 export enum ActionTypes {
     USER_LOGIN = "USER_LOGIN",
     UPDATE_TOKEN = "UPDATE_TOKEN",
     UPDATE_USER = "UPDATE_USER",
     UPDATE_LANGS = "UPDATE_LANGS",
+    ADD_QUESTION = "ADD_QUESTION",
+    UPDATE_QUESTIONS = "UPDATE_QUESTIONS",
 }
 
 export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
@@ -52,6 +55,28 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
             console.log(x)
             commit(MutationTypes.UPDATE_LANGS, x)
         }).catch(() => {
+            alert("Sorry you can't be admin")
+        })
+    },
+    [ActionTypes.UPDATE_QUESTIONS](
+        { commit }, langId: number
+    ) {
+        apiCall<FAQQuestionAnswerModel[]>({url: `${apiRoutes.question.list}/${langId}`, method: 'GET'})
+        .then((x) => {
+            commit(MutationTypes.UPDATE_QUESTIONS, x)
+        })
+        .catch(() => {
+            alert("Sorry you can't be admin")
+        })
+    },
+    [ActionTypes.ADD_QUESTION](
+        { commit }, payload: FAQQuestionAnswerModel
+    ) {
+        apiCall<FAQQuestionAnswerModel>({url: apiRoutes.question.add, method: 'POST', data: payload})
+        .then((x) => {
+            commit(MutationTypes.UPDATE_LANGS, x)
+        })
+        .catch(() => {
             alert("Sorry you can't be admin")
         })
     },
