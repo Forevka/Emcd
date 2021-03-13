@@ -7,16 +7,34 @@
                 <i class="fa fa-plus"></i>
             </button>
         </div>
-        <div class="question-answer" v-for="q in questions" :key="q.questionId">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#faqEditModal" @click="openModal(q.questionId)">
-                Edit 
-                <i class="fa fa-edit"></i>
-            </button>
-            <div class="question-text">
-                {{q.questionTranslation}}
-            </div>
-            <div class="answer-text">
-                {{q.answerTranslation || "not defined for this language"}}
+        <div class="question-answer card mb-4 py-3" :class='{
+            "border-left-primary": q.statusId === 1,
+            "border-left-dark": q.statusId === 2,
+        }' v-for="q in questions" :key="q.questionId">
+            <div class="card-body">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#faqEditModal" @click="openModal(q.questionId)">
+                    Edit 
+                    <i class="fa fa-edit"></i>
+                </button>
+                <div class="question-text">
+                    {{q.questionTranslation}}
+                </div>
+                <div class="answer-text">
+                    {{q.answerTranslation || "not defined for this language"}}
+                </div>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                            role="button" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                            Actions
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right animated--fade-in"
+                            aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">{{q.statusId == 1 ? 'Disable' : 'Enable'}}</a>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -40,12 +58,21 @@ export default class FAQLangEdit extends Vue {
             langId: 1,
             questionTranslation: "test",
             answerTranslation: "answer",
+            statusId: 1,
         },
         {
             questionId: 2,
             langId: 1,
             questionTranslation: "test2111111111111111",
             answerTranslation: "answer2",
+            statusId: 1,
+        },
+        {
+            questionId: 2,
+            langId: 1,
+            questionTranslation: "test2111111111111111",
+            answerTranslation: "answer2",
+            statusId: 2,
         },
     ]
 
@@ -56,6 +83,7 @@ export default class FAQLangEdit extends Vue {
                 langId: this.langId,
                 questionTranslation: "",
                 answerTranslation: "",
+                statusId: 1,
             })
             return;
         }
@@ -77,12 +105,15 @@ export default class FAQLangEdit extends Vue {
 .question-answer {
     display: flex;
     justify-content: space-between;
-    padding-left: 10%;
-    padding-right: 10%;
     margin: 4rem;
+    margin-right: 0;
+
+    .card-body {
+        display: inline-flex;
+
+    }
 
     div {
-        border: 1px solid black;
         margin-right: 2rem;
         margin-left: 2rem;
     }

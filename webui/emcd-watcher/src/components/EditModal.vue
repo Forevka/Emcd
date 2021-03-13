@@ -3,7 +3,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Edit question</h5>
+                <h5 class="modal-title" id="exampleModalLabel">{{isEditing ? 'Edit question': 'New question' }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -11,11 +11,11 @@
             <div class="modal-body">
                 <form>
                 <div class="form-group">
-                    <label for="recipient-name" class="col-form-label">Question:</label>
+                    <label for="recipient-name" class="col-form-label">Question</label>
                     <input type="text" class="form-control" id="recipient-name" v-model="question.questionTranslation">
                 </div>
                 <div class="form-group">
-                    <label for="message-text" class="col-form-label">Answer:</label>
+                    <label for="message-text" class="col-form-label">Answer</label>
                     <textarea class="form-control" id="message-text" v-model="question.answerTranslation"></textarea>
                 </div>
                 </form>
@@ -45,6 +45,7 @@ export default class EditModal extends Vue {
         langId: -1,
         questionTranslation: "",
         answerTranslation: "",
+        statusId: 1,
     };
 
     save() {
@@ -57,6 +58,10 @@ export default class EditModal extends Vue {
         emitter.on<FAQQuestionAnswerModel>('faqEditModalOpen', event => {
             this.question = event;
         })
+    }
+
+    get isEditing() {
+        return this.question.questionId !== 0
     }
 }
 </script>
