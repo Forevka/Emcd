@@ -15,7 +15,7 @@ class QuestionRepository:
         returning "id"
         """
 
-        q_id = await self.connection.fetchrow(sql,)['id']
+        q_id = (await self.connection.fetchrow(sql,))['id']
 
         sql = """
         insert into question_translation(question_id, lang_id, translation)
