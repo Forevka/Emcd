@@ -48,6 +48,11 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
             async with EmcdClient(account.account_id) as client:
                 api_account = await client.get_workers(account.coin_id)
                 user_repo = UserRepository(con)
+                if (api_account is None):
+                    logger.warning(f'{account.account_id}|{account.coin_id} - is none, disabling notification for them')
+                    await user_repo.update_notification_setting(account.user_id, False)
+                    return
+
                 user_account = next((acc for acc in await user_repo.get_accounts(account.user_id) if acc.account_id == account.account_id), None)
 
                 logger.info(f'{account.account_id}|{account.coin_id} - Scraped worker info')
