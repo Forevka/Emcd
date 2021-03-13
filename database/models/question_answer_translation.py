@@ -11,7 +11,7 @@ class QuestionAnswerTranslate:
     __select__ = '''
     select
         q."id",
-        q."status"
+        q."status",
         qt.lang_id,
         qt."translation" as question_text,
         qat."translation" as answer_text
