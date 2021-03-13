@@ -10,4 +10,7 @@ export const getters: GetterTree<UserState, IRootState> & IUserGettersTypes = {
   getUser: (state: UserState) => {
     return state.user
   },  
+  getLangs: (state: UserState) => {
+    return state.langs
+  },  
 };

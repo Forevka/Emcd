@@ -7,11 +7,13 @@ import { MutationTypes } from "./mutations";
 import { UserState } from "./state";
 import { apiCall, apiRoutes } from '@/utils/api';
 import router from "@/router";
+import { Lang } from "@/models/Lang";
 
 export enum ActionTypes {
     USER_LOGIN = "USER_LOGIN",
     UPDATE_TOKEN = "UPDATE_TOKEN",
     UPDATE_USER = "UPDATE_USER",
+    UPDATE_LANGS = "UPDATE_LANGS",
 }
 
 export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
@@ -26,7 +28,7 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
             commit(MutationTypes.UPDATE_TOKEN, x.access_token)
             commit(MutationTypes.UPDATE_USER, payload)
 
-            router.push('admin')
+            router.push('/admin')
         }).catch(() => {
             alert("Sorry you can't be admin")
         })
@@ -37,10 +39,21 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
         apiCall<{user: TelegramAuthModel}>({url: apiRoutes.user.me, method: 'GET'})
         .then((x) => {
             commit(MutationTypes.UPDATE_USER, x.user)
-            router.push('admin')
+            router.push('/admin')
         }).catch(() => {
             alert("Sorry you can't be admin")
         })
-    }
+    },
+    [ActionTypes.UPDATE_LANGS](
+        { commit }
+    ) {
+        apiCall<Lang[]>({url: apiRoutes.lang.list, method: 'GET'})
+        .then((x) => {
+            console.log(x)
+            commit(MutationTypes.UPDATE_LANGS, x)
+        }).catch(() => {
+            alert("Sorry you can't be admin")
+        })
+    },
 };
 

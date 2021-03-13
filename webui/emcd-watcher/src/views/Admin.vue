@@ -108,6 +108,8 @@
         <i class="fas fa-angle-up"></i>
     </a>-->
 
+    <EditModal/>
+
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -132,19 +134,22 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { TelegramAuthModel } from '@/models/TelegramAuthModel';
 import {ActionTypes as UserActions} from "@/store/user/actions"
 import Sidebar from '@/components/Sidebar.vue';
+import EditModal from '@/components/EditModal.vue';
 
 @Options({
   components: {
-      Sidebar
+    Sidebar,
+    EditModal,
   }
 })
 export default class Admin extends Vue {
 
-    mounted() {
-        this.$store.dispatch(UserActions.UPDATE_USER)
+    async mounted() {
+        await this.$store.dispatch(UserActions.UPDATE_USER).then(() => {
+            this.$store.dispatch(UserActions.UPDATE_LANGS)
+        })
 
         // Close any open menu accordions when window is resized below 768px
         // @ts-ignore

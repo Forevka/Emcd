@@ -32,7 +32,6 @@ async def account_id_add_handler(message: types.Message, user: UserRepository, _
 
                 if (account):
                     await user.add_account(message.from_user.id, UUID(account_id, version=4), account.username)
-                    await user.add_notification_setting(message.from_user.id, True)
 
                     coins_api = account.get_coins()
 

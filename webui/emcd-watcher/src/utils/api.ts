@@ -9,6 +9,9 @@ export const apiRoutes = {
     login: API_SERVER + "auth/token",
     me: API_SERVER + "auth/me",
   },
+  lang: {
+    list: API_SERVER + "lang/list",
+  }
 };
 
 export function apiCall<T>({ url, method, ...args }: AxiosRequestConfig): Promise<T> {
