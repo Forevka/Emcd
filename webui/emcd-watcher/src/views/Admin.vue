@@ -185,36 +185,6 @@ export default class Admin extends Vue {
             e.preventDefault();
             }
         });
-
-        // Scroll to top button appear
-        // @ts-ignore
-        window.$(document).on('scroll', function() {
-            // @ts-ignore
-            const scrollDistance = window.$(this).scrollTop();
-            // @ts-ignore
-            if (scrollDistance > 100) {
-                // @ts-ignore
-            window.$('.scroll-to-top').fadeIn();
-            // @ts-ignore
-            } else {
-            // @ts-ignore
-            window.$('.scroll-to-top').fadeOut();
-            }
-        });
-
-        // Smooth scrolling using jQuery easing
-        // @ts-ignore
-        window.$(document).on('click', 'a.scroll-to-top', function(e) {
-            // @ts-ignore
-            const $anchor = window.$(this);
-            // @ts-ignore
-            window.$('html, body').stop().animate({
-            // @ts-ignore
-            scrollTop: (window.$($anchor.attr('href')).offset().top)
-            }, 1000, 'easeInOutExpo');
-            // @ts-ignore
-            e.preventDefault();
-        });
     }
 
 
@@ -223,3 +193,11 @@ export default class Admin extends Vue {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.container-fluid {
+    overflow-y: scroll;
+    max-height: calc(100vh - 4.375rem - 1.5rem);
+    overflow-x: hidden;
+}
+</style>

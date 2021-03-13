@@ -11,7 +11,7 @@ async def add_question(request: Request, questionAnswer: QuestionAnswer, Authori
 
     question_repo = QuestionRepository(request.state.connection)
     
-    q_id = await question_repo.add_faq_answer(questionAnswer.lang_id, questionAnswer.questionTranslation, questionAnswer.answerTranslation)
+    q_id = await question_repo.add_faq_answer(questionAnswer.langId, questionAnswer.questionTranslation, questionAnswer.answerTranslation)
 
     question = await question_repo.get_question_answers_by_lang_id_question_id(questionAnswer.langId, q_id)
 
