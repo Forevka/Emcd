@@ -1,5 +1,5 @@
 from aiogram import types
-from config import DEFAULT_LANG, POEDITOR_ID, POEDITOR_TOKEN
+from config import DEFAULT_LANG, POEDITOR_ID, POEDITOR_TOKEN, DEFAULT_CURRENCY
 from database.user_repo import UserRepository
 from enums.coin import Coin
 from enums.lang import Lang
@@ -56,3 +56,5 @@ async def cmd_start(message: types.Message, user: UserRepository, _: dict):
     await user.add_user_coin(message.from_user.id, Coin.EthereumClassic.value, False)
     await user.add_user_coin(message.from_user.id, Coin.Litecoin.value, False)
     await user.add_user_coin(message.from_user.id, Coin.Dash.value, False)
+
+    await user.add_user_currency(message.from_user.id, DEFAULT_CURRENCY)

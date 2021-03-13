@@ -240,6 +240,15 @@ class UserRepository:
 
         return [Currency(**acc) for acc in await self.connection.fetch(sql,)]
 
+    async def add_user_currency(self, user_id: int, currency_id: int):
+        sql = """
+        insert into "user_currency" (user_id, currency_id)
+        values ($1, $2)
+        on conflict do nothing;
+        """
+
+        await self.connection.execute(sql, user_id, currency_id)
+
         
     async def get_user_currency(self, user_id: int) -> UserCurrency:
         sql = f"{UserCurrency.__select__} where \"user_id\" = $1"

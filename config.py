@@ -19,6 +19,8 @@ SELECT_COIN_CB = 's_coin'
 
 FALLBACK_CURRENCY = 'USD'
 
+DEFAULT_CURRENCY = 1
+
 # 1 active 0 inactive -1 dead 2 nonstable
 WORKER_STATUS_CAROUSEL = {
     3: -1, #all - dead
