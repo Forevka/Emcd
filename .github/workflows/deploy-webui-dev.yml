@@ -31,10 +31,10 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
-        source: "/home/runner/work/Emcd/Emcd/webui/emcd-watcher/dist/*"
+        source: "webui/emcd-watcher/dist/*"
         target: "/var/www/emcdwatcher"
 
     - uses: actions/upload-artifact@v1
       with:
         name: emcdwatcher-dev
-        path: dist
+        path: webui/emcd-watcher/dist
