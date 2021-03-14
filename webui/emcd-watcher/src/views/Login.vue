@@ -11,7 +11,7 @@
                 </div>
                 <telegram-login-button
                   mode="callback"
-                  telegram-login="testmazut_bot"
+                  :telegram-login="telegramLogin"
                   @callback="userLogged"
                 />
               </div>
@@ -37,6 +37,10 @@ import {ActionTypes as UserActions} from "@/store/user/actions"
 export default class Login extends Vue {
   userLogged(user: TelegramAuthModel) {
     this.$store.dispatch(UserActions.USER_LOGIN, user)
+  }
+
+  get telegramLogin() {
+    return process.env.VUE_APP_API_URL
   }
 }
 </script>
