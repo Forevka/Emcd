@@ -40,7 +40,7 @@ export default class Login extends Vue {
   }
 
   get telegramLogin() {
-    return process.env.VUE_APP_API_URL
+    return process.env.VUE_APP_BOT_USERNAME
   }
 }
 </script>
