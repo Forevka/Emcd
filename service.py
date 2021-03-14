@@ -1,23 +1,26 @@
 import asyncio
+import logging
 from dataclasses import dataclass
 from datetime import datetime
-import logging
 from typing import Dict
-from utils.intercept_standart_logger import InterceptStandartHandler
 
 from aiogram import exceptions
+from aiogram.utils import exceptions
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from asyncpg.pool import Pool
 from loguru import logger
 
-from config import CONNECTION_STRING, ENVIRONMENT, PAYOUTS_CHECK_START_DATETIME, POEDITOR_ID, POEDITOR_TOKEN, TOKEN, Lang
+from config import (CONNECTION_STRING, ENVIRONMENT,
+                    PAYOUTS_CHECK_START_DATETIME, POEDITOR_ID, POEDITOR_TOKEN,
+                    TOKEN, Lang)
 from database.db import get_pool
 from database.models.account_coin import AccountCoin
 from database.user_repo import UserRepository
 from emcd_client.client import EmcdClient
-from notifier.telegram_notifier import TelegramNotifier
-from utils.utils import load_translations, load_translations_from_file
 from enums.coin import Coin
+from notifier.telegram_notifier import TelegramNotifier
+from utils.intercept_standart_logger import InterceptStandartHandler
+from utils.utils import load_translations, load_translations_from_file
 
 logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.INFO)
 logger.add("logs/service_{time}.log", rotation="12:00", serialize=True)
@@ -43,11 +46,11 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
         now = datetime.now()
 
         message_text = ''
+        user_repo = UserRepository(con)
 
         try:
             async with EmcdClient(account.account_id) as client:
                 api_account = await client.get_workers(account.coin_id)
-                user_repo = UserRepository(con)
                 if (api_account is None):
                     logger.warning(f'{account.account_id}|{account.coin_id} - is none, disabling notification for them')
                     await user_repo.update_notification_setting(account.user_id, False)
@@ -144,6 +147,9 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
                                 logger.error(f'aiogram error {e}')
                         
                             await user_repo.mark_payout_as_notified(account.id, payout.timestamp,)
+        except (exceptions.BotBlocked, exceptions.UserDeactivated) as e:
+            logger.warning(f'{account.user_id} blocked bot or deactivated they telegram account, disabling notifications')
+            await user_repo.update_notification_setting(account.user_id, False)
         except Exception as e:
             logger.exception(e)
         finally:

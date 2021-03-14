@@ -74,7 +74,7 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
     ) {
         apiCall<FAQQuestionAnswerModel>({url: apiRoutes.question.add, method: 'POST', data: payload})
         .then((x) => {
-            commit(MutationTypes.UPDATE_LANGS, x)
+            commit(MutationTypes.ADD_QUESTION, x)
         })
         .catch(() => {
             alert("Sorry you can't be admin")
