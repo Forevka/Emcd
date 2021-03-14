@@ -28,6 +28,7 @@ import { Options, Vue } from "vue-class-component";
 import TelegramLoginButton from "@/components/TelegramLoginButton.vue";
 import { TelegramAuthModel } from "@/models/TelegramAuthModel";
 import {ActionTypes as UserActions} from "@/store/user/actions"
+import {notification} from '@/utils/notification';
 
 @Options({
   components: {
@@ -35,8 +36,18 @@ import {ActionTypes as UserActions} from "@/store/user/actions"
   }
 })
 export default class Login extends Vue {
-  userLogged(user: TelegramAuthModel) {
-    this.$store.dispatch(UserActions.USER_LOGIN, user)
+  async userLogged(user: TelegramAuthModel) {
+    await this.$store.dispatch(UserActions.USER_LOGIN, user).then(() => {
+      notification.success({
+          title: 'Ok',
+          message: 'Successfully logged'
+      })
+    }).catch(() => {
+      notification.error({
+          title: ':(',
+          message: 'You dont have permissions'
+      })
+    })
   }
 
   get telegramLogin() {
