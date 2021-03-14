@@ -22,13 +22,13 @@ export enum ActionTypes {
 }
 
 export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
-    [ActionTypes.UPDATE_TOKEN]({ commit }, token: string) {
-        commit(MutationTypes.UPDATE_TOKEN, token);
+    async [ActionTypes.UPDATE_TOKEN]({ commit }, token: string) {
+        await commit(MutationTypes.UPDATE_TOKEN, token);
     },
-    [ActionTypes.USER_LOGIN](
+    async [ActionTypes.USER_LOGIN](
         { commit }, payload: TelegramAuthModel
     ) {
-        apiCall<{access_token: string}>({url: apiRoutes.user.login, method: 'POST', data: payload})
+        await apiCall<{access_token: string}>({url: apiRoutes.user.login, method: 'POST', data: payload})
         .then((x) => {
             commit(MutationTypes.UPDATE_TOKEN, x.access_token)
             commit(MutationTypes.UPDATE_USER, payload)
@@ -38,21 +38,20 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
             alert("Sorry you can't be admin")
         })
     },
-    [ActionTypes.UPDATE_USER](
+    async [ActionTypes.UPDATE_USER](
         { commit }
     ) {
-        apiCall<{user: TelegramAuthModel}>({url: apiRoutes.user.me, method: 'GET'})
+        await apiCall<{user: TelegramAuthModel}>({url: apiRoutes.user.me, method: 'GET'})
         .then((x) => {
             commit(MutationTypes.UPDATE_USER, x.user)
-            router.push('/admin')
         }).catch(() => {
             alert("Sorry you can't be admin")
         })
     },
-    [ActionTypes.UPDATE_LANGS](
+    async [ActionTypes.UPDATE_LANGS](
         { commit }
     ) {
-        apiCall<Lang[]>({url: apiRoutes.lang.list, method: 'GET'})
+        await apiCall<Lang[]>({url: apiRoutes.lang.list, method: 'GET'})
         .then((x) => {
             console.log(x)
             commit(MutationTypes.UPDATE_LANGS, x)
@@ -60,10 +59,10 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
             alert("Sorry you can't be admin")
         })
     },
-    [ActionTypes.UPDATE_QUESTIONS](
+    async [ActionTypes.UPDATE_QUESTIONS](
         { commit }, langId: number
     ) {
-        apiCall<FAQQuestionAnswerModel[]>({url: `${apiRoutes.question.list}/${langId}`, method: 'GET'})
+        await apiCall<FAQQuestionAnswerModel[]>({url: `${apiRoutes.question.list}/${langId}`, method: 'GET'})
         .then((x) => {
             commit(MutationTypes.UPDATE_QUESTIONS, x)
         })
@@ -71,10 +70,10 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
             alert("Sorry you can't be admin")
         })
     },
-    [ActionTypes.ADD_QUESTION](
+    async [ActionTypes.ADD_QUESTION](
         { commit }, payload: FAQQuestionAnswerModel
     ) {
-        apiCall<FAQQuestionAnswerModel>({url: apiRoutes.question.add, method: 'POST', data: payload})
+        await apiCall<FAQQuestionAnswerModel>({url: apiRoutes.question.add, method: 'POST', data: payload})
         .then((x) => {
             commit(MutationTypes.ADD_QUESTION, x)
         })
@@ -82,10 +81,10 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
             alert("Sorry you can't be admin")
         })
     },
-    [ActionTypes.UPDATE_QUESTION](
+    async [ActionTypes.UPDATE_QUESTION](
         { commit, dispatch }, payload: FAQQuestionAnswerModel
     ) {
-        apiCall<FAQQuestionAnswerModel>({url: apiRoutes.question.update, method: 'PATCH', data: payload})
+        await apiCall<FAQQuestionAnswerModel>({url: apiRoutes.question.update, method: 'PATCH', data: payload})
         .then((x) => {
             dispatch(ActionTypes.UPDATE_QUESTIONS, payload.langId)
         })
@@ -93,10 +92,10 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
             alert("Sorry you can't be admin")
         })
     },
-    [ActionTypes.DELETE_QUESTION](
+    async [ActionTypes.DELETE_QUESTION](
         { commit, dispatch }, payload: FAQQuestionAnswerModel
     ) {
-        apiCall<FAQQuestionAnswerModel>({url: `${apiRoutes.question.delete}/${payload.langId}/${payload.questionId}`, method: 'DELETE'})
+        await apiCall<FAQQuestionAnswerModel>({url: `${apiRoutes.question.delete}/${payload.langId}/${payload.questionId}`, method: 'DELETE'})
         .then((x) => {
             dispatch(ActionTypes.UPDATE_QUESTIONS, payload.langId)
         })

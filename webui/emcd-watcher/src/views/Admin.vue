@@ -129,6 +129,8 @@
             </div>
         </div>
     </div>
+    
+    <Loader/>
 </template>
 
 
@@ -137,20 +139,27 @@ import { Options, Vue } from "vue-class-component";
 import {ActionTypes as UserActions} from "@/store/user/actions"
 import Sidebar from '@/components/Sidebar.vue';
 import EditModal from '@/components/EditModal.vue';
+import Loader from "@/components/Loader.vue"
+import {hideLoader, showLoader} from '@/utils/loader';
 
 @Options({
   components: {
     Sidebar,
     EditModal,
+    Loader,
   }
 })
 export default class Admin extends Vue {
 
-    async mounted() {
+    async created() {
+        showLoader()
         await this.$store.dispatch(UserActions.UPDATE_USER).then(() => {
             this.$store.dispatch(UserActions.UPDATE_LANGS)
+            hideLoader()
         })
+    }
 
+    async mounted() {
         // Close any open menu accordions when window is resized below 768px
         // @ts-ignore
         window.$(window).resize(function() {
@@ -200,4 +209,5 @@ export default class Admin extends Vue {
     max-height: calc(100vh - 4.375rem - 1.5rem);
     overflow-x: hidden;
 }
+
 </style>

@@ -1,0 +1,43 @@
+name: WebUI build and deploy
+
+on:
+  push:
+    branches: 
+      - 'master'
+  workflow_dispatch:
+
+jobs:
+  build:
+    environment: dev
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 12.5.0
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.5.0
+    
+    - name: Move to webui directory
+      run: cd webui/emcd-watcher
+  
+    - name: install dependencies
+      run: npm install  
+      
+    - name: build 
+      run: npm run build
+
+    - name: Copy file via ssh password
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        source: "dist/*"
+        target: "/var/www/emcdwatcher"
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: emcdwatcher-dev
+        path: dist

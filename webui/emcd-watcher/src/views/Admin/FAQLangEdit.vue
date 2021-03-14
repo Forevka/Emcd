@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="controls">
+        <div class="controls" v-if="isLoaded">
             <b>{{lang.name}}</b>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#faqEditModal" @click="openModal(0)">
                 Add new
@@ -51,12 +51,14 @@ import {ActionTypes as UserActions} from "@/store/user/actions"
 import {MutationTypes as UserMutations} from "@/store/user/mutations"
 import {cloneObject } from "@/utils/cloneObject";
 import { questionStatusChangeMap } from '@/settings';
+import { showLoader, hideLoader } from '@/utils/loader';
 
 @Options({
   components: {
   }
 })
 export default class FAQLangEdit extends Vue {
+    isLoaded = false;
     unsubscribeQuestions!: () => void;
     questions: FAQQuestionAnswerModel[] = []
 
@@ -88,14 +90,30 @@ export default class FAQLangEdit extends Vue {
         emitter.emit('faqEditModalOpen', cloneObject(qq))
     }
     
-    created() {
+    async created() {
         this.unsubscribeQuestions = this.$store.subscribe((mutation: {type: string; payload: FAQQuestionAnswerModel[]}) => {
             if (mutation.type == UserMutations.UPDATE_QUESTIONS) {
                 this.questions = mutation.payload;
             }
         })
+        
+        this.isLoaded = false;
+        showLoader()
+        await this.$store.dispatch(UserActions.UPDATE_QUESTIONS, this.langId).then(async () => {
+            console.log(this.lang)
+            if (this.lang === undefined) {
+                console.log('lang not ok')
+                await this.$store.dispatch(UserActions.UPDATE_LANGS).then(() => {
+                    hideLoader()
+                    this.isLoaded = true;
+                })
+            } else {
+                console.log('lang ok')
+                hideLoader()
+                this.isLoaded = true;
+            }
+        })
 
-        this.$store.dispatch(UserActions.UPDATE_QUESTIONS, this.langId)
     }
 
     unmounted() {
