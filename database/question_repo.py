@@ -36,7 +36,7 @@ class QuestionRepository:
 
     async def update_question_by_lang_id_question_id(self, lang_id: int, question_id: int, question_translation: str, answer_translation: str):
         sql = """
-        update question_translate
+        update question_translation
         set translation = $1
         where lang_id = $2 and question_id = $3
         """
@@ -44,7 +44,7 @@ class QuestionRepository:
         await self.connection.execute(sql, question_translation, lang_id, question_id,)
 
         sql = """
-        update question_answer_translate
+        update question_answer_translation
         set translation = $1
         where lang_id = $2 and question_id = $3
         """

@@ -17,6 +17,7 @@ export enum ActionTypes {
     UPDATE_LANGS = "UPDATE_LANGS",
     ADD_QUESTION = "ADD_QUESTION",
     UPDATE_QUESTIONS = "UPDATE_QUESTIONS",
+    UPDATE_QUESTION = "UPDATE_QUESTION",
 }
 
 export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
@@ -75,6 +76,17 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
         apiCall<FAQQuestionAnswerModel>({url: apiRoutes.question.add, method: 'POST', data: payload})
         .then((x) => {
             commit(MutationTypes.ADD_QUESTION, x)
+        })
+        .catch(() => {
+            alert("Sorry you can't be admin")
+        })
+    },
+    [ActionTypes.UPDATE_QUESTION](
+        { commit, dispatch }, payload: FAQQuestionAnswerModel
+    ) {
+        apiCall<FAQQuestionAnswerModel>({url: apiRoutes.question.update, method: 'PATCH', data: payload})
+        .then((x) => {
+            dispatch(ActionTypes.UPDATE_QUESTIONS)
         })
         .catch(() => {
             alert("Sorry you can't be admin")

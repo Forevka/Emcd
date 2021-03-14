@@ -14,6 +14,7 @@ export const apiRoutes = {
   },
   question: {
     add: API_SERVER + "question",
+    update: API_SERVER + "question",
     list: API_SERVER + "question",
   }
 };

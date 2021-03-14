@@ -56,6 +56,8 @@ export default class EditModal extends Vue {
         console.log(this.question)
         if (!this.isEditing) {
             this.$store.dispatch(UserActions.ADD_QUESTION, this.question)
+        } else {
+            this.$store.dispatch(UserActions.UPDATE_QUESTION, this.question)
         }
     }
 
