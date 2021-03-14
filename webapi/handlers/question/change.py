@@ -16,9 +16,9 @@ async def change_question(request: Request, questionAnswer: QuestionAnswer, Auth
     question = await question_repo.get_question_answers_by_lang_id_question_id(questionAnswer.langId, questionAnswer.questionId)
 
     return {
-        'questionId': q_id,
+        'questionId': question.id,
         'langId': question.lang_id,
         'questionTranslation': question.question_text,
         'answerTranslation': question.answer_text,
-        'statusId': 1,
+        'statusId': question.status,
     }

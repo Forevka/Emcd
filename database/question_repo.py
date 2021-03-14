@@ -52,7 +52,7 @@ class QuestionRepository:
         await self.connection.execute(sql, answer_translation, lang_id, question_id,)
 
     async def get_question_answers_by_lang_id(self, lang_id: int) -> typing.List[QuestionAnswerTranslate]:
-        sql = f"{QuestionAnswerTranslate.__select__}  where qt.lang_id = $1"
+        sql = f"""{QuestionAnswerTranslate.__select__}  where qt.lang_id = $1 order by q."id" """
 
         return [QuestionAnswerTranslate(**acc) for acc in await self.connection.fetch(sql, lang_id,)]
 
