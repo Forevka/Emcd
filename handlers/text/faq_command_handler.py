@@ -13,7 +13,7 @@ async def cmd_faq(message: types.Message, user: UserRepository, _: dict):
 
     q_repo = QuestionRepository(user.connection)
 
-    questions = await q_repo.get_question_answers_by_lang_id(me.lang_id)
+    questions = await q_repo.get_question_answers_enabled_by_lang_id(me.lang_id)
     for n, q in enumerate(questions[(page - 1) * PER_PAGE: page * PER_PAGE]):
         inline_keyboard_markup.row(
             types.InlineKeyboardButton(

@@ -86,6 +86,12 @@ class QuestionRepository:
 
         return [QuestionAnswerTranslate(**acc) for acc in await self.connection.fetch(sql, lang_id,)]
 
+        
+    async def get_question_answers_enabled_by_lang_id(self, lang_id: int) -> typing.List[QuestionAnswerTranslate]:
+        sql = f"""{QuestionAnswerTranslate.__select__}  where qt.lang_id = $1 and q."status" = 1 order by q."id" """
+
+        return [QuestionAnswerTranslate(**acc) for acc in await self.connection.fetch(sql, lang_id,)]
+
     
     async def get_question_answers_by_lang_id_question_id(self, lang_id: int, question_id: int) -> QuestionAnswerTranslate:
         sql = f"{QuestionAnswerTranslate.__select__}  where qt.lang_id = $1 and q.\"id\" = $2"
