@@ -11,14 +11,14 @@ class QuestionRepository:
     async def delete(self, lang_id: int, question_id: int):
         sql = """
         delete from question_answer_translation
-        where question_id = $1 and lang_id = $2
+        where question_id = $1
         """
 
         await self.connection.execute(sql, question_id, lang_id,)
 
         sql = """
         delete from question_translation
-        where question_id = $1 and lang_id = $2
+        where question_id = $1
         """
         
         await self.connection.execute(sql, question_id, lang_id,)
@@ -60,10 +60,10 @@ class QuestionRepository:
         sql = """
         update question
         set status = $1
-        where lang_id = $2 and question_id = $3
+        where id = $2
         """
 
-        await self.connection.execute(sql, status_id, lang_id, question_id,)
+        await self.connection.execute(sql, status_id, question_id,)
         
         sql = """
         update question_translation
