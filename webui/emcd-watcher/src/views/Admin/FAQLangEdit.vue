@@ -60,11 +60,13 @@ export default class FAQLangEdit extends Vue {
     questions: FAQQuestionAnswerModel[] = []
 
     changeStatus(questionId: number) {
-        console.log('change status', questionId)
+        const qq = this.questions.find((x) => x.questionId == questionId)
+        this.$store.dispatch(UserActions.UPDATE_QUESTION, qq)
     }
 
     deleteQuestion(questionId: number) {
-        console.log('delete question', questionId)
+        const qq = this.questions.find((x) => x.questionId == questionId)
+        this.$store.dispatch(UserActions.DELETE_QUESTION, qq)
     }
 
     openModal(questionId: number) {
@@ -84,7 +86,6 @@ export default class FAQLangEdit extends Vue {
     
     created() {
         this.unsubscribeQuestions = this.$store.subscribe((mutation: {type: string; payload: FAQQuestionAnswerModel[]}) => {
-            console.log(mutation)
             if (mutation.type == UserMutations.UPDATE_QUESTIONS) {
                 this.questions = mutation.payload;
             }

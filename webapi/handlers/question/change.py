@@ -11,7 +11,7 @@ async def change_question(request: Request, questionAnswer: QuestionAnswer, Auth
 
     question_repo = QuestionRepository(request.state.connection)
     
-    await question_repo.update_question_by_lang_id_question_id(questionAnswer.langId, questionAnswer.questionId, questionAnswer.questionTranslation, questionAnswer.answerTranslation)
+    await question_repo.update_question_by_lang_id_question_id(questionAnswer.langId, questionAnswer.questionId, questionAnswer.questionTranslation, questionAnswer.answerTranslation, questionAnswer.statusId)
 
     question = await question_repo.get_question_answers_by_lang_id_question_id(questionAnswer.langId, questionAnswer.questionId)
 

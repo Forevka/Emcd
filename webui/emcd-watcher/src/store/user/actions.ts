@@ -18,6 +18,7 @@ export enum ActionTypes {
     ADD_QUESTION = "ADD_QUESTION",
     UPDATE_QUESTIONS = "UPDATE_QUESTIONS",
     UPDATE_QUESTION = "UPDATE_QUESTION",
+    DELETE_QUESTION = "DELETE_QUESTION",
 }
 
 export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
@@ -85,6 +86,17 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
         { commit, dispatch }, payload: FAQQuestionAnswerModel
     ) {
         apiCall<FAQQuestionAnswerModel>({url: apiRoutes.question.update, method: 'PATCH', data: payload})
+        .then((x) => {
+            dispatch(ActionTypes.UPDATE_QUESTIONS, payload.langId)
+        })
+        .catch(() => {
+            alert("Sorry you can't be admin")
+        })
+    },
+    [ActionTypes.DELETE_QUESTION](
+        { commit, dispatch }, payload: FAQQuestionAnswerModel
+    ) {
+        apiCall<FAQQuestionAnswerModel>({url: `${apiRoutes.question.delete}/${payload.langId}/${payload.questionId}`, method: 'DELETE'})
         .then((x) => {
             dispatch(ActionTypes.UPDATE_QUESTIONS, payload.langId)
         })

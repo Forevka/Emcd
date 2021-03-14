@@ -16,6 +16,7 @@ export const apiRoutes = {
     add: API_SERVER + "question",
     update: API_SERVER + "question",
     list: API_SERVER + "question",
+    delete: API_SERVER + "question",
   }
 };
 
