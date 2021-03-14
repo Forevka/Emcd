@@ -50,6 +50,7 @@ import {emitter} from '@/utils/bus';
 import {ActionTypes as UserActions} from "@/store/user/actions"
 import {MutationTypes as UserMutations} from "@/store/user/mutations"
 import {cloneObject } from "@/utils/cloneObject";
+import { questionStatusChangeMap } from '@/settings';
 
 @Options({
   components: {
@@ -61,7 +62,10 @@ export default class FAQLangEdit extends Vue {
 
     changeStatus(questionId: number) {
         const qq = this.questions.find((x) => x.questionId == questionId)
-        this.$store.dispatch(UserActions.UPDATE_QUESTION, qq)
+        if (qq) {
+            qq.statusId = questionStatusChangeMap[qq.statusId]
+            this.$store.dispatch(UserActions.UPDATE_QUESTION, qq)
+        }
     }
 
     deleteQuestion(questionId: number) {
@@ -139,6 +143,10 @@ export default class FAQLangEdit extends Vue {
     button {
         float: right;
     }
+}
+
+.dropdown-item {
+    cursor: pointer;
 }
 
 .question-text {

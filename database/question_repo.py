@@ -14,14 +14,14 @@ class QuestionRepository:
         where question_id = $1
         """
 
-        await self.connection.execute(sql, question_id, lang_id,)
+        await self.connection.execute(sql, question_id,)
 
         sql = """
         delete from question_translation
         where question_id = $1
         """
         
-        await self.connection.execute(sql, question_id, lang_id,)
+        await self.connection.execute(sql, question_id,)
 
         sql = """
         delete from question
