@@ -52,6 +52,7 @@ import {MutationTypes as UserMutations} from "@/store/user/mutations"
 import {cloneObject } from "@/utils/cloneObject";
 import { questionStatusChangeMap } from '@/settings';
 import { showLoader, hideLoader } from '@/utils/loader';
+import {notification} from '@/utils/notification';
 
 @Options({
   components: {
@@ -62,17 +63,29 @@ export default class FAQLangEdit extends Vue {
     unsubscribeQuestions!: () => void;
     questions: FAQQuestionAnswerModel[] = []
 
-    changeStatus(questionId: number) {
+    async changeStatus(questionId: number) {
         const qq = this.questions.find((x) => x.questionId == questionId)
         if (qq) {
             qq.statusId = questionStatusChangeMap[qq.statusId]
-            this.$store.dispatch(UserActions.UPDATE_QUESTION, qq)
+            await this.$store.dispatch(UserActions.UPDATE_QUESTION, qq).then(() => {
+                notification.success({
+                    title: 'Ok',
+                    message: qq.statusId == 1 ? 'Question will be shown to user' : 'User will not able to see this question'
+                })
+            })
         }
     }
 
-    deleteQuestion(questionId: number) {
+    async deleteQuestion(questionId: number) {
         const qq = this.questions.find((x) => x.questionId == questionId)
-        this.$store.dispatch(UserActions.DELETE_QUESTION, qq)
+        if (qq) {
+            await this.$store.dispatch(UserActions.DELETE_QUESTION, qq).then(() => {
+                notification.success({
+                    title: 'Ok',
+                    message: 'Question was deleted'
+                })
+            })
+        }
     }
 
     openModal(questionId: number) {
@@ -87,7 +100,9 @@ export default class FAQLangEdit extends Vue {
             return;
         }
         const qq = this.questions.find((x) => x.questionId == questionId)
-        emitter.emit('faqEditModalOpen', cloneObject(qq))
+        if (qq) {
+            emitter.emit('faqEditModalOpen', cloneObject(qq))
+        }
     }
     
     async created() {
@@ -100,15 +115,12 @@ export default class FAQLangEdit extends Vue {
         this.isLoaded = false;
         showLoader()
         await this.$store.dispatch(UserActions.UPDATE_QUESTIONS, this.langId).then(async () => {
-            console.log(this.lang)
             if (this.lang === undefined) {
-                console.log('lang not ok')
                 await this.$store.dispatch(UserActions.UPDATE_LANGS).then(() => {
                     hideLoader()
                     this.isLoaded = true;
                 })
             } else {
-                console.log('lang ok')
                 hideLoader()
                 this.isLoaded = true;
             }

@@ -12,6 +12,7 @@ import { FAQQuestionAnswerModel } from "@/models/FAQQuestionAnswerModel";
 
 export enum ActionTypes {
     USER_LOGIN = "USER_LOGIN",
+    USER_LOGOUT = "USER_LOGOUT",
     UPDATE_TOKEN = "UPDATE_TOKEN",
     UPDATE_USER = "UPDATE_USER",
     UPDATE_LANGS = "UPDATE_LANGS",
@@ -22,8 +23,15 @@ export enum ActionTypes {
 }
 
 export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
-    async [ActionTypes.UPDATE_TOKEN]({ commit }, token: string) {
-        await commit(MutationTypes.UPDATE_TOKEN, token);
+    [ActionTypes.UPDATE_TOKEN]({ commit }, token: string) {
+        commit(MutationTypes.UPDATE_TOKEN, token);
+    },
+    async [ActionTypes.USER_LOGOUT](
+        { commit }, 
+    ) {
+        commit(MutationTypes.USER_LOGOUT)
+
+        router.push('/')
     },
     async [ActionTypes.USER_LOGIN](
         { commit }, payload: TelegramAuthModel
@@ -34,8 +42,6 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
             commit(MutationTypes.UPDATE_USER, payload)
 
             router.push('/admin')
-        }).catch(() => {
-            alert("Sorry you can't be admin")
         })
     },
     async [ActionTypes.UPDATE_USER](
@@ -44,8 +50,6 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
         await apiCall<{user: TelegramAuthModel}>({url: apiRoutes.user.me, method: 'GET'})
         .then((x) => {
             commit(MutationTypes.UPDATE_USER, x.user)
-        }).catch(() => {
-            alert("Sorry you can't be admin")
         })
     },
     async [ActionTypes.UPDATE_LANGS](
@@ -53,10 +57,7 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
     ) {
         await apiCall<Lang[]>({url: apiRoutes.lang.list, method: 'GET'})
         .then((x) => {
-            console.log(x)
             commit(MutationTypes.UPDATE_LANGS, x)
-        }).catch(() => {
-            alert("Sorry you can't be admin")
         })
     },
     async [ActionTypes.UPDATE_QUESTIONS](
@@ -66,9 +67,6 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
         .then((x) => {
             commit(MutationTypes.UPDATE_QUESTIONS, x)
         })
-        .catch(() => {
-            alert("Sorry you can't be admin")
-        })
     },
     async [ActionTypes.ADD_QUESTION](
         { commit }, payload: FAQQuestionAnswerModel
@@ -76,9 +74,6 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
         await apiCall<FAQQuestionAnswerModel>({url: apiRoutes.question.add, method: 'POST', data: payload})
         .then((x) => {
             commit(MutationTypes.ADD_QUESTION, x)
-        })
-        .catch(() => {
-            alert("Sorry you can't be admin")
         })
     },
     async [ActionTypes.UPDATE_QUESTION](
@@ -88,9 +83,6 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
         .then((x) => {
             dispatch(ActionTypes.UPDATE_QUESTIONS, payload.langId)
         })
-        .catch(() => {
-            alert("Sorry you can't be admin")
-        })
     },
     async [ActionTypes.DELETE_QUESTION](
         { commit, dispatch }, payload: FAQQuestionAnswerModel
@@ -98,9 +90,6 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
         await apiCall<FAQQuestionAnswerModel>({url: `${apiRoutes.question.delete}/${payload.langId}/${payload.questionId}`, method: 'DELETE'})
         .then((x) => {
             dispatch(ActionTypes.UPDATE_QUESTIONS, payload.langId)
-        })
-        .catch(() => {
-            alert("Sorry you can't be admin")
         })
     },
 };

@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { settings } from "@/settings";
+import {ActionTypes as UserActions} from "@/store/user/actions"
 import router from "@/router";
 
 const API_SERVER = settings.API_SERVER;
@@ -37,10 +38,12 @@ export function apiCall<T>({ url, method, ...args }: AxiosRequestConfig): Promis
           resolve(resp.data);
         })
         .catch(error => {
-          console.log(error.response.data.detail)
-          if (error.response.data.detail === "Signature has expired") {
+          if ((error.response.data.detail === "Signature has expired") || (error.response.status === 401)) {
+            localStorage.removeItem('user-token')
+            
             router.push('/')
-          } 
+          }
+
           reject(error);
         });
     } catch (err) {

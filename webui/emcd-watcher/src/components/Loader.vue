@@ -2,7 +2,7 @@
     <div :class="{
             'loading': isShowing
         }">
-        <img src="@/assets/loaderBlueTransparent.svg" />
+        <img src="@/assets/loaderBlueTransparent.svg" v-if="isShowing"/>
     </div>
 </template>
 

@@ -10,13 +10,11 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
-    "medium-editor": "^5.23.3",
+    "izitoast": "^1.4.0",
     "mitt": "^2.1.0",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",
     "vue-router": "^4.0.0-0",
-    "vue2-medium-editor": "^1.1.6",
-    "vuejs-medium-editor": "^1.2.1",
     "vuex": "^4.0.0-0",
     "webpack-dev-server": "^3.11.2"
   },
