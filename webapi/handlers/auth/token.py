@@ -3,7 +3,7 @@ import hashlib
 import hmac
 import json
 
-from config import TOKEN
+from config import TOKEN, ENVIRONMENT
 from database.user_repo import UserRepository
 from fastapi import Depends, HTTPException, Request
 from fastapi_jwt_auth import AuthJWT
@@ -24,8 +24,9 @@ def check_user_data(data: TelegramAuthModel, token):
     return data.hash == hmac.new(secret.digest(), msg.encode('utf-8'), digestmod=hashlib.sha256).hexdigest()
 
 async def login(request: Request, user: TelegramAuthModel, Authorize: AuthJWT = Depends()):
-    if (not check_user_data(user, TOKEN)):
-        raise HTTPException(status_code=401, detail="Nice try hacker :D")
+    if (ENVIRONMENT.lower().strip() == "production"):
+        if (not check_user_data(user, TOKEN)):
+            raise HTTPException(status_code=401, detail="Nice try hacker :D")
 
     user_repo = UserRepository(request.state.connection)
 
