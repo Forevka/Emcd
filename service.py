@@ -101,6 +101,9 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
                         message_text = translation['worker_changed_status_body'].format(account_name=user_account.username, description='\n'.join([i for i in descr]))
                         try:
                             await notifier.notify(user_db.id, message_text)
+                        except (exceptions.BotBlocked, exceptions.UserDeactivated) as e:
+                            logger.warning(f'{account.user_id} blocked bot or deactivated they telegram account, disabling notifications')
+                            await user_repo.update_notification_setting(account.user_id, False)
                         except exceptions.TelegramAPIError as e:
                             logger.error(f'aiogram error {e}')
 
@@ -143,13 +146,13 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
                             )
                             try:
                                 await notifier.notify(user_db.id, msg_text)
+                            except (exceptions.BotBlocked, exceptions.UserDeactivated) as e:
+                                logger.warning(f'{account.user_id} blocked bot or deactivated they telegram account, disabling notifications')
+                                await user_repo.update_notification_setting(account.user_id, False)
                             except exceptions.TelegramAPIError as e:
                                 logger.error(f'aiogram error {e}')
                         
                             await user_repo.mark_payout_as_notified(account.id, payout.timestamp,)
-        except (exceptions.BotBlocked, exceptions.UserDeactivated) as e:
-            logger.warning(f'{account.user_id} blocked bot or deactivated they telegram account, disabling notifications')
-            await user_repo.update_notification_setting(account.user_id, False)
         except Exception as e:
             logger.exception(e)
         finally:
