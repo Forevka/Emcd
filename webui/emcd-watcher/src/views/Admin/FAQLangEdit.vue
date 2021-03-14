@@ -31,7 +31,8 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-right animated--fade-in"
                             aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#">{{q.statusId == 1 ? 'Disable' : 'Enable'}}</a>
+                            <a class="dropdown-item" @click='changeStatus(q.questionId)'>{{q.statusId == 1 ? 'Disable' : 'Enable'}}</a>
+                            <a class="dropdown-item" @click='deleteQuestion(q.questionId)'>Delete</a>
                         </div>
                     </li>
                 </ul>
@@ -48,6 +49,7 @@ import { Lang } from '@/models/Lang';
 import {emitter} from '@/utils/bus';
 import {ActionTypes as UserActions} from "@/store/user/actions"
 import {MutationTypes as UserMutations} from "@/store/user/mutations"
+import {cloneObject } from "@/utils/cloneObject";
 
 @Options({
   components: {
@@ -56,6 +58,14 @@ import {MutationTypes as UserMutations} from "@/store/user/mutations"
 export default class FAQLangEdit extends Vue {
     unsubscribeQuestions!: () => void;
     questions: FAQQuestionAnswerModel[] = []
+
+    changeStatus(questionId: number) {
+        console.log('change status', questionId)
+    }
+
+    deleteQuestion(questionId: number) {
+        console.log('delete question', questionId)
+    }
 
     openModal(questionId: number) {
         if (questionId === 0) {
@@ -69,7 +79,7 @@ export default class FAQLangEdit extends Vue {
             return;
         }
         const qq = this.questions.find((x) => x.questionId == questionId)
-        emitter.emit('faqEditModalOpen', qq)
+        emitter.emit('faqEditModalOpen', cloneObject(qq))
     }
     
     created() {

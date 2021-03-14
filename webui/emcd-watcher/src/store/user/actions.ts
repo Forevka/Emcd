@@ -86,7 +86,7 @@ export const actions: ActionTree<UserState, IRootState> & UserActionsTypes = {
     ) {
         apiCall<FAQQuestionAnswerModel>({url: apiRoutes.question.update, method: 'PATCH', data: payload})
         .then((x) => {
-            dispatch(ActionTypes.UPDATE_QUESTIONS)
+            dispatch(ActionTypes.UPDATE_QUESTIONS, payload.langId)
         })
         .catch(() => {
             alert("Sorry you can't be admin")

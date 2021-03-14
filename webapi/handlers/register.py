@@ -8,11 +8,18 @@ from webapi.handlers.question.add import add_question
 from webapi.handlers.question.change import change_question
 from webapi.handlers.question.get import get_question
 from webapi.handlers.question.question_list import get_question_list
+from webapi.handlers.question.delete import delete_question
 
 
 def register(app: FastAPI):
     app.add_exception_handler(AuthJWTException, exception_handler)
 
+    app.add_api_route(
+        '/question/{lang_id}/{question_id}',
+        delete_question,
+        tags=['Question'],
+        methods=['DELETE'],
+    )
     app.add_api_route(
         '/question/{lang_id}',
         get_question_list,

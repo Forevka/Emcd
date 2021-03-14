@@ -8,6 +8,28 @@ class QuestionRepository:
     def __init__(self, con: Connection):
         self.connection = con
 
+    async def delete(self, lang_id: int, question_id: int):
+        sql = """
+        delete from question_answer_translation
+        where question_id = $1 and lang_id = $2
+        """
+
+        await self.connection.execute(sql, question_id, lang_id,)
+
+        sql = """
+        delete from question_translation
+        where question_id = $1 and lang_id = $2
+        """
+        
+        await self.connection.execute(sql, question_id, lang_id,)
+
+        sql = """
+        delete from question
+        where id = $1
+        """
+        
+        await self.connection.execute(sql, question_id,)
+
     async def add_faq_answer(self, lang_id: int, question_translation: str, answer_translation: str):
         sql = """
         insert into "question" (status)
@@ -34,7 +56,15 @@ class QuestionRepository:
 
         return q_id
 
-    async def update_question_by_lang_id_question_id(self, lang_id: int, question_id: int, question_translation: str, answer_translation: str):
+    async def update_question_by_lang_id_question_id(self, lang_id: int, question_id: int, question_translation: str, answer_translation: str, status_id: int):
+        sql = """
+        update question
+        set status = $1
+        where lang_id = $2 and question_id = $3
+        """
+
+        await self.connection.execute(sql, status_id, lang_id, question_id,)
+        
         sql = """
         update question_translation
         set translation = $1
