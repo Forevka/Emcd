@@ -18,14 +18,11 @@ jobs:
       with:
         node-version: 12.5.0
     
-    - name: Move to webui directory
-      run: cd /home/runner/work/Emcd/Emcd/webui/emcd-watcher
-  
     - name: install dependencies
-      run: npm install  
+      run: cd /home/runner/work/Emcd/Emcd/webui/emcd-watcher && npm install  
       
     - name: build 
-      run: npm run build
+      run: cd /home/runner/work/Emcd/Emcd/webui/emcd-watcher && npm run build
 
     - name: Copy file via ssh password
       uses: appleboy/scp-action@master
@@ -34,7 +31,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
-        source: "dist/*"
+        source: "/home/runner/work/Emcd/Emcd/webui/emcd-watcher/dist/*"
         target: "/var/www/emcdwatcher"
 
     - uses: actions/upload-artifact@v1
