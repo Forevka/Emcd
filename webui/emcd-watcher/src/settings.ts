@@ -1,5 +1,5 @@
 export const settings = {
-    API_SERVER: "http://194.99.21.140:3029/"
+    API_SERVER: process.env.VUE_APP_API_URL
 };
 
 export const questionStatusChangeMap: { [key: number]: number } = {
