@@ -1,4 +1,4 @@
-name: WebUI build and deploy
+name: WebUI build and deploy Dev
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
         node-version: 12.5.0
     
     - name: Move to webui directory
-      run: cd webui/emcd-watcher
+      run: cd /home/runner/work/Emcd/Emcd/webui/emcd-watcher
   
     - name: install dependencies
       run: npm install  
