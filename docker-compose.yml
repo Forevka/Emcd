@@ -18,6 +18,16 @@ services:
     - ./.env
     volumes:
       - /etc/logs:/app/logs
+    
+  
+  broadcast_service:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.broadcast_service
+    env_file:
+    - ./.env
+    volumes:
+      - /etc/logs:/app/logs
 
     
   api:
