@@ -8,11 +8,11 @@ from asyncpg.connection import Connection
 from asyncpg.pool import Pool
 from loguru import logger
 
-from config import TOKEN, CONNECTION_STRING
-from database.db import get_pool
+from config import CONNECTION_STRING, TOKEN
 from database.broadcast_repo import BroadcastRepository
-from notifier.telegram_notifier import TelegramNotifier
+from database.db import get_pool
 from database.models.broadcast_to_send import BroadcastToSend
+from notifier.telegram_notifier import TelegramNotifier
 from utils.intercept_standart_logger import InterceptStandartHandler
 
 logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.INFO)
