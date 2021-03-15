@@ -32,3 +32,31 @@ class BroadcastRepository:
         """
 
         await self.connection.execute(sql, broadcast_id, status_id,)
+    
+    async def update_broadcast_batch_status(self, broadcast_id: int, lang_id: int, status_id: int):
+        sql = """
+        update broadcast_lang
+        set status_id = $3
+        where broadcast_id = $1 and lang_id = $2
+        """
+
+        await self.connection.execute(sql, broadcast_id, lang_id, status_id,)
+
+    async def update_broadcast_batch_start_time(self, broadcast_id: int, lang_id: int,):
+        sql = """
+        update broadcast_lang
+        set start_datetime = CURRENT_TIMESTAMP
+        where broadcast_id = $1 and lang_id = $2
+        """
+
+        await self.connection.execute(sql, broadcast_id, lang_id,)
+
+        
+    async def update_broadcast_batch_end_time(self, broadcast_id: int, lang_id: int,):
+        sql = """
+        update broadcast_lang
+        set end_datetime = CURRENT_TIMESTAMP
+        where broadcast_id = $1 and lang_id = $2
+        """
+
+        await self.connection.execute(sql, broadcast_id, lang_id,)

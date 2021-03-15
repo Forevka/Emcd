@@ -58,22 +58,28 @@ async def broadcaster(semaphore: asyncio.BoundedSemaphore, pool: Pool, broadcast
 
         count = 0
         try:
+            await repo.update_broadcast_batch_status(broadcast.id, broadcast.lang_id, 2)
+            await repo.update_broadcast_batch_start_time(broadcast.id, broadcast.lang_id,)
+
             users = await repo.get_all_user_by_lang(broadcast.lang_id)
 
             for user in users:
                 if await send_message(user.id, broadcast.text, notifier):
                     count += 1
                 await asyncio.sleep(.05)  # 20 messages per second (Limit: 30 messages per second)
-            
-            await repo.update_broadcast_status(broadcast.id, 2)
+
+            await repo.update_broadcast_batch_status(broadcast.id, broadcast.lang_id, 3)
+            await repo.update_broadcast_batch_end_time(broadcast.id, broadcast.lang_id,)
+        except Exception as e:
+            logger.exception(e)
+            await repo.update_broadcast_batch_status(broadcast.id, broadcast.lang_id, 4)
         finally:
-            
             logger.info(f"{count} messages successful sent.")
 
             await pool.release(repo.connection)
             await notifier.bot.session.close()
 
-            logger.info(f"connetion released, notifier destroyed")
+            logger.info(f"connection released, notifier destroyed")
 
         return count
 
@@ -88,15 +94,21 @@ async def job():
         broadcasts = await repo.get_all_broadcasts_to_send()
 
         logger.info(f'Total broadcasts to send {len(broadcasts)}')
-        await pool.release(repo.connection)
 
         semaphore = asyncio.BoundedSemaphore(10)
         tasks = []
 
         for broadcast in broadcasts:
+            await repo.update_broadcast_status(broadcast.id, 2)
+            
             tasks.append(asyncio.ensure_future(broadcaster(semaphore, pool, broadcast,)))
 
         await asyncio.gather(*tasks)
+        
+        for broadcast in broadcasts:
+            await repo.update_broadcast_status(broadcast.id, 3)
+
+        await pool.release(repo.connection)
     except Exception as e:
         logger.exception(e)
     finally:

@@ -7,14 +7,18 @@
                 <i class="fa fa-plus"></i>
             </button>
         </div>
+        
+                                     
         <div class="question-answer card mb-4 py-3" :class='{
             "border-left-primary": q.statusId === 1,
             "border-left-dark": q.statusId === 2,
         }' v-for="q in questions" :key="q.questionId">
-            <div class="card-body">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#faqEditModal" @click="openModal(q.questionId)">
-                    Edit 
-                    <i class="fa fa-edit"></i>
+            <div class="card-body align-items-center">
+                <button type="button" class="btn btn-primary btn-icon-split" data-toggle="modal" data-target="#faqEditModal" @click="openModal(q.questionId)">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-edit"></i>
+                    </span>
+                    <span class="text">Edit</span>
                 </button>
                 <div class="question-text">
                     {{q.questionTranslation}}
@@ -143,10 +147,14 @@ export default class FAQLangEdit extends Vue {
 </script>
 
 <style lang="scss" scoped>
+button[type=button] {
+    overflow: visible;
+}
+
 .question-answer {
     display: flex;
     justify-content: space-between;
-    margin: 4rem;
+    margin: 2rem;
     margin-right: 0;
 
     .card-body {
@@ -157,15 +165,6 @@ export default class FAQLangEdit extends Vue {
     div {
         margin-right: 2rem;
         margin-left: 2rem;
-    }
-
-    button {
-        display: inline-flex;
-
-        i {
-            margin-left: 5px;
-            margin-top: 2px;
-        }
     }
 }
 
@@ -181,8 +180,10 @@ export default class FAQLangEdit extends Vue {
 
 .question-text {
     width: 100%;
+    overflow-wrap: anywhere;
 }
 .answer-text {
     width: 100%;
+    overflow-wrap: anywhere;
 }
 </style>
