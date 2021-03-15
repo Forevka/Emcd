@@ -8,6 +8,9 @@ from loguru import logger
 from webapi.handlers.register import register
 from webapi.middleware.database_provider_middleware import \
     DatabaseProviderMiddleware
+from webapi.middleware.error_handling_middleware import \
+    ErrorHandlingMiddleware
+
 
 logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.INFO)
 logger.add("logs/api_{time}.log", rotation="12:00", serialize=True)
@@ -24,6 +27,10 @@ app.add_middleware(
 
 app.add_middleware(
     DatabaseProviderMiddleware,
+)
+
+app.add_middleware(
+    ErrorHandlingMiddleware,
 )
 
 register(app)
