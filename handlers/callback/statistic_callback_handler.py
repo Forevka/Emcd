@@ -1,3 +1,5 @@
+from loguru import logger
+from emcd_client.exceptions.exception import EmcdApiException
 from coincap_client.models.exchange_coin_to_currency import ExchangeCoinToCurrency
 from coincap_client.client import CoinCapClient
 from config import FALLBACK_CURRENCY, SELECT_COIN_CB
@@ -77,9 +79,7 @@ async def statistic_info_callback_handler(
     account = next((acc for acc in await user.get_accounts(query.from_user.id) if str(acc.account_id) == account_id), None,)
 
     account_coin = next((i for i in await user.get_account_coins(query.from_user.id, account_id) if i.coin_id == coin_id), None,)
-    #incomes = None
-    #async with EmcdClient(account_id) as client:
-    #    incomes = await client.get_rewards(coin_id)
+    
 
     buttons = []
     
@@ -113,6 +113,11 @@ async def statistic_info_callback_handler(
 
     async with EmcdClient(account_id) as client:
         account_api = await client.get_info()
+
+    if (account_api is None):
+        await query.answer()
+        logger.warning('account_api is none')
+        return
 
     is_fallback = False
 

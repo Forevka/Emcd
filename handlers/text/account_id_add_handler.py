@@ -31,13 +31,13 @@ async def account_id_add_handler(message: types.Message, user: UserRepository, _
                 account = await client.get_info()
 
                 if (account):
-                    await user.add_account(message.from_user.id, UUID(account_id, version=4), account.username)
+                    await user.add_account(message.from_user.id, account_id, account.username)
 
                     coins_api = account.get_coins()
 
                     for coin in await user.get_coins(message.from_user.id):
                         c = coins_api[coin.coin_id]
-                        await user.add_account_coin(message.from_user.id, UUID(account_id, version=4), coin.coin_id, c, coin.is_enabled)
+                        await user.add_account_coin(message.from_user.id, account_id, coin.coin_id, c, coin.is_enabled)
 
                     await message.answer(_['account_added'].format(account_name=account.username))
 

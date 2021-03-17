@@ -1,3 +1,4 @@
+from loguru import logger
 from config import SELECT_COIN_CB
 import typing
 from math import ceil
@@ -74,6 +75,11 @@ async def payouts_info_callback_handler(
     async with EmcdClient(account_id) as client:
         payouts = await client.get_payouts(coind_id)
 
+    if (payouts is None):
+        await query.answer()
+        logger.warning('payouts is none')
+        return
+        
     message_text = _['payouts']
 
     buttons = []

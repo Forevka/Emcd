@@ -1,4 +1,4 @@
-from emcd_client.models.currency import CurrencyValue, currency_from_dict
+from emcd_client.exceptions.exception import EmcdApiException
 from emcd_client.models.payouts import Payouts, payouts_from_dict
 from emcd_client.models.income_rewards import IncomeRewards, income_rewards_from_dict
 from emcd_client.models.coin_workers import CoinWorkers, coin_workers_from_dict
@@ -35,34 +35,28 @@ class EmcdClient:
     def _make_url(self, path: str) -> URL:
         return self._base_url / path
 
-    async def get_currency(self,) -> Dict[str, Any]:
-        async with self._client.get("https://blockchain.info/ticker", raise_for_status=False) as resp:
-            if (resp.status == 200):
-                return await resp.json()
-            return None
-
-    async def get_info(self,) -> AccountInfo:
+    async def get_info(self,) -> Optional[AccountInfo]:
         async with self._client.get(self._make_url(f"v{API_VERSION}/info/{self._account_id}"), raise_for_status=False) as resp:
             if (resp.status == 200):
                 ret = await resp.json()
                 return account_info_from_dict(ret)
             return None
 
-    async def get_workers(self, coin_name: str) -> CoinWorkers:
+    async def get_workers(self, coin_name: str) -> Optional[CoinWorkers]:
         async with self._client.get(self._make_url(f"v{API_VERSION}/{coin_name}/workers/{self._account_id}"), raise_for_status=False) as resp:
             if (resp.status == 200):
                 ret = await resp.json()
                 return coin_workers_from_dict(ret)
             return None
 
-    async def get_rewards(self, coin_name: str) -> IncomeRewards:
+    async def get_rewards(self, coin_name: str) -> Optional[IncomeRewards]:
         async with self._client.get(self._make_url(f"v{API_VERSION}/{coin_name}/income/{self._account_id}"), raise_for_status=False) as resp:
             if (resp.status == 200):
                 ret = await resp.json()
                 return income_rewards_from_dict(ret)
             return None
 
-    async def get_payouts(self, coin_name: str) -> Payouts:
+    async def get_payouts(self, coin_name: str) -> Optional[Payouts]:
         async with self._client.get(self._make_url(f"v{API_VERSION}/{coin_name}/payouts/{self._account_id}"), raise_for_status=False) as resp:
             if (resp.status == 200):
                 ret = await resp.json()

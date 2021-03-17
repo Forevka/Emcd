@@ -1,3 +1,4 @@
+from loguru import logger
 from config import SELECT_COIN_CB
 from emcd_client.client import EmcdClient
 from utils.utils import grouper
@@ -80,6 +81,11 @@ async def black_list_info_callback_handler(
     async with EmcdClient(account_id) as client:
         workers = await client.get_workers(coin_id)
 
+    if (workers is None):
+        await query.answer()
+        logger.warning('workers is none')
+        return
+        
     buttons = []
 
     buttons_workers = []

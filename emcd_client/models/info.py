@@ -136,7 +136,7 @@ class AccountInfo:
         result["notifications"] = to_class(Notifications, self.notifications)
         return result
     
-    def get_coins(self,) -> Dict[Coin, CoinInfo]:
+    def get_coins(self,) -> Dict[str, CoinInfo]:
         coins = {}
         coins.update({Coin.Bitcoin.value: self.bitcoin})
     

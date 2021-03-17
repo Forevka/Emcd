@@ -164,7 +164,7 @@ class CoinWorkers:
         total_count = TotalCount.from_dict(obj.get("total_count"))
         total_hashrate = TotalHashrate.from_dict(obj.get("total_hashrate"))
         details = from_list(Detail.from_dict, obj.get("details"))
-        details_dead = obj.get("detailsDead")
+        details_dead = obj.get("detailsDead", {'': 0})
         return CoinWorkers(total_count, total_hashrate, details, details_dead)
 
     def to_dict(self) -> dict:

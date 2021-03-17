@@ -71,20 +71,20 @@ class ExchangeCoinToCurrency:
     price_usd: float
     volume_usd24_hr: str
     updated: int
-    trades_count24_hr: Optional[int] = None
+    trades_count24_hr: int = 0
     percent_exchange_volume: Optional[str] = None
 
     @staticmethod
     def from_dict(obj: Any) -> 'ExchangeCoinToCurrency':
         assert isinstance(obj, dict)
         exchange_id = str(obj.get("exchangeId"))
-        rank = int(obj.get("rank"))
+        rank = int(obj.get("rank", 0))
         base_symbol = from_str(obj.get("baseSymbol"))
         base_id = from_str(obj.get("baseId"))
         quote_symbol = str(obj.get("quoteSymbol"))
         quote_id = str(obj.get("quoteId"))
-        price_quote = float(obj.get("priceQuote"))
-        price_usd = float(obj.get("priceUsd"))
+        price_quote = float(obj.get("priceQuote", 0))
+        price_usd = float(obj.get("priceUsd", 0))
         volume_usd24_hr = from_str(obj.get("volumeUsd24Hr"))
         trades_count24_hr = from_union([from_none, lambda x: int(from_str(x))], obj.get("tradesCount24Hr"))
         updated = from_int(obj.get("updated"))

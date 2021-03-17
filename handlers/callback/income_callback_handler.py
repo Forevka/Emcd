@@ -1,3 +1,4 @@
+from loguru import logger
 from config import SELECT_COIN_CB
 from math import ceil
 import typing
@@ -71,6 +72,11 @@ async def income_info_callback_handler(
     incomes = None
     async with EmcdClient(account_id) as client:
         incomes = await client.get_rewards(coind_id)
+
+    if (incomes is None):
+        await query.answer()
+        logger.warning('incomes is none')
+        return
 
     message_text = _['income']
 
