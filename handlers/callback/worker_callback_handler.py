@@ -1,3 +1,4 @@
+from loguru import logger
 from config import SELECT_COIN_CB, WORKER_STATUS_CAROUSEL
 import typing
 from math import ceil
@@ -89,6 +90,11 @@ async def worker_info_callback_handler(
     workers = None
     async with EmcdClient(account_id) as client:
         workers = await client.get_workers(coind_id)
+
+    if (workers is None):
+        await query.answer()
+        logger.warning('workers is none')
+        return
 
     message_text = ""
 

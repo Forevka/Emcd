@@ -116,6 +116,11 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
                     logger.info(f'{account.account_id}|{account.coin_id} - Stored')
                 
                 payouts = await client.get_payouts(account.coin_id)
+
+                if (payouts is None):
+                    logger.warning('payouts is none')
+                    return
+
                 user_db = await user_repo.get_user(account.user_id)
 
                 actual_payouts = [
@@ -136,6 +141,10 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
                             coin = Coin(account.coin_id)
 
                             latest_account_data = await client.get_info()
+                            if (latest_account_data is None):
+                                logger.warning('account is none')
+                                return
+
                             latest_coin_data = latest_account_data.get_coins()[account.coin_id]
 
                             msg_text = translation['new_payout_received'].format(
