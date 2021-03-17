@@ -1,6 +1,4 @@
 from emcd_client.exceptions.exception import EmcdApiException
-from uuid import UUID
-from emcd_client.models.currency import CurrencyValue, currency_from_dict
 from emcd_client.models.payouts import Payouts, payouts_from_dict
 from emcd_client.models.income_rewards import IncomeRewards, income_rewards_from_dict
 from emcd_client.models.coin_workers import CoinWorkers, coin_workers_from_dict
@@ -14,7 +12,7 @@ from yarl import URL
 API_VERSION = 1
 
 class EmcdClient:
-    def __init__(self, account_id: UUID, base_url: URL = URL('https://api.emcd.io/')) -> None:
+    def __init__(self, account_id: str, base_url: URL = URL('https://api.emcd.io/')) -> None:
         self._base_url = base_url
         self._account_id = account_id
         self._client = aiohttp.ClientSession(raise_for_status=True)

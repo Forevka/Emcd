@@ -1,3 +1,5 @@
+from emcd_client.exceptions.exception import EmcdApiException
+from handlers.exceptions.emcd_api_error import emcd_api_error
 from aiogram import Dispatcher
 
 from handlers.callback.register_callback_handlers import \

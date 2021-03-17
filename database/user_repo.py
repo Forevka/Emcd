@@ -1,4 +1,3 @@
-from uuid import UUID
 from database.models.user_enabled_notification import UserEnabledNotification
 from database.models.worker_blacklist import WorkerBlacklist
 from database.models.user_currency import UserCurrency
@@ -173,7 +172,7 @@ class UserRepository:
 
         return [Account(**acc) for acc in await self.connection.fetch(sql, user_id)]
 
-    async def add_account(self, user_id: int, account_id: UUID, account_name: str):
+    async def add_account(self, user_id: int, account_id: str, account_name: str):
         sql = '''
         insert into "account" (user_id, account_id, username, create_datetime, modified_datetime)
         values ($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
@@ -181,7 +180,7 @@ class UserRepository:
 
         await self.connection.execute(sql, user_id, account_id, account_name)
 
-    async def add_account_coin(self, user_id: int, account_id: UUID, coin_id: str, coin_info: CoinInfo, is_active: bool,):
+    async def add_account_coin(self, user_id: int, account_id: str, coin_id: str, coin_info: CoinInfo, is_active: bool,):
         sql = '''
         insert into "account_coin" (account_id, user_id, coin_id, 
                                     address, total_count, active_count, 
@@ -240,7 +239,7 @@ class UserRepository:
         if (res):
             return AccountCoin(**res)
 
-    async def get_account_coins(self, user_id: int, account_id: UUID) -> List[AccountCoin]:
+    async def get_account_coins(self, user_id: int, account_id: str) -> List[AccountCoin]:
         sql = f"{AccountCoin.__select__} where user_id = $1 and account_id = $2 order by coin_id asc"
 
         return [AccountCoin(**acc) for acc in await self.connection.fetch(sql, user_id, account_id)]

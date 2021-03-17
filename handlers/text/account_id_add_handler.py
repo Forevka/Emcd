@@ -27,17 +27,17 @@ async def account_id_add_handler(message: types.Message, user: UserRepository, _
         exist_account = next((acc for acc in user_account if str(acc.account_id) == account_id), None)
 
         if (not exist_account):
-            async with EmcdClient(UUID(account_id, version=4)) as client:
+            async with EmcdClient(account_id) as client:
                 account = await client.get_info()
 
                 if (account):
-                    await user.add_account(message.from_user.id, UUID(account_id, version=4), account.username)
+                    await user.add_account(message.from_user.id, account_id, account.username)
 
                     coins_api = account.get_coins()
 
                     for coin in await user.get_coins(message.from_user.id):
                         c = coins_api[coin.coin_id]
-                        await user.add_account_coin(message.from_user.id, UUID(account_id, version=4), coin.coin_id, c, coin.is_enabled)
+                        await user.add_account_coin(message.from_user.id, account_id, coin.coin_id, c, coin.is_enabled)
 
                     await message.answer(_['account_added'].format(account_name=account.username))
 

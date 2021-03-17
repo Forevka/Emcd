@@ -1,4 +1,3 @@
-from uuid import UUID
 from config import SELECT_COIN_CB, WORKER_STATUS_CAROUSEL
 import typing
 from math import ceil
@@ -20,7 +19,7 @@ async def worker_callback_handler(
     user: UserRepository,
     _: dict,
 ):
-    account_id = UUID(callback_data["id"], version=4)
+    account_id = callback_data["id"]
     page = int(callback_data['page'])
 
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
@@ -78,7 +77,7 @@ async def worker_info_callback_handler(
     user: UserRepository,
     _: dict,
 ):
-    account_id = UUID(callback_data["id"], version=4)
+    account_id = callback_data["id"]
     coind_id = callback_data['type']
     page = int(callback_data['page'])
     status_id = int(callback_data['status_id'])
