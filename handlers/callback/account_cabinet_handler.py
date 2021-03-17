@@ -1,3 +1,4 @@
+from uuid import UUID
 from config import SELECT_COIN_CB
 import typing
 
@@ -13,7 +14,7 @@ async def account_cabinet_callback_handler(
     _: dict,
 ):
     # id=account.account_id, type="account", action='open'
-    account_id = callback_data["id"]
+    account_id = UUID(callback_data["id"], version=4)
 
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
     action_type = SELECT_COIN_CB

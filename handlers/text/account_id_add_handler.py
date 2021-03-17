@@ -27,7 +27,7 @@ async def account_id_add_handler(message: types.Message, user: UserRepository, _
         exist_account = next((acc for acc in user_account if str(acc.account_id) == account_id), None)
 
         if (not exist_account):
-            async with EmcdClient(account_id) as client:
+            async with EmcdClient(UUID(account_id, version=4)) as client:
                 account = await client.get_info()
 
                 if (account):

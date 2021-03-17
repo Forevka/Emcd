@@ -22,7 +22,7 @@ from notifier.telegram_notifier import TelegramNotifier
 from utils.intercept_standart_logger import InterceptStandartHandler
 from utils.utils import load_translations, load_translations_from_file
 
-logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.INFO)
+logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.WARN)
 logger.add("logs/service_{time}.log", rotation="12:00", serialize=True)
 
 @dataclass

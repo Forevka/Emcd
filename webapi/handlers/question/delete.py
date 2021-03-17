@@ -13,6 +13,4 @@ async def delete_question(request: Request, lang_id: int, question_id: int, Auth
     
     await question_repo.delete(lang_id, question_id)
 
-    question = await question_repo.get_question_answers_by_lang_id_question_id(lang_id, question_id)
-
     return {}

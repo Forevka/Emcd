@@ -1,3 +1,4 @@
+from uuid import UUID
 from enums.coin import Coin
 import typing
 
@@ -14,7 +15,7 @@ async def finance_callback_handler(
     user: UserRepository,
     _: dict,
 ):
-    account_id = callback_data["id"]
+    account_id = UUID(callback_data["id"], version=4)
     page = int(callback_data["page"])
 
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)

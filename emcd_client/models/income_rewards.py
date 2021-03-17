@@ -30,7 +30,7 @@ def from_float(x: Any) -> float:
     assert isinstance(x, (float, int)) and not isinstance(x, bool)
     return float(x)
 
-def from_decimal(x: Any) -> float:
+def from_decimal(x: Any) -> Decimal:
     return Decimal(x)
 
 def from_none(x: Any) -> Any:

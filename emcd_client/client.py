@@ -1,3 +1,5 @@
+from emcd_client.exceptions.exception import EmcdApiException
+from uuid import UUID
 from emcd_client.models.currency import CurrencyValue, currency_from_dict
 from emcd_client.models.payouts import Payouts, payouts_from_dict
 from emcd_client.models.income_rewards import IncomeRewards, income_rewards_from_dict
@@ -12,7 +14,7 @@ from yarl import URL
 API_VERSION = 1
 
 class EmcdClient:
-    def __init__(self, account_id: str, base_url: URL = URL('https://api.emcd.io/')) -> None:
+    def __init__(self, account_id: UUID, base_url: URL = URL('https://api.emcd.io/')) -> None:
         self._base_url = base_url
         self._account_id = account_id
         self._client = aiohttp.ClientSession(raise_for_status=True)
@@ -35,36 +37,38 @@ class EmcdClient:
     def _make_url(self, path: str) -> URL:
         return self._base_url / path
 
-    async def get_currency(self,) -> Dict[str, Any]:
-        async with self._client.get("https://blockchain.info/ticker", raise_for_status=False) as resp:
-            if (resp.status == 200):
-                return await resp.json()
-            return None
-
     async def get_info(self,) -> AccountInfo:
         async with self._client.get(self._make_url(f"v{API_VERSION}/info/{self._account_id}"), raise_for_status=False) as resp:
             if (resp.status == 200):
                 ret = await resp.json()
                 return account_info_from_dict(ret)
-            return None
+            
+            t = await resp.text()
+            raise EmcdApiException(resp.status, t)
 
     async def get_workers(self, coin_name: str) -> CoinWorkers:
         async with self._client.get(self._make_url(f"v{API_VERSION}/{coin_name}/workers/{self._account_id}"), raise_for_status=False) as resp:
             if (resp.status == 200):
                 ret = await resp.json()
                 return coin_workers_from_dict(ret)
-            return None
+
+            t = await resp.text()
+            raise EmcdApiException(resp.status, t)
 
     async def get_rewards(self, coin_name: str) -> IncomeRewards:
         async with self._client.get(self._make_url(f"v{API_VERSION}/{coin_name}/income/{self._account_id}"), raise_for_status=False) as resp:
             if (resp.status == 200):
                 ret = await resp.json()
                 return income_rewards_from_dict(ret)
-            return None
+                
+            t = await resp.text()
+            raise EmcdApiException(resp.status, t)
 
     async def get_payouts(self, coin_name: str) -> Payouts:
         async with self._client.get(self._make_url(f"v{API_VERSION}/{coin_name}/payouts/{self._account_id}"), raise_for_status=False) as resp:
             if (resp.status == 200):
                 ret = await resp.json()
                 return payouts_from_dict(ret)
-            return None
+                
+            t = await resp.text()
+            raise EmcdApiException(resp.status, t)

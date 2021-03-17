@@ -1,3 +1,4 @@
+from uuid import UUID
 from coincap_client.models.exchange_coin_to_currency import ExchangeCoinToCurrency
 from coincap_client.client import CoinCapClient
 from config import FALLBACK_CURRENCY, SELECT_COIN_CB
@@ -19,7 +20,7 @@ async def statistic_callback_handler(
     user: UserRepository,
     _: dict,
 ):
-    account_id = callback_data["id"]
+    account_id = UUID(callback_data["id"], version=4)
 
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
     
@@ -69,7 +70,7 @@ async def statistic_info_callback_handler(
     user: UserRepository,
     _: dict,
 ):
-    account_id = callback_data["id"]
+    account_id = UUID(callback_data["id"], version=4)
     coin_id = callback_data['type']
 
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)

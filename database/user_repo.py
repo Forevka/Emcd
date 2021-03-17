@@ -1,10 +1,11 @@
+from uuid import UUID
 from database.models.user_enabled_notification import UserEnabledNotification
 from database.models.worker_blacklist import WorkerBlacklist
 from database.models.user_currency import UserCurrency
 from database.models.currency import Currency
 from database.models.user_notification import UserNotification
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from asyncpg.connection import Connection
 from emcd_client.models.coin_workers import CoinWorker, CoinWorkers
@@ -23,14 +24,14 @@ class UserRepository:
     def __init__(self, con: Connection):
         self.connection = con
 
-    async def get_all_langs(self,) -> Lang:
+    async def get_all_langs(self,) -> List[Lang]:
         sql = f"""
         {Lang.__select__}
         """
         
         return [Lang(**acc) for acc in await self.connection.fetch(sql,)]
 
-    async def get_coins(self, user_id: int) -> UserCoin:
+    async def get_coins(self, user_id: int) -> List[UserCoin]:
         sql = '''
         select user_id, coin_id, is_enabled from user_coin where user_id = $1
         '''
@@ -51,7 +52,7 @@ class UserRepository:
 
         await self.connection.execute(sql, new_value, user_id,)
 
-    async def get_notification_setting_for_user(self, user_id: int,) -> UserNotification:
+    async def get_notification_setting_for_user(self, user_id: int,) -> Optional[UserNotification]:
         sql = f'''
         select user_id, is_enabled from user_notification where user_id = $1
         '''
@@ -61,7 +62,7 @@ class UserRepository:
             return UserNotification(**raw)
 
 
-    async def delete_account_notification_settings_account(self, account_id: int, user_id: int):
+    async def delete_account_notification_settings_account(self, account_id: str, user_id: int):
         sql = '''
         delete from account_coin_notification where account_coin_id in (select id from account_coin where account_id = $1 and user_id = $2)
         '''
@@ -69,7 +70,7 @@ class UserRepository:
         await self.connection.execute(sql, account_id, user_id,)
 
 
-    async def delete_user_account_coin(self, account_id: int, user_id: int):
+    async def delete_user_account_coin(self, account_id: str, user_id: int):
         sql = '''
         delete from account_coin where account_id = $1 and user_id = $2
         '''
@@ -77,7 +78,7 @@ class UserRepository:
         await self.connection.execute(sql, account_id, user_id,)
         
 
-    async def delete_user_account(self, account_id: int, user_id: int):
+    async def delete_user_account(self, account_id: str, user_id: int):
         sql = '''
         delete from account where user_id = $2 and account_id = $1
         '''
@@ -85,7 +86,7 @@ class UserRepository:
         await self.connection.execute(sql, account_id, user_id)
 
 
-    async def get_user(self, user_id: int) -> User:
+    async def get_user(self, user_id: int) -> Optional[User]:
         sql = f'{User.__select__} where "id" = $1'
 
         raw = await self.connection.fetchrow(sql, user_id,)
@@ -172,7 +173,7 @@ class UserRepository:
 
         return [Account(**acc) for acc in await self.connection.fetch(sql, user_id)]
 
-    async def add_account(self, user_id: int, account_id: str, account_name: str):
+    async def add_account(self, user_id: int, account_id: UUID, account_name: str):
         sql = '''
         insert into "account" (user_id, account_id, username, create_datetime, modified_datetime)
         values ($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
@@ -180,7 +181,7 @@ class UserRepository:
 
         await self.connection.execute(sql, user_id, account_id, account_name)
 
-    async def add_account_coin(self, user_id: int, account_id: str, coin_id: str, coin_info: CoinInfo, is_active: bool,):
+    async def add_account_coin(self, user_id: int, account_id: UUID, coin_id: str, coin_info: CoinInfo, is_active: bool,):
         sql = '''
         insert into "account_coin" (account_id, user_id, coin_id, 
                                     address, total_count, active_count, 
@@ -192,7 +193,7 @@ class UserRepository:
 
         await self.connection.execute(sql, account_id, user_id, coin_id, coin_info.address, 0, 0, 0, 0, is_active, 0, 0, 0)
 
-    async def update_account_coin(self, _id: int, user_id: int, account_id: str, coin_id: str, address: str, coin_workers: CoinWorkers, is_active: bool, last_update_datetime: datetime):
+    async def update_account_coin(self, _id: int, user_id: int, account_id: int, coin_id: str, address: str, coin_workers: CoinWorkers, is_active: bool, last_update_datetime: datetime):
         sql = '''
         update "account_coin" set  user_id = $2, coin_id = $3, 
                                     address = $4, total_count = $5, active_count = $6, 
@@ -232,14 +233,14 @@ class UserRepository:
 
         await self.connection.execute(sql, is_enabled, user_id, coin_id,)
 
-    async def get_account_coins_by_id(self, coin_account_id) -> AccountCoin:
+    async def get_account_coins_by_id(self, coin_account_id) -> Optional[AccountCoin]:
         sql = f"{AccountCoin.__select__} where id = $1"
 
         res = await self.connection.fetchrow(sql, coin_account_id)
         if (res):
             return AccountCoin(**res)
 
-    async def get_account_coins(self, user_id: int, account_id: str) -> List[AccountCoin]:
+    async def get_account_coins(self, user_id: int, account_id: UUID) -> List[AccountCoin]:
         sql = f"{AccountCoin.__select__} where user_id = $1 and account_id = $2 order by coin_id asc"
 
         return [AccountCoin(**acc) for acc in await self.connection.fetch(sql, user_id, account_id)]
@@ -260,7 +261,7 @@ class UserRepository:
         await self.connection.execute(sql, user_id, currency_id)
 
         
-    async def get_user_currency(self, user_id: int) -> UserCurrency:
+    async def get_user_currency(self, user_id: int) -> Optional[UserCurrency]:
         sql = f"{UserCurrency.__select__} where \"user_id\" = $1"
 
         res = await self.connection.fetchrow(sql, user_id)
@@ -304,7 +305,7 @@ class UserRepository:
 
         return len(await self.connection.fetch(sql, account_coin_id, timestamp)) >= 1
         
-    async def mark_payout_as_notified(self, account_coin_id: int, timestamp: int) -> bool:
+    async def mark_payout_as_notified(self, account_coin_id: int, timestamp: int):
         sql = """
         insert into user_account_coin_payout(account_coin_id, payout_datetime)
         values($1, to_timestamp($2))
@@ -322,4 +323,4 @@ class UserRepository:
         where un.is_enabled = true
         """
 
-        await [UserEnabledNotification(**acc) for acc in await self.connection.fetch(sql,)]
+        return [UserEnabledNotification(**acc) for acc in await self.connection.fetch(sql,)]

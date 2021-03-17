@@ -105,6 +105,7 @@
 
     <EditModal/>
     <LogoutModal/>
+    <EditBroadcastTextModal/>
     
     <Loader/>
 </template>
@@ -115,6 +116,7 @@ import { Options, Vue } from "vue-class-component";
 import {ActionTypes as UserActions} from "@/store/user/actions"
 import Sidebar from '@/components/Sidebar.vue';
 import EditModal from '@/components/EditModal.vue';
+import EditBroadcastTextModal from '@/components/EditBroadcastTextModal.vue';
 import LogoutModal from '@/components/LogoutModal.vue';
 import Loader from "@/components/Loader.vue"
 import {hideLoader, showLoader} from '@/utils/loader';
@@ -125,6 +127,7 @@ import {hideLoader, showLoader} from '@/utils/loader';
     EditModal,
     Loader,
     LogoutModal,
+    EditBroadcastTextModal,
   }
 })
 export default class Admin extends Vue {
