@@ -16,7 +16,7 @@ class I18nDataProviderMiddleware(LifetimeControllerMiddleware):
         super(I18nDataProviderMiddleware, self).__init__()
         self.dp = dp
 
-    async def pre_process(self, message: Any, data: dict,):
+    async def pre_process(self, message: Any, data: dict, *args, **kwargs,):
         if (isinstance(message, Update)): return
 
         from lang import texts

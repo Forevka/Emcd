@@ -14,3 +14,4 @@ def register_handlers(dp: Dispatcher):
     register_callback_handlers(dp)
 
     dp.register_errors_handler(message_not_modified_handler, exception=MessageNotModified)
+    dp.register_errors_handler(emcd_api_error, exception=EmcdApiException)
