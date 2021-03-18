@@ -19,8 +19,7 @@ async def lang_list_callback_handler(
     btn_list = []
     inline_keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
 
-    langs = [Lang.ru, Lang.en, Lang.fa]
-    for lang in langs:
+    for lang in Lang:
         lang_id = lang.value
         if (lang_id is None):
             continue

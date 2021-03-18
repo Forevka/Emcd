@@ -27,8 +27,7 @@ async def cmd_start(message: types.Message, user: UserRepository, _: dict):
     btn_list = []
     inline_keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
 
-    langs = [Lang.ru, Lang.en]
-    for lang in langs:
+    for lang in Lang:
         lang_id = lang.value
         if (lang_id is None):
             continue
