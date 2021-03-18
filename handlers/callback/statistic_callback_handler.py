@@ -79,7 +79,6 @@ async def statistic_info_callback_handler(
     account = next((acc for acc in await user.get_accounts(query.from_user.id) if str(acc.account_id) == account_id), None,)
 
     account_coin = next((i for i in await user.get_account_coins(query.from_user.id, account_id) if i.coin_id == coin_id), None,)
-    
 
     buttons = []
     
