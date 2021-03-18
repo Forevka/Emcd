@@ -2,6 +2,7 @@
 language_map = {
     'ru': "Русский",
     'en': "English",
+    'fa': "Persian",
 }
 
 # placeholder for langs

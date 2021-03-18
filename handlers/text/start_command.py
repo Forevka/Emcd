@@ -27,22 +27,20 @@ async def cmd_start(message: types.Message, user: UserRepository, _: dict):
     btn_list = []
     inline_keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
 
-    langs = None
-    async with PoeditorClient(POEDITOR_TOKEN, POEDITOR_ID,) as client:
-        langs = [Lang.ru, Lang.en]
-        for lang in langs:
-            lang_id = lang.value
-            if (lang_id is None):
-                continue
+    langs = [Lang.ru, Lang.en]
+    for lang in langs:
+        lang_id = lang.value
+        if (lang_id is None):
+            continue
 
-            btn_list.append(
-                types.InlineKeyboardButton(
-                    language_map[lang.name],
-                    callback_data=lang_cb.new(
-                        id=lang_id,
-                    ),
+        btn_list.append(
+            types.InlineKeyboardButton(
+                language_map[lang.name],
+                callback_data=lang_cb.new(
+                    id=lang_id,
                 ),
-            )
+            ),
+        )
 
     for i in grouper(2, btn_list):
         inline_keyboard_markup.row(*i)
