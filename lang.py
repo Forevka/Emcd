@@ -17,6 +17,23 @@ def update_texts(data: dict):
     for lang_code, terms in texts.items():
         reversed_locales[lang_code] = dict((v.lower(), k.lower()) for k,v in terms.items()) # exchange key with values
         
+class Term():
+    def __init__(self, term: str, translation: str, lang_id: int):
+        self.lang_id = lang_id
+        self.term = term
+        self.translation = translation
+
+    def format(self, *args, **kwargs) -> 'Term':
+        return Term(self.term, self.translation.format(*args, **kwargs), self.lang_id)
+    
+    def __str__(self,) -> str:
+        return self.translation
+    
+    def __add__(self, other) -> 'Term':
+        return Term(self.term, self.translation + other, self.lang_id)
+
+
+
 class LangHolder(dict):
     def __init__(self, lang_id: int, lang_code: str,):
         self.lang_id = lang_id
@@ -26,13 +43,13 @@ class LangHolder(dict):
     def __setitem__(self, key, item):
         self.terms_dict[key] = item
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> Term:
         translation = self.terms_dict[key]
         if (translation is None or translation == ''):
             logger.warning(f'No translation defined for {key} {self.lang_id}')
-            return f'No translation defined\nIf you see this message please contact with support'
+            return Term(key, 'No translation defined\nIf you see this message please contact with support', self.lang_id)
 
-        return translation
+        return Term(key, translation, self.lang_id)
 
     def __repr__(self):
         return repr(self.__dict__)
@@ -72,3 +89,4 @@ class LangHolder(dict):
 
     def __iter__(self):
         return iter(self.__dict__)
+

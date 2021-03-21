@@ -1,7 +1,12 @@
+import aiogram.utils.json
+import aiogram.utils.payload
+from utils.json_encoder import ComplexEncoder, patch_json_encoder, patch_payload_generator
+patch_json_encoder(aiogram.utils.json, ComplexEncoder())
+patch_payload_generator(aiogram.utils.payload)
+
 import logging
-import datetime
+from utils.json_encoder import ComplexEncoder
 from utils.intercept_standart_logger import InterceptStandartHandler
-from utils.log_rotator import LogRotator
 
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -19,6 +24,7 @@ from utils.utils import load_translations, load_translations_from_file
 
 logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.WARN)
 logger.add("logs/bot_{time}.log", rotation="12:00", serialize=True)
+
 
 def init_bot(token: str):
     return Bot(token=token, parse_mode='HTML')
