@@ -25,7 +25,7 @@ logger.add("logs/payouts_service_{time}.log", rotation="12:00", serialize=True)
 
 async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: AccountCoin, pool: Pool, notifier: TelegramNotifier, texts: Dict,):
     async with semaphore:
-        logger.info(f'{account.account_id}|{account.coin_id} - Scraping workers info')
+        logger.info(f'{account.account_id}|{account.coin_id} - Scraping payouts info')
         con = await pool.acquire()
 
         user_repo = UserRepository(con)
@@ -33,7 +33,7 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
         try:
             async with EmcdClient(account.account_id) as client:
                 user_account = next((acc for acc in await user_repo.get_accounts(account.user_id) if acc.account_id == account.account_id), None)
-                
+
                 payouts = await client.get_payouts(account.coin_id)
 
                 if (payouts is None):
