@@ -46,6 +46,7 @@ async def cmd_start(message: types.Message, user: UserRepository, _: dict):
     await message.answer(_['choose_lang'], reply_markup=inline_keyboard_markup)
     
     await user.add_notification_setting(message.from_user.id, True)
+    await user.add_notification_payouts_setting(message.from_user.id, True)
     
     await user.add_user_coin(message.from_user.id, Coin.Bitcoin.value, True)
     await user.add_user_coin(message.from_user.id, Coin.BitcoinHash.value, False)
