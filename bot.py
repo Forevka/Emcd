@@ -1,7 +1,5 @@
 import logging
-import datetime
 from utils.intercept_standart_logger import InterceptStandartHandler
-from utils.log_rotator import LogRotator
 
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -9,15 +7,18 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
 from loguru import logger
 
-from config import ENVIRONMENT, POEDITOR_ID, POEDITOR_TOKEN
+from config import ENVIRONMENT, POEDITOR_ID, POEDITOR_TOKEN, TOKEN, CONNECTION_STRING
+
 from database.db import get_pool
 from handlers.register_handlers import register_handlers
-from lang import update_texts
+from utils.lang import update_texts
 from middlewares.database_provider_middleware import DatabaseProviderMiddleware
 from middlewares.i18n_data_provider_midleware import I18nDataProviderMiddleware
 from utils.utils import load_translations, load_translations_from_file
 
-logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.WARN)
+logging.basicConfig(handlers=[
+    InterceptStandartHandler(),
+], level=logging.WARN)
 logger.add("logs/bot_{time}.log", rotation="12:00", serialize=True)
 
 def init_bot(token: str):
@@ -59,3 +60,11 @@ def start_polling(token: str, connection_string: str):
 
     executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
 
+
+def start():
+    start_polling(TOKEN, CONNECTION_STRING)
+
+
+if __name__ == "__main__":
+    start()
+    

@@ -1,12 +1,10 @@
 import typing
 
 from aiogram import types
-from config import POEDITOR_ID, POEDITOR_TOKEN
-from lang import language_map
+from utils.lang import language_map
 from enums.lang import Lang
 from database.user_repo import UserRepository
-from keyboard_fabrics import lang_cb
-from poeditor_client.client import PoeditorClient
+from utils.keyboard_fabrics import lang_cb
 from utils.utils import grouper
 
 
@@ -44,7 +42,7 @@ async def lang_callback_handler(
     user: UserRepository,
     _: dict,
 ):
-    from lang import texts
+    from utils.lang import texts
     
     lang_id = int(callback_data["id"])
     lang_name = Lang(lang_id).name

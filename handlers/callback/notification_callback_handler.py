@@ -2,7 +2,7 @@ import typing
 
 from aiogram import types
 from database.user_repo import UserRepository
-from keyboard_fabrics import notification_cb
+from utils.keyboard_fabrics import notification_cb
 
 async def notificaion_enable_callback_handler(
     query: types.CallbackQuery,

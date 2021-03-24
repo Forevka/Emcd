@@ -1,7 +1,7 @@
 from aiogram import types
 from config import Lang
 from database.user_repo import UserRepository
-from keyboard_fabrics import lang_cb
+from utils.keyboard_fabrics import lang_cb
 
 async def cmd_lang(
     message: types.Message, user: UserRepository, _: dict

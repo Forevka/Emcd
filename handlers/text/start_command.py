@@ -1,11 +1,10 @@
 from aiogram import types
-from config import DEFAULT_LANG, POEDITOR_ID, POEDITOR_TOKEN, DEFAULT_CURRENCY
+from config import DEFAULT_LANG, DEFAULT_CURRENCY
 from database.user_repo import UserRepository
 from enums.coin import Coin
 from enums.lang import Lang
-from keyboard_fabrics import lang_cb
-from lang import language_map
-from poeditor_client.client import PoeditorClient
+from utils.keyboard_fabrics import lang_cb
+from utils.lang import language_map
 from utils.utils import grouper
 
 

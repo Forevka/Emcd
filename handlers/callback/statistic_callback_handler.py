@@ -9,7 +9,7 @@ from aiogram import types
 from enums.coin import Coin
 from database.user_repo import UserRepository
 from emcd_client.client import EmcdClient
-from keyboard_fabrics import menu_cb, statistic_cb
+from utils.keyboard_fabrics import menu_cb, statistic_cb
 from utils.utils import grouper
 from babel.numbers import format_currency
 

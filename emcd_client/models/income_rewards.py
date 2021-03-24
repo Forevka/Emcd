@@ -71,6 +71,7 @@ class TypeEnum(Enum):
     DONATION = "donation"
     FPPS = "fpps"
     REFERRAL = "referral"
+    EXTRA = "extra"
 
 
 @dataclass

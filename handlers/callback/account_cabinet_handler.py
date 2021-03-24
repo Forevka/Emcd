@@ -3,7 +3,7 @@ import typing
 
 from aiogram import types
 from database.user_repo import UserRepository
-from keyboard_fabrics import finance_cb, menu_cb, statistic_cb, worker_cb, worker_black_cb
+from utils.keyboard_fabrics import finance_cb, menu_cb, statistic_cb, worker_cb, worker_black_cb
 
 
 async def account_cabinet_callback_handler(

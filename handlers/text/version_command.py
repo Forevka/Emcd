@@ -1,7 +1,7 @@
 import os
 
 from aiogram import types
-from config import DEFAULT_LANG, START_TIME
+from config import START_TIME
 from database.user_repo import UserRepository
 from git import Repo
 

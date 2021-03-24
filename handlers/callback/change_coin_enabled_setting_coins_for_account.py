@@ -3,7 +3,7 @@ import typing
 from aiogram import types
 from enums.coin import Coin
 from database.user_repo import UserRepository
-from keyboard_fabrics import coin_account_cb, menu_cb
+from utils.keyboard_fabrics import coin_account_cb, menu_cb
 from utils.utils import grouper
 
 

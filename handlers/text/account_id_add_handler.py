@@ -4,7 +4,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from database.user_repo import UserRepository
 from emcd_client.client import EmcdClient
-from keyboard_fabrics import menu_cb
+from utils.keyboard_fabrics import menu_cb
 
 
 def validate_uuid4(uuid_string: str):

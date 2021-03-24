@@ -1,7 +1,6 @@
 from aiogram import types
-from config import DEFAULT_LANG, Lang
 from database.user_repo import UserRepository
-from keyboard_fabrics import lang_cb, delete_account_cb, notification_cb, coins_cb, menu_cb, currency_cb
+from utils.keyboard_fabrics import lang_cb, delete_account_cb, notification_cb, coins_cb, menu_cb, currency_cb
 
 
 async def cmd_settings(message: types.Message, user: UserRepository, _: dict):

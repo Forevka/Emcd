@@ -20,7 +20,7 @@ from handlers.callback.account_cabinet_handler import account_cabinet_callback_h
 from handlers.callback.add_ccount_handler import add_account_callback_handler
 
 
-from keyboard_fabrics import worker_black_cb, currency_cb, menu_cb, coin_account_cb, payouts_cb, income_cb, worker_cb, delete_account_cb, notification_cb, lang_cb, statistic_cb, finance_cb, question_answer_cb
+from utils.keyboard_fabrics import worker_black_cb, currency_cb, menu_cb, coin_account_cb, payouts_cb, income_cb, worker_cb, delete_account_cb, notification_cb, lang_cb, statistic_cb, finance_cb, question_answer_cb
 
 
 def register_callback_handlers(dp: Dispatcher):

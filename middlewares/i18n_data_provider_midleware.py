@@ -1,4 +1,4 @@
-from lang import LangHolder
+from utils.lang import LangHolder
 from typing import Any
 from aiogram.types import Update
 
