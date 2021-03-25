@@ -113,54 +113,6 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
 
                     await user_repo.store_coin_account_worker_history(workers, now)
                     logger.info(f'{account.account_id}|{account.coin_id} - Stored')
-                
-                payouts = await client.get_payouts(account.coin_id)
-
-                if (payouts is None):
-                    logger.warning('payouts is none')
-                    return
-
-                user_db = await user_repo.get_user(account.user_id)
-
-                actual_payouts = [
-                    p for p in payouts.payouts 
-                    if p.timestamp > PAYOUTS_CHECK_START_DATETIME 
-                    and p.timestamp > user_db.created_datetime.timestamp() 
-                    and p.txid is not None 
-                    and p.txid != ''
-                ]
-
-                if (actual_payouts):
-
-                    user_locale = Lang(user_db.lang_id)
-                    translation = texts[user_locale.name]
-                    for payout in actual_payouts:
-                        is_payout_notified = await user_repo.is_payout_notified(account.id, payout.timestamp,)
-                        if (is_payout_notified == False):
-                            coin = Coin(account.coin_id)
-
-                            latest_account_data = await client.get_info()
-                            if (latest_account_data is None):
-                                logger.warning('account is none')
-                                return
-
-                            latest_coin_data = latest_account_data.get_coins()[account.coin_id]
-
-                            msg_text = translation['new_payout_received'].format(
-                                account=user_account.username,
-                                link=f'<a href="https://blockchair.com/{coin.name.lower()}/transaction/{payout.txid}">{payout.txid[8:]}</a>',
-                                amount=payout.amount,
-                                current_balance=format(latest_coin_data.balance, '.8f'),
-                            )
-                            try:
-                                await notifier.notify(user_db.id, msg_text)
-                            except (exceptions.BotBlocked, exceptions.UserDeactivated) as e:
-                                logger.warning(f'{account.user_id} blocked bot or deactivated they telegram account, disabling notifications')
-                                await user_repo.update_notification_setting(account.user_id, False)
-                            except exceptions.TelegramAPIError as e:
-                                logger.error(f'aiogram error {e}')
-                        
-                            await user_repo.mark_payout_as_notified(account.id, payout.timestamp,)
         except Exception as e:
             logger.exception(e)
         finally:
