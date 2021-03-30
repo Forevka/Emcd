@@ -1,10 +1,11 @@
+from uuid import UUID
 from emcd_client.exceptions.exception import EmcdApiException
 from emcd_client.models.payouts import Payouts, payouts_from_dict
 from emcd_client.models.income_rewards import IncomeRewards, income_rewards_from_dict
 from emcd_client.models.coin_workers import CoinWorkers, coin_workers_from_dict
 from emcd_client.models.info import AccountInfo, account_info_from_dict
 from types import TracebackType
-from typing import Any, Dict, Optional, Type
+from typing import Any, Dict, Optional, Type, Union
 
 import aiohttp
 from yarl import URL
@@ -12,7 +13,7 @@ from yarl import URL
 API_VERSION = 1
 
 class EmcdClient:
-    def __init__(self, account_id: str, base_url: URL = URL('https://api.emcd.io/')) -> None:
+    def __init__(self, account_id: Union[str, UUID], base_url: URL = URL('https://api.emcd.io/')) -> None:
         self._base_url = base_url
         self._account_id = account_id
         self._client = aiohttp.ClientSession(raise_for_status=True)
