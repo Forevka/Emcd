@@ -15,7 +15,7 @@ from database.models.broadcast_to_send import BroadcastToSend
 from notifier.telegram_notifier import TelegramNotifier
 from utils.intercept_standart_logger import InterceptStandartHandler
 
-logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.INFO)
+logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.WARN)
 logger.add("logs/broadcast_service_{time}.log", rotation="12:00", serialize=True)
 
 async def send_message(user_id: int, text: str, notifier: TelegramNotifier) -> bool:
