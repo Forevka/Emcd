@@ -1,12 +1,10 @@
 import typing
 
 from aiogram import types
-from config import POEDITOR_ID, POEDITOR_TOKEN
-from lang import language_map
+from utils.lang import language_map
 from enums.lang import Lang
 from database.user_repo import UserRepository
-from keyboard_fabrics import lang_cb
-from poeditor_client.client import PoeditorClient
+from utils.keyboard_fabrics import lang_cb
 from utils.utils import grouper
 
 
@@ -19,22 +17,19 @@ async def lang_list_callback_handler(
     btn_list = []
     inline_keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
 
-    langs = None
-    async with PoeditorClient(POEDITOR_TOKEN, POEDITOR_ID,) as client:
-        langs = [Lang.ru, Lang.en]
-        for lang in langs:
-            lang_id = lang.value
-            if (lang_id is None):
-                continue
+    for lang in Lang:
+        lang_id = lang.value
+        if (lang_id is None):
+            continue
 
-            btn_list.append(
-                types.InlineKeyboardButton(
-                    language_map[lang.name],
-                    callback_data=lang_cb.new(
-                        id=lang_id,
-                    ),
+        btn_list.append(
+            types.InlineKeyboardButton(
+                language_map[lang.name],
+                callback_data=lang_cb.new(
+                    id=lang_id,
                 ),
-            )
+            ),
+        )
 
     for i in grouper(2, btn_list):
         inline_keyboard_markup.row(*i)
@@ -47,7 +42,7 @@ async def lang_callback_handler(
     user: UserRepository,
     _: dict,
 ):
-    from lang import texts
+    from utils.lang import texts
     
     lang_id = int(callback_data["id"])
     lang_name = Lang(lang_id).name

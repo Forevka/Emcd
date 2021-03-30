@@ -2,7 +2,7 @@ import typing
 
 from aiogram import types
 from database.user_repo import UserRepository
-from keyboard_fabrics import delete_account_cb, menu_cb
+from utils.keyboard_fabrics import delete_account_cb, menu_cb
 
 PER_PAGE = 5
 

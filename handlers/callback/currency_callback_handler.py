@@ -3,7 +3,7 @@ from utils.utils import grouper
 
 from aiogram import types
 from database.user_repo import UserRepository
-from keyboard_fabrics import currency_cb
+from utils.keyboard_fabrics import currency_cb
 
 
 async def currency_callback_handler(

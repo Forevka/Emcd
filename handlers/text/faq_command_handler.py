@@ -1,7 +1,7 @@
 from database.question_repo import QuestionRepository
 from aiogram import types
 from database.user_repo import UserRepository
-from keyboard_fabrics import question_answer_cb
+from utils.keyboard_fabrics import question_answer_cb
 from math import ceil
 
 PER_PAGE = 4

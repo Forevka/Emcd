@@ -4,7 +4,7 @@ from handlers.text.locales_command import cmd_locales
 from filters.I18nCommandFilter import I18nCommandFilter
 from handlers.text.settings_command import cmd_settings
 from aiogram import Dispatcher
-from finite_state_machine import Form
+from utils.finite_state_machine import Form
 from handlers.text.account_id_add_handler import account_id_add_handler
 from handlers.text.cabinet_command_handler import cmd_cabinet
 from handlers.text.lang_command import cmd_lang

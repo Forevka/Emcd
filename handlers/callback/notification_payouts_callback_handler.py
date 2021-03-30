@@ -2,9 +2,9 @@ import typing
 
 from aiogram import types
 from database.user_repo import UserRepository
-from utils.keyboard_fabrics import notification_cb
+from utils.keyboard_fabrics import notification_payout_cb
 
-async def notificaion_enable_callback_handler(
+async def notificaion_payout_enable_callback_handler(
     query: types.CallbackQuery,
     callback_data: typing.Dict[str, str],
     user: UserRepository,
@@ -14,25 +14,25 @@ async def notificaion_enable_callback_handler(
 
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
 
-    notification_setting = await user.get_notification_setting_for_user(query.from_user.id)
+    notification_setting = await user.get_notification_payout_setting_for_user(query.from_user.id)
 
     new_setting_value = not notification_setting.is_enabled
     
     if (action != "_"):
-        await user.update_notification_setting(query.from_user.id, new_setting_value)
+        await user.update_notification_payouts_setting(query.from_user.id, new_setting_value)
 
-        notification_setting = await user.get_notification_setting_for_user(query.from_user.id)
+        notification_setting = await user.get_notification_payout_setting_for_user(query.from_user.id)
 
     keyboard_markup.row(
         types.InlineKeyboardButton(
             _[f'setting_notification_set_{int(not notification_setting.is_enabled)}'],
-            callback_data=notification_cb.new(
+            callback_data=notification_payout_cb.new(
                 action=new_setting_value
             ),
         ),
     )
 
-    message_text = _['notification_change_descr'].format(
+    message_text = _['notification_payout_change_descr'].format(
         setting=_[f'setting_notification_{int(notification_setting.is_enabled)}']
     )
     

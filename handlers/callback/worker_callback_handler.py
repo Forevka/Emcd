@@ -8,7 +8,7 @@ from enums.coin import Coin
 from database.user_repo import UserRepository
 from emcd_client.client import EmcdClient
 from emcd_client.models.coin_workers import CoinWorker
-from keyboard_fabrics import menu_cb, worker_cb
+from utils.keyboard_fabrics import menu_cb, worker_cb
 from tabulate import tabulate
 from utils.utils import format_rate, grouper
 

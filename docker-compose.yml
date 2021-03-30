@@ -29,6 +29,14 @@ services:
     volumes:
       - /etc/logs:/app/logs
 
+  payouts_service:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.payouts_service
+    env_file:
+    - ./.env
+    volumes:
+      - /etc/logs:/app/logs
     
   api:
     build:

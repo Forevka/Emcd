@@ -8,7 +8,7 @@ from uuid import UUID
 class AccountCoin:
 	id: int
 	account_id: UUID
-	coin_id: int
+	coin_id: str
 	address: typing.Optional[str]
 	total_count: int
 	active_count: int

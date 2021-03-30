@@ -3,7 +3,7 @@ import typing
 
 from aiogram import types
 from database.user_repo import UserRepository
-from keyboard_fabrics import menu_cb, finance_cb
+from utils.keyboard_fabrics import menu_cb, finance_cb
 from utils.utils import grouper
 
 PER_PAGE = 5
