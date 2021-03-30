@@ -276,8 +276,8 @@ class UserRepository:
 
     async def add_notification_setting(self, user_id: int, is_enabled: bool,):
         sql = '''
-        insert into "user_notification" (user_id, is_enabled)
-        values($1, $2)
+        insert into "user_notification" (user_id, is_enabled, update_datetime)
+        values($1, $2, CURRENT_TIMESTAMP)
         on conflict do nothing;
         '''
 
