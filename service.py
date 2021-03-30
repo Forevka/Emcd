@@ -1,4 +1,5 @@
 import asyncio
+from database.models.account_coin_notification_worker import AccountCoinNotificationWorker
 import logging
 from dataclasses import dataclass
 from datetime import datetime
@@ -38,7 +39,7 @@ class WorkerChangeStatusDataModel:
             new_status=localisation[f'status_{self.new_status}'],
         )
 
-async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: AccountCoin, pool: Pool, notifier: TelegramNotifier, texts: Dict,):
+async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: AccountCoinNotificationWorker, pool: Pool, notifier: TelegramNotifier, texts: Dict,):
     async with semaphore:
         logger.info(f'{account.account_id}|{account.coin_id} - Scraping workers info')
         con = await pool.acquire()

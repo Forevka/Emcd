@@ -1,3 +1,5 @@
+from database.models.account_coin_notification_worker import AccountCoinNotificationWorker
+from database.models.account_coin_notification_payout import AccountCoinNotificationPayout
 from database.models.user_enabled_notification import UserEnabledNotification
 from database.models.worker_blacklist import WorkerBlacklist
 from database.models.user_currency import UserCurrency
@@ -47,14 +49,14 @@ class UserRepository:
 
     async def update_notification_setting(self, user_id: int, new_value: bool):
         sql = '''
-        update user_notification set is_enabled = $1 where user_id = $2
+        update user_notification set is_enabled = $1, update_datetime = CURRENT_TIMESTAMP where user_id = $2
         '''
 
         await self.connection.execute(sql, new_value, user_id,)
 
     async def get_notification_setting_for_user(self, user_id: int,) -> Optional[UserNotification]:
         sql = f'''
-        select user_id, is_enabled from user_notification where user_id = $1
+        select user_id, is_enabled, update_datetime from user_notification where user_id = $1
         '''
         
         raw = await self.connection.fetchrow(sql, user_id,)
@@ -64,14 +66,14 @@ class UserRepository:
     
     async def update_notification_payouts_setting(self, user_id: int, new_value: bool):
         sql = '''
-        update user_payout_notification set is_enabled = $1 where user_id = $2
+        update user_payout_notification set is_enabled = $1, update_datetime = CURRENT_TIMESTAMP where user_id = $2
         '''
 
         await self.connection.execute(sql, new_value, user_id,)
 
     async def get_notification_payout_setting_for_user(self, user_id: int,) -> Optional[UserPayoutsNotification]:
         sql = f'''
-        select user_id, is_enabled from user_payout_notification where user_id = $1
+        select user_id, is_enabled, update_datetime from user_payout_notification where user_id = $1
         '''
         
         raw = await self.connection.fetchrow(sql, user_id,)
@@ -151,21 +153,52 @@ class UserRepository:
         
         return [WorkerAccountHistoryForUser(**acc) for acc in await self.connection.fetch(sql, account_coin_id)]
 
-    async def get_all_account_to_refresh(self,) -> List[AccountCoin]:
+    async def get_all_account_to_refresh(self,) -> List[AccountCoinNotificationWorker]:
         sql = '''
-        SELECT ac.* from account_coin ac
+        SELECT ac."id"
+            , ac.account_id
+			, ac.active_count
+            , ac.coin_id
+            , ac.address
+            , ac.total_count
+            , ac.inactive_count
+            , ac.dead_count
+            , ac.total_hashrate
+            , ac.total_hashrate1h
+            , ac.total_hashrate24h
+            , ac.last_update_datetime
+            , ac.is_active
+            , ac.user_id
+            , un.update_datetime as notification_update_datetime 
+			  from account_coin ac
         join user_notification un on un.user_id = ac.user_id and un.is_enabled = true and ac.is_active = true
         '''
         
-        return [AccountCoin(**acc) for acc in await self.connection.fetch(sql,)]
+        return [AccountCoinNotificationWorker(**acc) for acc in await self.connection.fetch(sql,)]
     
-    async def get_all_account_payouts_to_refresh(self,) -> List[AccountCoin]:
+    async def get_all_account_payouts_to_refresh(self,) -> List[AccountCoinNotificationPayout]:
         sql = '''
-        SELECT ac.* from account_coin ac
+        SELECT 
+            ac."id"
+            , ac.account_id
+			, ac.active_count
+            , ac.coin_id
+            , ac.address
+            , ac.total_count
+            , ac.inactive_count
+            , ac.dead_count
+            , ac.total_hashrate
+            , ac.total_hashrate1h
+            , ac.total_hashrate24h
+            , ac.last_update_datetime
+            , ac.is_active
+            , ac.user_id
+            , upn.update_datetime as notification_update_datetime 
+        from account_coin ac
         join user_payout_notification upn on upn.user_id = ac.user_id and upn.is_enabled = true and ac.is_active = true
         '''
         
-        return [AccountCoin(**acc) for acc in await self.connection.fetch(sql,)]
+        return [AccountCoinNotificationPayout(**acc) for acc in await self.connection.fetch(sql,)]
 
     async def store_coin_account_worker_history(self, workers: List[CoinWorker], now: datetime):
         sql = '''
@@ -218,7 +251,7 @@ class UserRepository:
 
         await self.connection.execute(sql, account_id, user_id, coin_id, coin_info.address, 0, 0, 0, 0, is_active, 0, 0, 0)
 
-    async def update_account_coin(self, _id: int, user_id: int, account_id: int, coin_id: str, address: str, coin_workers: CoinWorkers, is_active: bool, last_update_datetime: datetime):
+    async def update_account_coin(self, _id: int, user_id: int, account_id: int, coin_id: str, address: Optional[str], coin_workers: CoinWorkers, is_active: bool, last_update_datetime: datetime):
         sql = '''
         update "account_coin" set  user_id = $2, coin_id = $3, 
                                     address = $4, total_count = $5, active_count = $6, 
@@ -234,8 +267,8 @@ class UserRepository:
 
     async def add_notification_payouts_setting(self, user_id: int, is_enabled: bool,):
         sql = '''
-        insert into "user_payout_notification" (user_id, is_enabled)
-        values($1, $2)
+        insert into "user_payout_notification" (user_id, is_enabled, update_datetime)
+        values($1, $2, CURRENT_TIMESTAMP)
         on conflict do nothing;
         '''
 
@@ -243,8 +276,8 @@ class UserRepository:
 
     async def add_notification_setting(self, user_id: int, is_enabled: bool,):
         sql = '''
-        insert into "user_notification" (user_id, is_enabled)
-        values($1, $2)
+        insert into "user_notification" (user_id, is_enabled, update_datetime)
+        values($1, $2, CURRENT_TIMESTAMP)
         on conflict do nothing;
         '''
 

@@ -1,4 +1,5 @@
 import asyncio
+from database.models.account_coin_notification_payout import AccountCoinNotificationPayout
 import logging
 from typing import Dict
 
@@ -23,7 +24,7 @@ from utils.utils import load_translations, load_translations_from_file
 logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.WARN)
 logger.add("logs/payouts_service_{time}.log", rotation="12:00", serialize=True)
 
-async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: AccountCoin, pool: Pool, notifier: TelegramNotifier, texts: Dict,):
+async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: AccountCoinNotificationPayout, pool: Pool, notifier: TelegramNotifier, texts: Dict,):
     async with semaphore:
         logger.info(f'{account.account_id}|{account.coin_id} - Scraping payouts info')
         con = await pool.acquire()
@@ -45,7 +46,7 @@ async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: Acco
                 actual_payouts = [
                     p for p in payouts.payouts 
                     if p.timestamp > PAYOUTS_CHECK_START_DATETIME 
-                    and p.timestamp > user_db.created_datetime.timestamp() 
+                    and p.timestamp > account.notification_update_datetime.timestamp()
                     and p.txid is not None 
                     and p.txid != ''
                 ]
