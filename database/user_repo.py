@@ -170,7 +170,7 @@ class UserRepository:
             , ac.is_active
             , ac.user_id
             , un.update_datetime as notification_update_datetime 
-			  from account_coin ac
+        from account_coin ac
         join user_notification un on un.user_id = ac.user_id and un.is_enabled = true and ac.is_active = true
         '''
         

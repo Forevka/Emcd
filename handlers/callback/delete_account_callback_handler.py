@@ -1,4 +1,6 @@
 import typing
+from utils.lang import LangHolder
+from utils.common_replies import reply_to_account_not_found
 
 from aiogram import types
 from database.user_repo import UserRepository
@@ -10,7 +12,7 @@ async def delete_account_callback_handler(
     query: types.CallbackQuery,
     callback_data: typing.Dict[str, str],
     user: UserRepository,
-    _: dict,
+    _: LangHolder,
 ):
     account_id = callback_data["id"]
 
@@ -34,6 +36,8 @@ async def delete_account_callback_handler(
     
     account = next((acc for acc in await user.get_accounts(query.from_user.id) if str(acc.account_id) == account_id), None,)
     
+    if (account is None):
+        return await reply_to_account_not_found(query.message, _)
 
     keyboard_markup.add(
         types.InlineKeyboardButton(
