@@ -23,7 +23,7 @@ class I18nDataProviderMiddleware(LifetimeControllerMiddleware):
         user = await data['user'].get_user(message.from_user.id)
         if (user):
             message.c_user_locale_code = Lang(user.lang_id).name
+            data['_'] = LangHolder(user.lang_id, message.c_user_locale_code,)
         else:
             message.c_user_locale_code = DEFAULT_LANG.name
-        
-        data['_'] = LangHolder(user.lang_id, message.c_user_locale_code,)
+            data['_'] = LangHolder(user.lang_id, message.c_user_locale_code,)
