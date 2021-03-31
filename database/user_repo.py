@@ -1,25 +1,26 @@
-from database.models.account_coin_notification_worker import AccountCoinNotificationWorker
-from database.models.account_coin_notification_payout import AccountCoinNotificationPayout
-from database.models.user_enabled_notification import UserEnabledNotification
-from database.models.worker_blacklist import WorkerBlacklist
-from database.models.user_currency import UserCurrency
-from database.models.currency import Currency
-from database.models.user_notification import UserNotification
-from database.models.user_payouts_notification import UserPayoutsNotification
 from datetime import datetime
 from typing import List, Optional
 
 from asyncpg.connection import Connection
-from emcd_client.models.coin_workers import CoinWorker, CoinWorkers
-from emcd_client.models.info import CoinInfo
+from third_party.emcd_client.models.coin_workers import CoinWorker, CoinWorkers
+from third_party.emcd_client.models.info import CoinInfo
 
 from database.models.account import Account
 from database.models.account_coin import AccountCoin
-from database.models.account_coin_notification import AccountCoinNotification
+from database.models.account_coin_notification_payout import \
+    AccountCoinNotificationPayout
+from database.models.account_coin_notification_worker import \
+    AccountCoinNotificationWorker
+from database.models.currency import Currency
+from database.models.lang import Lang
 from database.models.user import User
 from database.models.user_coin import UserCoin
-from database.models.lang import Lang
+from database.models.user_currency import UserCurrency
+from database.models.user_enabled_notification import UserEnabledNotification
+from database.models.user_notification import UserNotification
+from database.models.user_payouts_notification import UserPayoutsNotification
 from database.models.worker_account_history import WorkerAccountHistoryForUser
+from database.models.worker_blacklist import WorkerBlacklist
 
 
 class UserRepository:

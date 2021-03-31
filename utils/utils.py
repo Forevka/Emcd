@@ -4,7 +4,7 @@ from os import listdir
 from os.path import isfile, join, splitext
 from typing import Dict, Iterator, List, Tuple, TypeVar
 
-from poeditor_client.client import PoeditorClient
+from third_party.poeditor_client.client import PoeditorClient
 
 T = TypeVar("T")
 
