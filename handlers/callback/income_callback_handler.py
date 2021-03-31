@@ -1,3 +1,5 @@
+from utils.lang import LangHolder
+from utils.common_replies import reply_to_account_not_found
 from loguru import logger
 from config import SELECT_COIN_CB
 from math import ceil
@@ -16,7 +18,7 @@ async def income_callback_handler(
     query: types.CallbackQuery,
     callback_data: typing.Dict[str, str],
     user: UserRepository,
-    _: dict,
+    _: LangHolder,
 ):
     account_id = callback_data["id"]
     page = int(callback_data['page'])
@@ -25,6 +27,9 @@ async def income_callback_handler(
     
     account = next((acc for acc in await user.get_accounts(query.from_user.id) if str(acc.account_id) == account_id), None,)
     
+    if (account is None):
+        return await reply_to_account_not_found(query.message, _)
+        
     btn_list = []
 
     for coin in await user.get_account_coins(query.from_user.id, account_id):
@@ -59,7 +64,7 @@ async def income_info_callback_handler(
     query: types.CallbackQuery,
     callback_data: typing.Dict[str, str],
     user: UserRepository,
-    _: dict,
+    _: LangHolder,
 ):
     account_id = callback_data["id"]
     coind_id = callback_data['type']
@@ -68,6 +73,9 @@ async def income_info_callback_handler(
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
     
     account = next((acc for acc in await user.get_accounts(query.from_user.id) if str(acc.account_id) == account_id), None,)
+
+    if (account is None):
+        return await reply_to_account_not_found(query.message, _)
 
     incomes = None
     async with EmcdClient(account_id) as client:

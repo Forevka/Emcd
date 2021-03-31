@@ -1,3 +1,5 @@
+from utils.common_replies import reply_to_account_not_found
+from utils.lang import LangHolder
 from config import SELECT_COIN_CB
 import typing
 
@@ -10,13 +12,18 @@ async def account_cabinet_callback_handler(
     query: types.CallbackQuery,
     callback_data: typing.Dict[str, str],
     user: UserRepository,
-    _: dict,
+    _: LangHolder,
 ):
     # id=account.account_id, type="account", action='open'
     account_id = callback_data["id"]
 
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
     action_type = SELECT_COIN_CB
+    
+    account = next((acc for acc in await user.get_accounts(query.from_user.id) if str(acc.account_id) == str(account_id)), None,)
+
+    if (account is None):
+        return await reply_to_account_not_found(query.message, _)
 
     coins = [coin for coin in await user.get_account_coins(query.from_user.id, account_id) if coin.is_active]
 
@@ -63,7 +70,6 @@ async def account_cabinet_callback_handler(
         ),
     )
 
-    account = next((acc for acc in await user.get_accounts(query.from_user.id) if str(acc.account_id) == str(account_id)), None,)
 
     await query.message.edit_text(
         _["account_cabinet"].format(
