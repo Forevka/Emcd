@@ -13,9 +13,8 @@ from config import (CONNECTION_STRING, ENVIRONMENT,
                     PAYOUTS_CHECK_START_DATETIME, POEDITOR_ID, POEDITOR_TOKEN,
                     TOKEN, Lang)
 from database.db import get_pool
-from database.models.account_coin import AccountCoin
 from database.user_repo import UserRepository
-from emcd_client.client import EmcdClient
+from third_party.emcd_client.client import EmcdClient
 from enums.coin import Coin
 from notifier.telegram_notifier import TelegramNotifier
 from utils.intercept_standart_logger import InterceptStandartHandler
