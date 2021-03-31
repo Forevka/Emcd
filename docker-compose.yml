@@ -13,7 +13,7 @@ services:
   worker_service:
     build:
       context: .
-      dockerfile: ./Dockerfile.service
+      dockerfile: ./Dockerfile.worker_service
     env_file:
     - ./.env
     volumes:
