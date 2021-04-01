@@ -1,6 +1,6 @@
 from aiogram import types
 from database.user_repo import UserRepository
-from utils.keyboard_fabrics import (currency_cb, delete_account_cb, lang_cb,
+from bot.common.keyboard_fabrics import (currency_cb, delete_account_cb, lang_cb,
                                     menu_cb, notification_cb,
                                     notification_payout_cb)
 

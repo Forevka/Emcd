@@ -1,4 +1,5 @@
 import asyncio
+from utils.log_rotator import SizedTimedRotatingFileHandler
 from database.models.account_coin_notification_worker import AccountCoinNotificationWorker
 import logging
 from dataclasses import dataclass
@@ -18,10 +19,17 @@ from database.user_repo import UserRepository
 from third_party.emcd_client.client import EmcdClient
 from notifier.telegram_notifier import TelegramNotifier
 from utils.intercept_standart_logger import InterceptStandartHandler
-from utils.utils import load_translations, load_translations_from_file
+from utils.utils import get_filename_without_ext, load_translations, load_translations_from_file
 
-logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.WARN)
-logger.add("logs/service_{time}.log", rotation="12:00", serialize=True)
+
+logging.basicConfig(handlers=[InterceptStandartHandler()],)
+logger.add(
+    SizedTimedRotatingFileHandler(f"logs/{get_filename_without_ext(__file__)}.log", backupCount=1, 
+                                    maxBytes=64 * 1024 * 1024, when='s', 
+                                    interval=60 * 60 * 24, serialize=True), 
+    level=logging.WARN
+)
+
 
 @dataclass
 class WorkerChangeStatusDataModel:
@@ -129,7 +137,7 @@ async def job():
             logger.info('Loading from poeditor')
             locales = await load_translations(POEDITOR_ID, POEDITOR_TOKEN)
             
-        logger.info(f'Job started')
+        logger.warning(f'Job started')
         user_repo = UserRepository(await pool.acquire())
         accounts = await user_repo.get_all_account_to_refresh()
         logger.info(f'Total accounts to scrap {len(accounts)}')
@@ -154,7 +162,7 @@ async def job():
 
 if (__name__ == "__main__"):
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(job, "interval", seconds=30)
+    scheduler.add_job(job, "interval", seconds=1)
 
     scheduler.start()
 

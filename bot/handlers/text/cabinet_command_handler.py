@@ -1,6 +1,6 @@
 from aiogram import types
 from database.user_repo import UserRepository
-from utils.keyboard_fabrics import menu_cb
+from bot.common.keyboard_fabrics import menu_cb
 
 
 async def cmd_cabinet(message: types.Message, user: UserRepository, _: dict):

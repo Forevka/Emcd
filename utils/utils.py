@@ -1,6 +1,7 @@
 import itertools
 import json
 from os import listdir
+import os
 from os.path import isfile, join, splitext
 from typing import Dict, Iterator, List, Tuple, TypeVar
 
@@ -8,7 +9,10 @@ from third_party.poeditor_client.client import PoeditorClient
 
 T = TypeVar("T")
 
-def grouper(n: int, iterable: List[T]) -> Iterator[Tuple[T]]:
+def get_filename_without_ext(name: str) -> str:
+    return os.path.splitext(os.path.basename(name))[0]
+
+def grouper(n: int, iterable: List[T]) -> Iterator[Tuple[T, ...]]:
     it = iter(iterable)
     while True:
         chunk = tuple(itertools.islice(it, n))
@@ -45,7 +49,8 @@ async def load_translations(poeditor_id: int, poeditor_token: str,):
         for lang in langs.result.languages:
             translation_file = await client.get_language_file_url(lang.code)
             translation = await client.download_translation_file(translation_file.result.url)
-            translations[lang.code] = json.loads(translation)
+            if translation:
+                translations[lang.code] = json.loads(translation)
 
     return translations
 
@@ -61,7 +66,7 @@ async def load_translations_from_file():
     return translations
 
 if __name__ == "__main__":
-    from lang import texts
+    from bot.common.lang import texts
     lang = 'en'
     
     file = dict_to_poeditor_locale(texts, lang)

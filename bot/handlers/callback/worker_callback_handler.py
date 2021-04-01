@@ -9,9 +9,9 @@ from loguru import logger
 from tabulate import tabulate
 from third_party.emcd_client.client import EmcdClient
 from third_party.emcd_client.models.coin_workers import CoinWorker
-from utils.common_replies import reply_to_account_not_found
-from utils.keyboard_fabrics import menu_cb, worker_cb
-from utils.lang import LangHolder
+from bot.common.replies import reply_to_account_not_found
+from bot.common.keyboard_fabrics import menu_cb, worker_cb
+from bot.common.lang import LangHolder
 from utils.utils import format_rate, grouper
 
 PER_PAGE = 5

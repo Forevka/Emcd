@@ -1,6 +1,6 @@
 
-from utils.lang import LangHolder
-from utils.keyboards import keyboard_when_account_deleted
+from bot.common.lang import LangHolder
+from bot.common.keyboards import keyboard_when_account_deleted
 from aiogram import types
 
 async def reply_to_account_not_found(message: types.Message, _: LangHolder):

@@ -3,8 +3,8 @@ import typing
 from aiogram import types
 from database.user_repo import UserRepository
 from enums.lang import Lang
-from utils.keyboard_fabrics import lang_cb
-from utils.lang import language_map
+from bot.common.keyboard_fabrics import lang_cb
+from bot.common.lang import language_map
 from utils.utils import grouper
 
 
@@ -42,7 +42,7 @@ async def lang_callback_handler(
     user: UserRepository,
     _: dict,
 ):
-    from utils.lang import texts
+    from bot.common.lang import texts
     
     lang_id = int(callback_data["id"])
     lang_name = Lang(lang_id).name

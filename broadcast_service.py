@@ -1,5 +1,7 @@
 import asyncio
 import logging
+import os
+from utils.utils import get_filename_without_ext
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import exceptions, executor
@@ -14,9 +16,17 @@ from database.db import get_pool
 from database.models.broadcast_to_send import BroadcastToSend
 from notifier.telegram_notifier import TelegramNotifier
 from utils.intercept_standart_logger import InterceptStandartHandler
+from utils.log_rotator import SizedTimedRotatingFileHandler
 
-logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.WARN)
-logger.add("logs/broadcast_service_{time}.log", rotation="12:00", serialize=True)
+
+logging.basicConfig(handlers=[InterceptStandartHandler()],)
+logger.add(
+    SizedTimedRotatingFileHandler(f"logs/{get_filename_without_ext(__file__)}.log", backupCount=1, 
+                                    maxBytes=64 * 1024 * 1024, when='s', 
+                                    interval=60 * 60 * 24, serialize=True), 
+    level=logging.WARN
+)
+
 
 async def send_message(user_id: int, text: str, notifier: TelegramNotifier) -> bool:
     """

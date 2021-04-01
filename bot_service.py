@@ -6,20 +6,26 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
 from loguru import logger
 
+from bot.common.lang import update_texts
+from bot.handlers.register_handlers import register_handlers
+from bot.middlewares.database_provider_middleware import \
+    DatabaseProviderMiddleware
+from bot.middlewares.i18n_data_provider_midleware import \
+    I18nDataProviderMiddleware
 from config import (CONNECTION_STRING, ENVIRONMENT, POEDITOR_ID,
                     POEDITOR_TOKEN, TOKEN)
 from database.db import get_pool
-from bot.handlers.register_handlers import register_handlers
-from bot.middlewares.database_provider_middleware import DatabaseProviderMiddleware
-from bot.middlewares.i18n_data_provider_midleware import I18nDataProviderMiddleware
 from utils.intercept_standart_logger import InterceptStandartHandler
-from utils.lang import update_texts
-from utils.utils import load_translations, load_translations_from_file
+from utils.log_rotator import SizedTimedRotatingFileHandler
+from utils.utils import get_filename_without_ext, load_translations, load_translations_from_file
 
-logging.basicConfig(handlers=[
-    InterceptStandartHandler(),
-], level=logging.WARN)
-logger.add("logs/bot_{time}.log", rotation="12:00", serialize=True)
+logging.basicConfig(handlers=[InterceptStandartHandler()],)
+logger.add(
+    SizedTimedRotatingFileHandler(f"logs/{get_filename_without_ext(__file__)}.log", backupCount=1, 
+                                    maxBytes=64 * 1024 * 1024, when='s', 
+                                    interval=60 * 60 * 24, serialize=True), 
+    level=logging.WARN
+)
 
 def init_bot(token: str):
     return Bot(token=token, parse_mode='HTML')

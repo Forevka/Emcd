@@ -3,7 +3,7 @@ from math import ceil
 from aiogram import types
 from database.question_repo import QuestionRepository
 from database.user_repo import UserRepository
-from utils.keyboard_fabrics import question_answer_cb
+from bot.common.keyboard_fabrics import question_answer_cb
 
 PER_PAGE = 4
 

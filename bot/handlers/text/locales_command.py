@@ -5,7 +5,7 @@ from utils.utils import load_translations
 
 
 async def cmd_locales(message: types.Message, user: UserRepository, _: dict):
-    from utils.lang import update_texts
+    from bot.common.lang import update_texts
 
     new_msg =await message.answer("Reloading locales")
 

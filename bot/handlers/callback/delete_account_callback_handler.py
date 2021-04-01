@@ -2,9 +2,9 @@ import typing
 
 from aiogram import types
 from database.user_repo import UserRepository
-from utils.common_replies import reply_to_account_not_found
-from utils.keyboard_fabrics import delete_account_cb, menu_cb
-from utils.lang import LangHolder
+from bot.common.replies import reply_to_account_not_found
+from bot.common.keyboard_fabrics import delete_account_cb, menu_cb
+from bot.common.lang import LangHolder
 
 PER_PAGE = 5
 

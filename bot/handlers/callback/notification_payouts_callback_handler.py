@@ -2,7 +2,7 @@ import typing
 
 from aiogram import types
 from database.user_repo import UserRepository
-from utils.keyboard_fabrics import notification_payout_cb
+from bot.common.keyboard_fabrics import notification_payout_cb
 
 
 async def notificaion_payout_enable_callback_handler(

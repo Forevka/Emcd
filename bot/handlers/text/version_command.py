@@ -1,3 +1,4 @@
+import datetime
 import os
 
 from aiogram import types
@@ -13,6 +14,7 @@ async def cmd_version(message: types.Message, user: UserRepository, _: dict):
 Commit date: {repo.active_branch.commit.committed_datetime.strftime("%d/%m/%Y %H:%M:%S")}
 Start time: {START_TIME.strftime("%d/%m/%Y %H:%M:%S")}
 Environment name: {os.environ.get('ENV_NAME')}
+Local time: {datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
     '''
 
     await message.answer(message_text)

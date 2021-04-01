@@ -1,4 +1,6 @@
 import logging
+from utils.utils import get_filename_without_ext
+from utils.log_rotator import SizedTimedRotatingFileHandler
 from utils.intercept_standart_logger import InterceptStandartHandler
 
 from fastapi import FastAPI
@@ -11,9 +13,13 @@ from webapi.middleware.database_provider_middleware import \
 from webapi.middleware.error_handling_middleware import \
     ErrorHandlingMiddleware
 
-
-logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.INFO)
-logger.add("logs/api_{time}.log", rotation="12:00", serialize=True)
+logging.basicConfig(handlers=[InterceptStandartHandler()],)
+logger.add(
+    SizedTimedRotatingFileHandler(f"logs/{get_filename_without_ext(__file__)}.log", backupCount=1, 
+                                    maxBytes=64 * 1024 * 1024, when='s', 
+                                    interval=60 * 60 * 24, serialize=True), 
+    level=logging.WARN
+)
 
 app = FastAPI()
 
