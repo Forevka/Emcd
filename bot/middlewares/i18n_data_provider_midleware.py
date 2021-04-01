@@ -26,4 +26,4 @@ class I18nDataProviderMiddleware(LifetimeControllerMiddleware):
             data['_'] = LangHolder(user.lang_id, message.c_user_locale_code,)
         else:
             message.c_user_locale_code = DEFAULT_LANG.name
-            data['_'] = LangHolder(user.lang_id, message.c_user_locale_code,)
+            data['_'] = LangHolder(DEFAULT_LANG.value, message.c_user_locale_code,)
