@@ -1,4 +1,4 @@
-from utils.lang import LangHolder
+from bot.common.lang import LangHolder
 from typing import Any
 from aiogram.types import Update
 

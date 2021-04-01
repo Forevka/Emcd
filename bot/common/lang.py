@@ -1,5 +1,4 @@
 from loguru import logger
-import json
 
 language_map = {
     'ru': "Русский",

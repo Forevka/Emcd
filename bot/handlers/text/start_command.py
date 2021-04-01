@@ -3,8 +3,8 @@ from config import DEFAULT_CURRENCY, DEFAULT_LANG
 from database.user_repo import UserRepository
 from enums.coin import Coin
 from enums.lang import Lang
-from utils.keyboard_fabrics import lang_cb
-from utils.lang import language_map
+from bot.common.keyboard_fabrics import lang_cb
+from bot.common.lang import language_map
 from utils.utils import grouper
 
 

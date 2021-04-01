@@ -1,4 +1,6 @@
+from bot.handlers.text.group_disable_chat import non_private_message
 from aiogram import Dispatcher
+from aiogram.types import ChatType
 from bot.filters.I18nCommandFilter import I18nCommandFilter
 from bot.handlers.text.account_id_add_handler import account_id_add_handler
 from bot.handlers.text.cabinet_command_handler import cmd_cabinet
@@ -8,10 +10,12 @@ from bot.handlers.text.locales_command import cmd_locales
 from bot.handlers.text.settings_command import cmd_settings
 from bot.handlers.text.start_command import cmd_start
 from bot.handlers.text.version_command import cmd_version
-from utils.finite_state_machine import Form
+from bot.common.finite_state_machine import Form
 
 
 def register_command_handlers(dp: Dispatcher):
+    dp.register_message_handler(non_private_message, chat_type=[ChatType.GROUP, ChatType.SUPERGROUP,])
+
     dp.register_message_handler(cmd_version, commands=['version'], state='*')
     dp.register_message_handler(cmd_start, commands=['start'], state='*')
     dp.register_message_handler(cmd_locales, commands=['locales'], state='*')

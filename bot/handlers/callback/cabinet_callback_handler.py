@@ -2,7 +2,7 @@ import typing
 
 from aiogram import types
 from database.user_repo import UserRepository
-from utils.keyboard_fabrics import menu_cb
+from bot.common.keyboard_fabrics import menu_cb
 
 
 async def cabinet_callback_handler(

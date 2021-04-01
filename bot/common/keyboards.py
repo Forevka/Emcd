@@ -1,6 +1,6 @@
 from aiogram import types
-from utils.lang import LangHolder
-from utils.keyboard_fabrics import menu_cb
+from bot.common.lang import LangHolder
+from bot.common.keyboard_fabrics import menu_cb
 
 def keyboard_when_account_deleted(_: LangHolder) -> types.InlineKeyboardMarkup:
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)

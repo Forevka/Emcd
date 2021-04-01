@@ -10,9 +10,9 @@ from third_party.coincap_client.client import CoinCapClient
 from third_party.coincap_client.models.exchange_coin_to_currency import \
     ExchangeCoinToCurrency
 from third_party.emcd_client.client import EmcdClient
-from utils.common_replies import reply_to_account_not_found
-from utils.keyboard_fabrics import menu_cb, statistic_cb
-from utils.lang import LangHolder
+from bot.common.replies import reply_to_account_not_found
+from bot.common.keyboard_fabrics import menu_cb, statistic_cb
+from bot.common.lang import LangHolder
 from utils.utils import grouper
 
 PER_PAGE = 5

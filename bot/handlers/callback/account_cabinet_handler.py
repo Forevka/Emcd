@@ -3,10 +3,10 @@ import typing
 from aiogram import types
 from config import SELECT_COIN_CB
 from database.user_repo import UserRepository
-from utils.common_replies import reply_to_account_not_found
-from utils.keyboard_fabrics import (finance_cb, menu_cb, statistic_cb,
+from bot.common.replies import reply_to_account_not_found
+from bot.common.keyboard_fabrics import (finance_cb, menu_cb, statistic_cb,
                                     worker_black_cb, worker_cb)
-from utils.lang import LangHolder
+from bot.common.lang import LangHolder
 
 
 async def account_cabinet_callback_handler(

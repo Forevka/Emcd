@@ -1,7 +1,7 @@
 import asyncio
-from database.models.account_coin_notification_payout import AccountCoinNotificationPayout
 import logging
 from typing import Dict
+from utils.log_rotator import SizedTimedRotatingFileHandler
 
 from aiogram import exceptions
 from aiogram.utils import exceptions
@@ -13,15 +13,22 @@ from config import (CONNECTION_STRING, ENVIRONMENT,
                     PAYOUTS_CHECK_START_DATETIME, POEDITOR_ID, POEDITOR_TOKEN,
                     TOKEN, Lang)
 from database.db import get_pool
+from database.models.account_coin_notification_payout import \
+    AccountCoinNotificationPayout
 from database.user_repo import UserRepository
-from third_party.emcd_client.client import EmcdClient
 from enums.coin import Coin
 from notifier.telegram_notifier import TelegramNotifier
+from third_party.emcd_client.client import EmcdClient
 from utils.intercept_standart_logger import InterceptStandartHandler
-from utils.utils import load_translations, load_translations_from_file
+from utils.utils import get_filename_without_ext, load_translations, load_translations_from_file
 
-logging.basicConfig(handlers=[InterceptStandartHandler()], level=logging.WARN)
-logger.add("logs/payouts_service_{time}.log", rotation="12:00", serialize=True)
+logging.basicConfig(handlers=[InterceptStandartHandler()],)
+logger.add(
+    SizedTimedRotatingFileHandler(f"logs/{get_filename_without_ext(__file__)}.log", backupCount=1, 
+                                    maxBytes=64 * 1024 * 1024, when='s', 
+                                    interval=60 * 60 * 24, serialize=True), 
+    level=logging.WARN
+)
 
 async def update_account_data(semaphore: asyncio.BoundedSemaphore, account: AccountCoinNotificationPayout, pool: Pool, notifier: TelegramNotifier, texts: Dict,):
     async with semaphore:

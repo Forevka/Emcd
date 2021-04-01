@@ -37,7 +37,7 @@ from bot.handlers.callback.statistic_callback_handler import (
 from bot.handlers.callback.worker_callback_handler import (
     worker_callback_handler, worker_info_callback_handler)
 from config import SELECT_COIN_CB
-from utils.keyboard_fabrics import (coin_account_cb, currency_cb,
+from bot.common.keyboard_fabrics import (coin_account_cb, currency_cb,
                                     delete_account_cb, finance_cb, income_cb,
                                     lang_cb, menu_cb, notification_cb,
                                     notification_payout_cb, payouts_cb,

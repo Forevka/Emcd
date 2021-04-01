@@ -1,11 +1,11 @@
-from utils.lang import LangHolder
-from utils.common_replies import reply_to_account_not_found
-from enums.coin import Coin
 import typing
 
 from aiogram import types
+from bot.common.keyboard_fabrics import finance_cb, menu_cb
+from bot.common.lang import LangHolder
+from bot.common.replies import reply_to_account_not_found
 from database.user_repo import UserRepository
-from utils.keyboard_fabrics import menu_cb, finance_cb
+from enums.coin import Coin
 from utils.utils import grouper
 
 PER_PAGE = 5
