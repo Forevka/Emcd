@@ -22,3 +22,7 @@ INSERT INTO "public"."currency"("id", "currency_code") VALUES (2, 'UAH');
 INSERT INTO "public"."currency"("id", "currency_code") VALUES (3, 'RUB');
 INSERT INTO "public"."currency"("id", "currency_code") VALUES (4, 'EUR');
 INSERT INTO "public"."currency"("id", "currency_code") VALUES (5, 'IRR');
+
+
+insert into "user_payout_notification" (user_id, is_enabled)
+select "id", True from "user" u

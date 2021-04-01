@@ -5,7 +5,7 @@ from uuid import UUID
 
 
 @dataclass
-class AccountCoin:
+class AccountCoinNotificationPayout:
 	id: int
 	account_id: UUID
 	coin_id: str
@@ -20,6 +20,4 @@ class AccountCoin:
 	last_update_datetime: datetime.datetime
 	is_active: bool
 	user_id: int
-
-	__select__ = """ select "user_id", "is_active", "id", "account_id", "coin_id", "address", "total_count", "active_count", "inactive_count", "dead_count", "total_hashrate", "total_hashrate1h", "total_hashrate24h", "last_update_datetime" from account_coin"""
-
+	notification_update_datetime: datetime.datetime

@@ -4,7 +4,7 @@ from os import listdir
 from os.path import isfile, join, splitext
 from typing import Dict, Iterator, List, Tuple, TypeVar
 
-from poeditor_client.client import PoeditorClient
+from third_party.poeditor_client.client import PoeditorClient
 
 T = TypeVar("T")
 
@@ -59,3 +59,12 @@ async def load_translations_from_file():
         translations[splitext(f)[0]] = json.loads(ff.read())
 
     return translations
+
+if __name__ == "__main__":
+    from lang import texts
+    lang = 'en'
+    
+    file = dict_to_poeditor_locale(texts, lang)
+    f = open(f'locales/export/{lang}.json', 'w')
+    f.write(json.dumps(file))
+    f.close()

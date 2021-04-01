@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  bot:
+  bot_service:
     build:
       context: .
       dockerfile: ./Dockerfile.bot
@@ -10,10 +10,10 @@ services:
     volumes:
       - /etc/logs:/app/logs
       
-  service:
+  worker_service:
     build:
       context: .
-      dockerfile: ./Dockerfile.service
+      dockerfile: ./Dockerfile.worker_service
     env_file:
     - ./.env
     volumes:
@@ -29,6 +29,14 @@ services:
     volumes:
       - /etc/logs:/app/logs
 
+  payouts_service:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.payouts_service
+    env_file:
+    - ./.env
+    volumes:
+      - /etc/logs:/app/logs
     
   api:
     build:
