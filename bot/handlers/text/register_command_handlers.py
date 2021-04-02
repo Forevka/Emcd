@@ -1,3 +1,4 @@
+from bot.handlers.text.throw_command import cmd_throw
 from bot.handlers.text.group_disable_chat import non_private_message
 from aiogram import Dispatcher
 from aiogram.types import ChatType
@@ -16,6 +17,7 @@ from bot.common.finite_state_machine import Form
 def register_command_handlers(dp: Dispatcher):
     dp.register_message_handler(non_private_message, chat_type=[ChatType.GROUP, ChatType.SUPERGROUP,])
 
+    dp.register_message_handler(cmd_throw, commands=['throw'], state='*')
     dp.register_message_handler(cmd_version, commands=['version'], state='*')
     dp.register_message_handler(cmd_start, commands=['start'], state='*')
     dp.register_message_handler(cmd_locales, commands=['locales'], state='*')
