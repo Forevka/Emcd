@@ -6,14 +6,13 @@ from bot.common.keyboard_fabrics import (finance_cb, income_cb, menu_cb,
                                          payouts_cb)
 from bot.common.lang import LangHolder
 from bot.common.replies import reply_to_account_not_found
-from config import SELECT_COIN_CB
+from config import PER_PAGE_INCOME, SELECT_COIN_CB
 from database.user_repo import UserRepository
 from enums.coin import Coin
 from loguru import logger
 from third_party.emcd_client.client import EmcdClient
 from utils.utils import grouper
 
-PER_PAGE = 5
 
 async def income_callback_handler(
     query: types.CallbackQuery,
@@ -104,19 +103,19 @@ async def income_info_callback_handler(
 
     buttons.append(
         types.InlineKeyboardButton(
-            f"{page}/{ceil(len(incomes.income) / PER_PAGE)}",
+            f"{page}/{ceil(len(incomes.income) / PER_PAGE_INCOME)}",
             callback_data="do_nothing"
         ),
     )
 
     if (incomes):
-        for income in incomes.income[(page - 1) * PER_PAGE: page * PER_PAGE]:
+        for income in incomes.income[(page - 1) * PER_PAGE_INCOME: page * PER_PAGE_INCOME]:
             message_text += '\n' + _['income_template'].format(
                 datetime=income.gmt_time,
                 amount=format(income.income, '.8f'),
             )
 
-        if (len(incomes.income) > page * PER_PAGE):
+        if (len(incomes.income) > page * PER_PAGE_INCOME):
             buttons.append(
                 types.InlineKeyboardButton(
                     _["next_button"],

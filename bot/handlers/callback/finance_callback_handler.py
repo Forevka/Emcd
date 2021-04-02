@@ -8,7 +8,6 @@ from database.user_repo import UserRepository
 from enums.coin import Coin
 from utils.utils import grouper
 
-PER_PAGE = 5
 
 async def finance_callback_handler(
     query: types.CallbackQuery,

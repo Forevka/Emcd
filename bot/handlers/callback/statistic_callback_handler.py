@@ -15,7 +15,6 @@ from bot.common.keyboard_fabrics import menu_cb, statistic_cb
 from bot.common.lang import LangHolder
 from utils.utils import grouper
 
-PER_PAGE = 5
 
 async def statistic_callback_handler(
     query: types.CallbackQuery,

@@ -6,7 +6,6 @@ from bot.common.replies import reply_to_account_not_found
 from bot.common.keyboard_fabrics import delete_account_cb, menu_cb
 from bot.common.lang import LangHolder
 
-PER_PAGE = 5
 
 async def delete_account_callback_handler(
     query: types.CallbackQuery,

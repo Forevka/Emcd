@@ -2,7 +2,7 @@ import typing
 from math import ceil
 
 from aiogram import types
-from config import SELECT_COIN_CB, WORKER_STATUS_CAROUSEL
+from config import PER_PAGE_WORKERS, SELECT_COIN_CB, WORKER_STATUS_CAROUSEL
 from database.user_repo import UserRepository
 from enums.coin import Coin
 from loguru import logger
@@ -14,7 +14,6 @@ from bot.common.keyboard_fabrics import menu_cb, worker_cb
 from bot.common.lang import LangHolder
 from utils.utils import format_rate, grouper
 
-PER_PAGE = 5
 
 async def worker_callback_handler(
     query: types.CallbackQuery,
@@ -117,7 +116,7 @@ async def worker_info_callback_handler(
 
     buttons.append(
         types.InlineKeyboardButton(
-            f"{page}/{ceil(len(workers_normalized) / PER_PAGE)}",
+            f"{page}/{ceil(len(workers_normalized) / PER_PAGE_WORKERS)}",
             callback_data="do_nothing"
         ),
     )
@@ -131,10 +130,10 @@ async def worker_info_callback_handler(
     }
 
     if (workers):
-        for worker in workers_normalized[(page - 1) * PER_PAGE: page * PER_PAGE]:
+        for worker in workers_normalized[(page - 1) * PER_PAGE_WORKERS: page * PER_PAGE_WORKERS]:
             message_text += '\n' + format_worker_info(worker, locales)
 
-        if (len(workers_normalized) > page * PER_PAGE):
+        if (len(workers_normalized) > page * PER_PAGE_WORKERS):
             buttons.append(
                 types.InlineKeyboardButton(
                     _["next_button"],
