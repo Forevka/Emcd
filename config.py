@@ -4,7 +4,7 @@ import os
 
 START_TIME = datetime.datetime.now()
 
-POEDITOR_ID = 418393
+POEDITOR_ID = int(os.environ.get('POEDITOR_PROJECT_ID', 0))
 POEDITOR_TOKEN = os.environ.get('POEDITOR_TOKEN', '')
 
 CONNECTION_STRING = os.environ.get('CONNECTION_STRING', '')
