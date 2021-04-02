@@ -162,7 +162,7 @@ async def job():
 
 if (__name__ == "__main__"):
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(job, "interval", seconds=1)
+    scheduler.add_job(job, "interval", seconds=30)
 
     scheduler.start()
 
