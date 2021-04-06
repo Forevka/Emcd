@@ -1,3 +1,4 @@
+from config import PER_PAGE_FAQ
 from math import ceil
 
 from aiogram import types
@@ -5,7 +6,6 @@ from database.question_repo import QuestionRepository
 from database.user_repo import UserRepository
 from bot.common.keyboard_fabrics import question_answer_cb
 
-PER_PAGE = 4
 
 async def cmd_faq(message: types.Message, user: UserRepository, _: dict):
     page = 1
@@ -15,10 +15,10 @@ async def cmd_faq(message: types.Message, user: UserRepository, _: dict):
     q_repo = QuestionRepository(user.connection)
 
     questions = await q_repo.get_question_answers_enabled_by_lang_id(me.lang_id)
-    for n, q in enumerate(questions[(page - 1) * PER_PAGE: page * PER_PAGE]):
+    for n, q in enumerate(questions[(page - 1) * PER_PAGE_FAQ: page * PER_PAGE_FAQ]):
         inline_keyboard_markup.row(
             types.InlineKeyboardButton(
-                    f"#{(page - 1) * PER_PAGE + n + 1} {q.question_text}",
+                    f"#{(page - 1) * PER_PAGE_FAQ + n + 1} {q.question_text}",
                     callback_data=question_answer_cb.new(
                         id=q.id, page=page, action="open",
                     ),
@@ -38,12 +38,12 @@ async def cmd_faq(message: types.Message, user: UserRepository, _: dict):
             
     buttons.append(
         types.InlineKeyboardButton(
-            f"{page}/{ceil(len(questions) / PER_PAGE)}",
+            f"{page}/{ceil(len(questions) / PER_PAGE_FAQ)}",
             callback_data="do_nothing"
         ),
     )
 
-    if (len(questions) > page * PER_PAGE):
+    if (len(questions) > page * PER_PAGE_FAQ):
         buttons.append(
             types.InlineKeyboardButton(
                 _["next_button"],

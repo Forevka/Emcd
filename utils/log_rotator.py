@@ -1,6 +1,7 @@
 import time
 import logging.handlers as handlers
 from typing import Any, IO
+from loguru._better_exceptions import ExceptionFormatter
 
 import json
 
@@ -19,22 +20,15 @@ class SizedTimedRotatingFileHandler(handlers.TimedRotatingFileHandler):
         self.maxBytes = maxBytes
         self.serialize = serialize
 
+        self.exception_formatter = ExceptionFormatter()
+
     
     def format(self, record):
         if (self.serialize):
-            exception = {}
-
-            if hasattr(record, 'exception'):
-                exception.update({
-                    "type": None if record.exception.type is None else record.exception.type.__name__,
-                    "value": record.exception.value,
-                    "traceback": bool(record.exception.traceback),
-                })
-
             serializable = {
                 "text": record.msg,
                 "record": {
-                    "exception": exception,
+                    "exception": "".join(self.exception_formatter.format_exception(*record.exc_info)) if record.exc_info else None,
                     "extra": record.extra,
                     "file": {
                         "name": record.filename, 
