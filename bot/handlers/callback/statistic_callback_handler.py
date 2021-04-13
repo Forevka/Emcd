@@ -133,12 +133,17 @@ async def statistic_info_callback_handler(
             c_id = 'bch'
 
         currency_list = await client.get_info_for_exchange(c_id, user_currency.currency_code)        
-
-        if (len(currency_list.data) == 0):
+        
+        if (currency_list is None or len(currency_list.data) == 0):
             currency_list = await client.get_info_for_exchange(c_id, FALLBACK_CURRENCY)
             is_fallback = True
 
 
+    if (currency_list is None):
+        await query.answer('Please try later, 3rd party service is busy')
+        logger.warning('currency_list is none')
+        return
+            
     curr = sorted(currency_list.data, key=take_update_timestamp)[0]
 
     coin_info = account_api.get_coins()[coin_id]
