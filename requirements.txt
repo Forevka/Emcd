@@ -1,3 +1,6 @@
+ujson
+uvloop
+aiohttp[speedups]
 asyncpg
 aiogram
 apscheduler
