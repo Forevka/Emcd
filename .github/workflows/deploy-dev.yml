@@ -28,6 +28,14 @@ jobs:
           envkey_POEDITOR_TOKEN: ${{ secrets.POEDITOR_TOKEN }}
           envkey_JWT_SECRET: ${{ secrets.JWT_SECRET }}
           envkey_POEDITOR_PROJECT_ID: ${{ secrets.POEDITOR_PROJECT_ID }}
+          envkey_INFLUXDB_DB: ${{ secrets.INFLUXDB_DB }}
+          envkey_INFUX_DB_HOST: ${{ secrets.INFUX_DB_HOST }}
+          envkey_INFLUXDB_ADMIN_USER: ${{ secrets.INFLUXDB_ADMIN_USER }}
+          envkey_INFLUXDB_ADMIN_USER_PASSWORD: ${{ secrets.INFLUXDB_ADMIN_USER_PASSWORD }}
+          envkey_INFLUXDB_USER: ${{ secrets.INFLUXDB_USER }}
+          envkey_INFLUXDB_USER_PASSWORD: ${{ secrets.INFLUXDB_USER_PASSWORD }}
+          envkey_INFLUXDB_HTTP_AUTH_ENABLED: ${{ secrets.INFLUXDB_HTTP_AUTH_ENABLED }}
+          envkey_GRAFANA_PORT: ${{ secrets.GRAFANA_PORT }}
           file_name: .env
 
       - name: Move envfile to host
