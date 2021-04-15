@@ -1,5 +1,7 @@
-from aiogram.dispatcher.middlewares import BaseMiddleware
+from typing import Any
+
 from aiogram import types
+from aiogram.dispatcher.middlewares import BaseMiddleware
 from bot.analytics.log import log_callback_query, log_command, log_text
 
 
@@ -9,13 +11,13 @@ class AnalyticMiddleware(BaseMiddleware):
     """
 
 
-    async def on_post_process_message(self, message: types.Message, results, data: dict):
+    async def on_post_process_message(self, message: Any, results, data: dict):
         if (message.is_command()):
             await log_command(message.from_user.id, message.get_command() or 'unknown')
         else:
             from bot.common.lang import reversed_locales
             
-            c_user_locale_code = data['c_user_locale_code']
+            c_user_locale_code = message.c_user_locale_code
             
             t = message.text.lower()
             if (t in reversed_locales[c_user_locale_code]):
