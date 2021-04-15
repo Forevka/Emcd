@@ -4,6 +4,30 @@ from datetime import datetime
 from aioinflux import InfluxDBClient, InfluxDBWriteError
 from config import InfluxDBParams
 
+async def log_callback_query(user_id: int, event: str):
+    data = {
+        "measurement": "bot_callback",
+        "time": datetime.now(),
+        "fields": {"event": 1},
+        "tags": {
+            "user": str(user_id),
+            "callback_query": event
+        }
+    }
+    return await log(data)
+
+async def log_text(user_id: int, event: str):
+    data = {
+        "measurement": "bot_text",
+        "time": datetime.now(),
+        "fields": {"event": 1},
+        "tags": {
+            "user": str(user_id),
+            "text_code": event
+        }
+    }
+    return await log(data)
+
 async def log_command(user_id: int, event: str):
     data = {
         "measurement": "bot_commands",
@@ -14,6 +38,10 @@ async def log_command(user_id: int, event: str):
             "command": event
         }
     }
+    return await log(data)
+
+
+async def log(data: dict):
     try:
         async with InfluxDBClient(host=InfluxDBParams.STATS_HOST, db=InfluxDBParams.STATS_DB,
                                   username=InfluxDBParams.STATS_USER, password=InfluxDBParams.STATS_PASS) as client:
