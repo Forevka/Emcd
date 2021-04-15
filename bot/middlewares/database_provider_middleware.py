@@ -9,6 +9,7 @@ class DatabaseProviderMiddleware(LifetimeControllerMiddleware):
     """
     Database provider middleware middleware
     """
+    skip_patterns = ["error", "update"]
 
     def __init__(self, dp: Dispatcher):
         super(DatabaseProviderMiddleware, self).__init__()

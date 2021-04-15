@@ -2,7 +2,7 @@ import typing
 from math import ceil
 
 from aiogram import types
-from config import SELECT_COIN_CB
+from config import PER_PAGE_PAYOUTS, SELECT_COIN_CB
 from database.user_repo import UserRepository
 from enums.coin import Coin
 from loguru import logger
@@ -12,7 +12,6 @@ from bot.common.keyboard_fabrics import finance_cb, income_cb, menu_cb, payouts_
 from bot.common.lang import LangHolder
 from utils.utils import grouper
 
-PER_PAGE = 3
 
 async def payouts_callback_handler(
     query: types.CallbackQuery,
@@ -104,20 +103,20 @@ async def payouts_info_callback_handler(
 
     buttons.append(
         types.InlineKeyboardButton(
-            f"{page}/{ceil(len(payouts.payouts) / PER_PAGE)}",
+            f"{page}/{ceil(len(payouts.payouts) / PER_PAGE_PAYOUTS)}",
             callback_data="do_nothing"
         ),
     )
 
     if (payouts):
-        for payout in payouts.payouts[(page - 1) * PER_PAGE: page * PER_PAGE]:
+        for payout in payouts.payouts[(page - 1) * PER_PAGE_PAYOUTS: page * PER_PAGE_PAYOUTS]:
             message_text += '\n' + _['payouts_template'].format(
                 datetime=payout.gmt_time,
                 amount=payout.amount,
                 transaction_link=(f'<a href="https://blockchair.com/{coin_name}/transaction/{payout.txid}">{payout.txid[8:]}</a>') if payout.txid else _['no_link']
             )
 
-        if (len(payouts.payouts) > page * PER_PAGE):
+        if (len(payouts.payouts) > page * PER_PAGE_PAYOUTS):
             buttons.append(
                 types.InlineKeyboardButton(
                     _["next_button"],

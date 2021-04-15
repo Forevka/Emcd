@@ -9,6 +9,12 @@ POEDITOR_TOKEN = os.environ.get('POEDITOR_TOKEN', '')
 
 CONNECTION_STRING = os.environ.get('CONNECTION_STRING', '')
 
+class InfluxDBParams:
+    STATS_DB   = os.environ.get('INFLUXDB_DB', '')
+    STATS_HOST = os.environ.get('INFUX_DB_HOST', '')
+    STATS_USER = os.environ.get('INFLUXDB_USER', '')
+    STATS_PASS = os.environ.get('INFLUXDB_USER_PASSWORD', '')
+
 TOKEN = os.environ.get('TOKEN', '')
 
 ENVIRONMENT = os.environ.get('ENV_NAME', 'debug')
@@ -31,3 +37,9 @@ WORKER_STATUS_CAROUSEL = {
 }
 
 PAYOUTS_CHECK_START_DATETIME = datetime.datetime(2021, 3, 7, 15, 0, 0, 0).timestamp()
+
+PER_PAGE_BLACK_LIST = 6
+PER_PAGE_FAQ = 4
+PER_PAGE_INCOME = 5
+PER_PAGE_PAYOUTS = 3
+PER_PAGE_WORKERS = 5

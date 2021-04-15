@@ -1,3 +1,4 @@
+from bot.middlewares.analytic_middleware import AnalyticMiddleware
 import logging
 
 from aiogram import Bot, Dispatcher
@@ -59,6 +60,9 @@ def start_polling(token: str, connection_string: str):
     dp["connection_string"] = connection_string
 
     dp.middleware.setup(LoggingMiddleware())
+    if (ENVIRONMENT != 'debug'):
+        dp.middleware.setup(AnalyticMiddleware())
+        
     dp.middleware.setup(DatabaseProviderMiddleware(dp))
     dp.middleware.setup(I18nDataProviderMiddleware(dp))
 

@@ -4,6 +4,8 @@ node-modules/
 __pycache__/
 *.py[cod]
 *$py.class
+logs/
+*.session
 
 certbot/
 

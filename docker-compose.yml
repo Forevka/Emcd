@@ -50,3 +50,26 @@ services:
       - "3029"
     volumes:
       - /etc/logs:/app/logs
+
+  influxdb:
+    image: influxdb:1.8-alpine
+    container_name: "test-stats-influxdb"
+    restart: always
+    volumes:
+      - "influxdb:/var/lib/influxdb"
+    env_file:
+      - ./.env
+
+  grafana:
+    image: grafana/grafana:7.3.4
+    container_name: "test-stats-grafana"
+    volumes:
+      - "grafana-data:/var/lib/grafana"
+    environment:
+      - GF_DATE_FORMATS_DEFAULT_TIMEZONE=browser
+    ports:
+      - "${GRAFANA_PORT}:3000"
+
+volumes:
+  influxdb:
+  grafana-data:
