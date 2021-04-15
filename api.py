@@ -21,7 +21,7 @@ logger.add(
     level=logging.WARN
 )
 
-app = FastAPI()
+app = FastAPI(openapi_prefix="/api/emcd/")
 
 app.add_middleware(
     CORSMiddleware,
