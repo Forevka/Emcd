@@ -9,6 +9,12 @@ POEDITOR_TOKEN = os.environ.get('POEDITOR_TOKEN', '')
 
 CONNECTION_STRING = os.environ.get('CONNECTION_STRING', '')
 
+class InfluxDBParams:
+    STATS_DB   = os.environ.get('INFLUXDB_DB', '')
+    STATS_HOST = os.environ.get('INFUX_DB_HOST', '')
+    STATS_USER = os.environ.get('INFLUXDB_USER', '')
+    STATS_PASS = os.environ.get('INFLUXDB_USER_PASSWORD', '')
+
 TOKEN = os.environ.get('TOKEN', '')
 
 ENVIRONMENT = os.environ.get('ENV_NAME', 'debug')
