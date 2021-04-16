@@ -10,19 +10,12 @@ class AnalyticMiddleware(BaseMiddleware):
     This middleware writes analytic to influx
     """
 
-
     async def on_post_process_message(self, message: Any, results, data: dict):
         if (message.is_command()):
             await log_command(message.from_user.id, message.get_command() or 'unknown')
         else:
-            from bot.common.lang import reversed_locales
-            
-            c_user_locale_code = message.c_user_locale_code
-            
-            t = message.text.lower()
-            if (t in reversed_locales[c_user_locale_code]):
-                text_code = reversed_locales.get(c_user_locale_code, {}).get(t, 'unknown')
-                await log_text(message.from_user.id, text_code)
+            if (message.command_code):
+                await log_text(message.from_user.id, message.command_code)
 
 
     async def on_post_process_callback_query(self, callback_query: types.CallbackQuery, results, data: dict):
