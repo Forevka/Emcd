@@ -39,6 +39,17 @@ async def log_command(user_id: int, event: str):
         }
     }
     return await log(data)
+    
+async def log_request(update_id: int):
+    data = {
+        "measurement": "bot_requests",
+        "time": datetime.now(),
+        "fields": {"event": 1},
+        "tags": {
+            "update_id": update_id,
+        }
+    }
+    return await log(data)
 
 
 async def log(data: dict):
