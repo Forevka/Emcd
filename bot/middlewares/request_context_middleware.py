@@ -16,10 +16,21 @@ class BotLogger():
         return self._logger
 '''
 
-class RequestContextMiddleware(BaseMiddleware):
+class UpdateRequestContextMiddleware(BaseMiddleware):
     """
-    Provides request_id for any update type
+    Provides request_id for update type
     """
 
     async def on_pre_process_update(self, update: Any, data: dict, *args, **kwargs,):
-        update.logger = logger.bind(request_id=uuid4())
+        logger_instance =  logger.bind(request_id=uuid4())
+        update.logger = logger_instance
+        data['logger'] = logger_instance
+
+class RequestContextMiddleware(LifetimeControllerMiddleware):
+    """
+    Provides request_id for any update type
+    """
+    skip_patterns = ['update', 'error',]
+
+    async def pre_process(self, update: Any, data: dict, *args, **kwargs,):
+        data['logger'] = types.Update.get_current().logger

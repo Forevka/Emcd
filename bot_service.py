@@ -1,5 +1,5 @@
 from bot.middlewares.logging_middleware import MyLoggingMiddleware
-from bot.middlewares.request_context_middleware import RequestContextMiddleware
+from bot.middlewares.request_context_middleware import RequestContextMiddleware, UpdateRequestContextMiddleware
 from bot.middlewares.analytic_middleware import AnalyticMiddleware
 import logging
 
@@ -60,6 +60,7 @@ def start_polling(token: str, connection_string: str):
 
     dp["connection_string"] = connection_string
 
+    dp.middleware.setup(UpdateRequestContextMiddleware())
     dp.middleware.setup(RequestContextMiddleware())
     dp.middleware.setup(MyLoggingMiddleware())
     dp.middleware.setup(AnalyticMiddleware())
