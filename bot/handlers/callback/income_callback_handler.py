@@ -1,3 +1,4 @@
+import logging
 import typing
 from math import ceil
 
@@ -9,7 +10,6 @@ from bot.common.replies import reply_to_account_not_found
 from config import PER_PAGE_INCOME, SELECT_COIN_CB
 from database.user_repo import UserRepository
 from enums.coin import Coin
-from loguru import logger
 from third_party.emcd_client.client import EmcdClient
 from utils.utils import grouper
 
@@ -65,6 +65,7 @@ async def income_info_callback_handler(
     callback_data: typing.Dict[str, str],
     user: UserRepository,
     _: LangHolder,
+    logger: logging.Logger,
 ):
     account_id = callback_data["id"]
     coind_id = callback_data['type']

@@ -1,11 +1,12 @@
+import logging
 import typing
 from math import ceil
 
 from aiogram import types
+import loguru
 from config import PER_PAGE_BLACK_LIST, SELECT_COIN_CB
 from database.user_repo import UserRepository
 from enums.coin import Coin
-from loguru import logger
 from third_party.emcd_client.client import EmcdClient
 from bot.common.replies import reply_to_account_not_found
 from bot.common.keyboard_fabrics import menu_cb, worker_black_cb
@@ -64,6 +65,7 @@ async def black_list_info_callback_handler(
     callback_data: typing.Dict[str, str],
     user: UserRepository,
     _: dict,
+    logger: logging.Logger,
 ):
     account_id = callback_data["id"]
     coin_id = callback_data['type']
