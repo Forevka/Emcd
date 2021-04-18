@@ -2,13 +2,16 @@ from typing import Any
 
 from aiogram import types
 from aiogram.dispatcher.middlewares import BaseMiddleware
-from bot.analytics.log import log_callback_query, log_command, log_text
+from bot.analytics.log import log_callback_query, log_command, log_request, log_text
 
 
 class AnalyticMiddleware(BaseMiddleware):
     """
     This middleware writes analytic to influx
     """
+
+    async def on_post_process_update(self, update: types.Update, results, data: dict):
+        await log_request(update.update_id)
 
     async def on_post_process_message(self, message: Any, results, data: dict):
         if (message.is_command()):
