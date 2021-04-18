@@ -1,9 +1,10 @@
+from bot.middlewares.logging_middleware import MyLoggingMiddleware
+from bot.middlewares.request_context_middleware import RequestContextMiddleware
 from bot.middlewares.analytic_middleware import AnalyticMiddleware
 import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
 from loguru import logger
 
@@ -59,7 +60,8 @@ def start_polling(token: str, connection_string: str):
 
     dp["connection_string"] = connection_string
 
-    dp.middleware.setup(LoggingMiddleware())
+    dp.middleware.setup(RequestContextMiddleware())
+    dp.middleware.setup(MyLoggingMiddleware())
     dp.middleware.setup(AnalyticMiddleware())
         
     dp.middleware.setup(DatabaseProviderMiddleware(dp))

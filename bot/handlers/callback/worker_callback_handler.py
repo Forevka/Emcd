@@ -1,3 +1,4 @@
+import logging
 import typing
 from math import ceil
 
@@ -5,7 +6,6 @@ from aiogram import types
 from config import PER_PAGE_WORKERS, SELECT_COIN_CB, WORKER_STATUS_CAROUSEL
 from database.user_repo import UserRepository
 from enums.coin import Coin
-from loguru import logger
 from tabulate import tabulate
 from third_party.emcd_client.client import EmcdClient
 from third_party.emcd_client.models.coin_workers import CoinWorker
@@ -81,6 +81,7 @@ async def worker_info_callback_handler(
     callback_data: typing.Dict[str, str],
     user: UserRepository,
     _: dict,
+    logger: logging.Logger,
 ):
     account_id = callback_data["id"]
     coind_id = callback_data['type']

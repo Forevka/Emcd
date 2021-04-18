@@ -38,7 +38,7 @@ def from_list(f: Callable[[Any], T], x: Any) -> List[T]:
     return [f(y) for y in x]
 
 
-def to_class(c: Type[T], x: Any) -> dict:
+def to_class(c: Type[T], x: Any) -> T:
     assert isinstance(x, c)
     return cast(Any, x).to_dict()
 

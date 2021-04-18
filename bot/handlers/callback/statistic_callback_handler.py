@@ -1,3 +1,4 @@
+import logging
 import typing
 
 from aiogram import types
@@ -5,7 +6,6 @@ from babel.numbers import format_currency
 from config import FALLBACK_CURRENCY, SELECT_COIN_CB
 from database.user_repo import UserRepository
 from enums.coin import Coin
-from loguru import logger
 from third_party.coincap_client.client import CoinCapClient
 from third_party.coincap_client.models.exchange_coin_to_currency import \
     ExchangeCoinToCurrency
@@ -74,6 +74,7 @@ async def statistic_info_callback_handler(
     callback_data: typing.Dict[str, str],
     user: UserRepository,
     _: LangHolder,
+    logger: logging.Logger,
 ):
     account_id = callback_data["id"]
     coin_id = callback_data['type']
