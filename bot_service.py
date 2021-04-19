@@ -68,6 +68,9 @@ def start_polling(token: str, connection_string: str):
     dp.middleware.setup(DatabaseProviderMiddleware(dp))
     dp.middleware.setup(I18nDataProviderMiddleware(dp))
 
+    # https://t.me/aiogram_ru/535287
+    dp.errors_handlers.once = True
+
     register_handlers(dp)
 
     executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
