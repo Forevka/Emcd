@@ -1,10 +1,7 @@
 import asyncio
 import logging
-import os
-from utils.utils import get_filename_without_ext
 
-from aiogram import Bot, Dispatcher, types
-from aiogram.utils import exceptions, executor
+from aiogram.utils import exceptions
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from asyncpg.connection import Connection
 from asyncpg.pool import Pool
@@ -17,7 +14,7 @@ from database.models.broadcast_to_send import BroadcastToSend
 from notifier.telegram_notifier import TelegramNotifier
 from utils.intercept_standart_logger import InterceptStandartHandler
 from utils.log_rotator import SizedTimedRotatingFileHandler
-
+from utils.utils import get_filename_without_ext
 
 logging.basicConfig(handlers=[InterceptStandartHandler()],)
 logger.add(
@@ -28,7 +25,7 @@ logger.add(
 )
 
 
-async def send_message(user_id: int, text: str, notifier: TelegramNotifier) -> bool:
+async def send_message(user_id: int, text: str, notifier: TelegramNotifier, con: Connection) -> bool:
     """
     Safe messages sender
     :param user_id:
@@ -37,7 +34,7 @@ async def send_message(user_id: int, text: str, notifier: TelegramNotifier) -> b
     :return:
     """
     try:
-        await notifier.notify(user_id, text)
+        await notifier.notify(text, con, user_id,)
     except exceptions.BotBlocked:
         logger.warning(f"Target [ID:{user_id}]: blocked by user")
     except exceptions.ChatNotFound:
@@ -45,7 +42,7 @@ async def send_message(user_id: int, text: str, notifier: TelegramNotifier) -> b
     except exceptions.RetryAfter as e:
         logger.warning(f"Target [ID:{user_id}]: Flood limit is exceeded. Sleep {e.timeout} seconds.")
         await asyncio.sleep(e.timeout)
-        return await send_message(user_id, text, notifier)  # Recursive call
+        return await send_message(user_id, text, notifier, con)  # Recursive call
     except exceptions.UserDeactivated:
         logger.warning(f"Target [ID:{user_id}]: user is deactivated")
     except exceptions.TelegramAPIError:
@@ -74,7 +71,7 @@ async def broadcaster(semaphore: asyncio.BoundedSemaphore, pool: Pool, broadcast
             users = await repo.get_all_user_by_lang(broadcast.lang_id)
 
             for user in users:
-                if await send_message(user.id, broadcast.text, notifier):
+                if await send_message(user.id, broadcast.text, notifier, repo.connection):
                     count += 1
                 await asyncio.sleep(.05)  # 20 messages per second (Limit: 30 messages per second)
 
