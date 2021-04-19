@@ -1,3 +1,4 @@
+from bot.filters.rethrow_exception_filter import RethrowExceptionFilter
 from bot.middlewares.logging_middleware import MyLoggingMiddleware
 from bot.middlewares.request_context_middleware import RequestContextMiddleware, UpdateRequestContextMiddleware
 from bot.middlewares.analytic_middleware import AnalyticMiddleware
@@ -58,6 +59,13 @@ def start_polling(token: str, connection_string: str):
     bot = init_bot(token)
     dp = init_dispatcher(bot)
 
+    # https://t.me/aiogram_ru/535287
+    #dp.errors_handlers.once = True
+
+    dp.filters_factory.bind(RethrowExceptionFilter, event_handlers=[
+        dp.errors_handlers,
+    ])
+
     dp["connection_string"] = connection_string
 
     dp.middleware.setup(UpdateRequestContextMiddleware())
@@ -67,9 +75,6 @@ def start_polling(token: str, connection_string: str):
         
     dp.middleware.setup(DatabaseProviderMiddleware(dp))
     dp.middleware.setup(I18nDataProviderMiddleware(dp))
-
-    # https://t.me/aiogram_ru/535287
-    dp.errors_handlers.once = True
 
     register_handlers(dp)
 
