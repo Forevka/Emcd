@@ -1,8 +1,12 @@
+
 from typing import Any
 
 from aiogram import types
+from aiogram.dispatcher.handler import current_handler
 from aiogram.dispatcher.middlewares import BaseMiddleware
-from bot.analytics.log import log_callback_query, log_command, log_request, log_text
+from bot.analytics.log import (log_callback_query, log_command, log_request,
+                               log_text)
+from bot.handlers.text.base_command_handler import BaseCommandHandler
 
 
 class AnalyticMiddleware(BaseMiddleware):
@@ -13,12 +17,15 @@ class AnalyticMiddleware(BaseMiddleware):
     async def on_post_process_update(self, update: types.Update, results, data: dict):
         await log_request(update.update_id)
 
+    async def on_process_message(self, message: Any, data: dict):
+        handler: BaseCommandHandler = current_handler.get()
+        data['analytic_id'] = handler.analytic_id
+
     async def on_post_process_message(self, message: Any, results, data: dict):
         if (message.is_command()):
-            await log_command(message.from_user.id, message.get_command() or 'unknown')
+            await log_command(message.from_user.id, data['analytic_id'])
         else:
-            if (message.command_code):
-                await log_text(message.from_user.id, message.command_code)
+            await log_text(message.from_user.id, data['analytic_id'])
 
 
     async def on_post_process_callback_query(self, callback_query: types.CallbackQuery, results, data: dict):

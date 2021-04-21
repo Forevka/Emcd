@@ -12,9 +12,6 @@ class I18nCommandFilter(BoundFilter):
         
         t = obj.text.lower()
         if (t in reversed_locales[c_user_locale_code]):
-            is_filtered = reversed_locales[c_user_locale_code][t] == self.command_code
-            if (is_filtered):
-                obj.command_code = self.command_code
-            return is_filtered
+            return reversed_locales[c_user_locale_code][t] == self.command_code
 
         return False
