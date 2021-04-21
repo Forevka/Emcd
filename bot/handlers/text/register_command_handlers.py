@@ -1,3 +1,4 @@
+from bot.handlers.text.unhandled_text import UnhandledText
 from aiogram import Dispatcher
 from aiogram.types import ChatType
 from bot.common.finite_state_machine import Form
@@ -28,3 +29,6 @@ def register_command_handlers(dp: Dispatcher):
     dp.register_message_handler(CmdSettings('settings'), I18nCommandFilter('setting'), state='*')
     
     dp.register_message_handler(TextAddAccount('new_emcd_account'), state=Form.waiting_for_account_id)
+
+    # handle all text from users 
+    dp.register_message_handler(UnhandledText('unhandled_text'), state='*')
