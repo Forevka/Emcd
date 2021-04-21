@@ -8,3 +8,4 @@ class CmdThrow(BaseCommandHandler):
         raise ValueError()
 
     __call__ = handle
+    
