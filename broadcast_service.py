@@ -127,8 +127,9 @@ async def job():
 
 if __name__ == '__main__':
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(job, "interval", seconds=10)
 
     scheduler.start()
+    
+    scheduler.add_job(job, "interval", seconds=30)
 
     asyncio.get_event_loop().run_forever()

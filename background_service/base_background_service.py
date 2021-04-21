@@ -51,7 +51,7 @@ class BaseBackgroundService(Generic[T]):
                 logger.info('Loading from poeditor')
                 locales = await load_translations(POEDITOR_ID, POEDITOR_TOKEN)
                 
-            logger.warning(f'Job started')
+            logger.info(f'Job started')
             temp_con = await pool.acquire()
             items = await self.get_items_to_process(temp_con)
 
