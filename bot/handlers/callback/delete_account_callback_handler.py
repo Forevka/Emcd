@@ -27,6 +27,7 @@ async def delete_account_callback_handler(
                 )
             )
         
+        await query.answer()
         return await query.message.edit_text(
             _["choose_account_to_delete"],
             reply_markup=keyboard_markup,
@@ -36,6 +37,7 @@ async def delete_account_callback_handler(
     account = next((acc for acc in await user.get_accounts(query.from_user.id) if str(acc.account_id) == account_id), None,)
     
     if (account is None):
+        await query.answer()
         return await reply_to_account_not_found(query.message, _)
 
     keyboard_markup.add(
@@ -53,6 +55,7 @@ async def delete_account_callback_handler(
         _["delete_account_descr"].format(account_name=account.username),
         reply_markup=keyboard_markup,
     )
+    await query.answer()
 
 
 async def delete_account_confirmation_callback_handler(
@@ -81,3 +84,4 @@ async def delete_account_confirmation_callback_handler(
         _['account_deleted_descr'],
         reply_markup=keyboard_markup,
     )
+    await query.answer()

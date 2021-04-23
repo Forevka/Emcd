@@ -41,3 +41,4 @@ async def notificaion_enable_callback_handler(
         message_text,
         reply_markup=keyboard_markup,
     )
+    await query.answer()

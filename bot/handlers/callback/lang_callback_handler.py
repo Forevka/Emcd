@@ -35,6 +35,7 @@ async def lang_list_callback_handler(
         inline_keyboard_markup.row(*i)
 
     await query.message.edit_text(_['choose_lang'], reply_markup=inline_keyboard_markup)
+    await query.answer()
 
 async def lang_callback_handler(
     query: types.CallbackQuery,

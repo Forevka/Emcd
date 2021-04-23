@@ -53,3 +53,4 @@ async def change_coins_for_account_callback_handler(
         _["coin_list_descr"],
         reply_markup=keyboard_markup,
     )
+    await query.answer()

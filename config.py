@@ -3,6 +3,7 @@ from enums.lang import Lang
 import os
 
 START_TIME = datetime.datetime.now()
+INFLUX_WRITE_TIMEOUT_SEC = 5
 
 POEDITOR_ID = int(os.environ.get('POEDITOR_PROJECT_ID', 0))
 POEDITOR_TOKEN = os.environ.get('POEDITOR_TOKEN', '')

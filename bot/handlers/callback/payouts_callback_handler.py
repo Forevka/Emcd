@@ -27,6 +27,7 @@ async def payouts_callback_handler(
     account = next((acc for acc in await user.get_accounts(query.from_user.id) if str(acc.account_id) == account_id), None,)
     
     if (account is None):
+        await query.answer()
         return await reply_to_account_not_found(query.message, _)
 
     btn_list = []
@@ -57,6 +58,7 @@ async def payouts_callback_handler(
         _["payouts_choose_coin"],
         reply_markup=keyboard_markup,
     )
+    await query.answer()
 
 
 async def payouts_info_callback_handler(
@@ -77,6 +79,7 @@ async def payouts_info_callback_handler(
     account = next((acc for acc in await user.get_accounts(query.from_user.id) if str(acc.account_id) == account_id), None,)
 
     if (account is None):
+        await query.answer()
         return await reply_to_account_not_found(query.message, _)
 
     payouts = None
@@ -102,12 +105,13 @@ async def payouts_info_callback_handler(
             ),
         )
 
-    buttons.append(
-        types.InlineKeyboardButton(
-            f"{page}/{ceil(len(payouts.payouts) / PER_PAGE_PAYOUTS)}",
-            callback_data="do_nothing"
-        ),
-    )
+    if (payouts.payouts):
+        buttons.append(
+            types.InlineKeyboardButton(
+                f"{page}/{ceil(len(payouts.payouts) / PER_PAGE_PAYOUTS)}",
+                callback_data="do_nothing"
+            ),
+        )
 
     if (payouts):
         for payout in payouts.payouts[(page - 1) * PER_PAGE_PAYOUTS: page * PER_PAGE_PAYOUTS]:
@@ -158,3 +162,4 @@ async def payouts_info_callback_handler(
         reply_markup=keyboard_markup,
         disable_web_page_preview=True,
     )
+    await query.answer()

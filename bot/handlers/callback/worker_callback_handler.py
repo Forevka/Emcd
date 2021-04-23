@@ -59,6 +59,7 @@ async def worker_callback_handler(
         _["worker_choose_coin"],
         reply_markup=keyboard_markup,
     )
+    await query.answer()
 
 
 def format_worker_info(worker: CoinWorker, locales: typing.Dict[str, str]) -> str:
@@ -115,12 +116,13 @@ async def worker_info_callback_handler(
 
     workers_normalized = workers.get_all_workers_by_status(0, status_id)
 
-    buttons.append(
-        types.InlineKeyboardButton(
-            f"{page}/{ceil(len(workers_normalized) / PER_PAGE_WORKERS)}",
-            callback_data="do_nothing"
-        ),
-    )
+    if (workers_normalized):
+        buttons.append(
+            types.InlineKeyboardButton(
+                f"{page}/{ceil(len(workers_normalized) / PER_PAGE_WORKERS)}",
+                callback_data="do_nothing"
+            ),
+        )
 
 
     locales = {
@@ -206,14 +208,5 @@ async def worker_info_callback_handler(
         ),
         reply_markup=keyboard_markup,
     )
+    await query.answer()
 
-async def worker_info_change_status_callback_handler(
-    query: types.CallbackQuery,
-    callback_data: typing.Dict[str, str],
-    user: UserRepository,
-    _: dict,
-):
-    account_id = callback_data["id"]
-    coind_id = callback_data['type']
-    page = int(callback_data['page'])
-    status_id = int(callback_data['status_id'])

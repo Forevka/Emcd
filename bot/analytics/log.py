@@ -1,8 +1,9 @@
 import logging
 from datetime import datetime
+import aiohttp
 
 from aioinflux import InfluxDBClient, InfluxDBWriteError
-from config import InfluxDBParams
+from config import ENVIRONMENT, INFLUX_WRITE_TIMEOUT_SEC, InfluxDBParams
 
 async def log_callback_query(user_id: int, event: str):
     data = {
@@ -55,7 +56,7 @@ async def log_request(update_id: int):
 async def log(data: dict):
     try:
         async with InfluxDBClient(host=InfluxDBParams.STATS_HOST, db=InfluxDBParams.STATS_DB,
-                                  username=InfluxDBParams.STATS_USER, password=InfluxDBParams.STATS_PASS) as client:
+                                username=InfluxDBParams.STATS_USER, password=InfluxDBParams.STATS_PASS, timeout=INFLUX_WRITE_TIMEOUT_SEC) as client:
             await client.write(data)
     except InfluxDBWriteError as ex:
         logging.error(f"InfluxDB write error: {str(ex)}")

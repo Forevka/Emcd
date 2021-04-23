@@ -59,6 +59,8 @@ async def black_list_callback_handler(
         _["worker_blacklist_choose_coin"],
         reply_markup=keyboard_markup,
     )
+    await query.answer()
+
 
 async def black_list_info_callback_handler(
     query: types.CallbackQuery,
@@ -108,12 +110,13 @@ async def black_list_info_callback_handler(
 
     workers_normalized = workers.get_all_workers(0,)
 
-    buttons.append(
-        types.InlineKeyboardButton(
-            f"{page}/{ceil(len(workers_normalized) / PER_PAGE_BLACK_LIST)}",
-            callback_data="do_nothing"
-        ),
-    )
+    if (workers_normalized):
+        buttons.append(
+            types.InlineKeyboardButton(
+                f"{page}/{ceil(len(workers_normalized) / PER_PAGE_BLACK_LIST)}",
+                callback_data="do_nothing"
+            ),
+        )
 
     if (workers):
         for worker in workers_normalized[(page - 1) * PER_PAGE_BLACK_LIST: page * PER_PAGE_BLACK_LIST]:
@@ -169,4 +172,5 @@ async def black_list_info_callback_handler(
         ),
         reply_markup=keyboard_markup,
     )
+    await query.answer()
     

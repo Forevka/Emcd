@@ -40,6 +40,7 @@ async def currency_callback_handler(
         )
     
     await query.message.edit_text(_['curr_list'], reply_markup=inline_keyboard_markup)
+    await query.answer()
 
 
 async def currency_update_callback_handler(
@@ -83,3 +84,4 @@ async def currency_update_callback_handler(
         )
     
     await query.message.edit_text(_['curr_list'], reply_markup=inline_keyboard_markup)
+    await query.answer()
