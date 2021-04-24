@@ -42,3 +42,4 @@ async def cabinet_callback_handler(
         ),
         reply_markup=keyboard_markup,
     )
+    await query.answer()

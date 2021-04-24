@@ -43,12 +43,13 @@ async def faq_callback_handler(
             ),
         )
             
-    buttons.append(
-        types.InlineKeyboardButton(
-            f"{page}/{ceil(len(questions) / PER_PAGE_FAQ)}",
-            callback_data="do_nothing"
-        ),
-    )
+    if (questions):
+        buttons.append(
+            types.InlineKeyboardButton(
+                f"{page}/{ceil(len(questions) / PER_PAGE_FAQ)}",
+                callback_data="do_nothing"
+            ),
+        )
 
     if (len(questions) > page * PER_PAGE_FAQ):
         buttons.append(
@@ -66,6 +67,7 @@ async def faq_callback_handler(
         _["faq_msg_descr"],
         reply_markup=inline_keyboard_markup,
     )
+    await query.answer()
 
 
 async def faq_info_callback_handler(
@@ -99,3 +101,4 @@ async def faq_info_callback_handler(
         reply_markup=keyboard_markup,
         disable_web_page_preview=True,
     )
+    await query.answer()

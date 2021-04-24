@@ -53,3 +53,4 @@ async def finance_callback_handler(
         _["finance_choose_coin"],
         reply_markup=keyboard_markup,
     )
+    await query.answer()

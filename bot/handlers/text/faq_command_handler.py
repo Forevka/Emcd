@@ -37,13 +37,14 @@ class CmdFaq(BaseCommandHandler):
                     ),
                 ),
             )
-                
-        buttons.append(
-            types.InlineKeyboardButton(
-                f"{page}/{ceil(len(questions) / PER_PAGE_FAQ)}",
-                callback_data="do_nothing"
-            ),
-        )
+        
+        if (questions):
+            buttons.append(
+                types.InlineKeyboardButton(
+                    f"{page}/{ceil(len(questions) / PER_PAGE_FAQ)}",
+                    callback_data="do_nothing"
+                ),
+            )
 
         if (len(questions) > page * PER_PAGE_FAQ):
             buttons.append(

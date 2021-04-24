@@ -1,8 +1,3 @@
-from bot.filters.bind import bind_filters
-from bot.filters.rethrow_exception_filter import RethrowExceptionFilter
-from bot.middlewares.logging_middleware import MyLoggingMiddleware
-from bot.middlewares.request_context_middleware import RequestContextMiddleware, UpdateRequestContextMiddleware
-from bot.middlewares.analytic_middleware import AnalyticMiddleware
 import logging
 
 from aiogram import Bot, Dispatcher
@@ -11,17 +6,16 @@ from aiogram.utils import executor
 from loguru import logger
 
 from bot.common.lang import update_texts
+from bot.filters.bind import bind_filters
 from bot.handlers.register_handlers import register_handlers
-from bot.middlewares.database_provider_middleware import \
-    DatabaseProviderMiddleware
-from bot.middlewares.i18n_data_provider_midleware import \
-    I18nDataProviderMiddleware
+from bot.middlewares.register import register_middlewares
 from config import (CONNECTION_STRING, ENVIRONMENT, POEDITOR_ID,
                     POEDITOR_TOKEN, TOKEN)
 from database.db import get_pool
 from utils.intercept_standart_logger import InterceptStandartHandler
 from utils.log_rotator import SizedTimedRotatingFileHandler
-from utils.utils import get_filename_without_ext, load_translations, load_translations_from_file
+from utils.utils import (get_filename_without_ext, load_translations,
+                         load_translations_from_file)
 
 logging.basicConfig(handlers=[InterceptStandartHandler()],)
 logger.add(
@@ -63,15 +57,7 @@ def start_polling(token: str, connection_string: str):
     dp["connection_string"] = connection_string
 
     bind_filters(dp)
-
-    dp.middleware.setup(UpdateRequestContextMiddleware())
-    dp.middleware.setup(RequestContextMiddleware())
-    dp.middleware.setup(MyLoggingMiddleware())
-    dp.middleware.setup(AnalyticMiddleware())
-        
-    dp.middleware.setup(DatabaseProviderMiddleware(dp))
-    dp.middleware.setup(I18nDataProviderMiddleware(dp))
-
+    register_middlewares(dp)
     register_handlers(dp)
 
     executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
