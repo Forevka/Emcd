@@ -1,9 +1,11 @@
 import logging
 import typing
 from math import ceil
+from utils.generate_workers_unique_dict import generate_unique_workers_dict
+
 
 from aiogram import types
-import loguru
+from aiogram.dispatcher import FSMContext
 from config import PER_PAGE_BLACK_LIST, SELECT_COIN_CB
 from database.user_repo import UserRepository
 from enums.coin import Coin
@@ -68,6 +70,7 @@ async def black_list_info_callback_handler(
     user: UserRepository,
     _: dict,
     logger: logging.Logger,
+    state: FSMContext,
 ):
     account_id = callback_data["id"]
     coin_id = callback_data['type']
@@ -75,11 +78,17 @@ async def black_list_info_callback_handler(
     page = int(callback_data['page'])
 
     if (action != '_'):
-        is_blacklisted = await user.toggle_worker_blacklist(query.from_user.id, action)
-        await query.answer(_['worker_blacklisted' if is_blacklisted else 'worker_not_blacklisted'].format(
-                worker=action
-            )
-        )
+        async with state.proxy() as data:
+            worker_id = data.get('workers_unique', {}).get(action, None)
+            if (worker_id):
+                is_blacklisted = await user.toggle_worker_blacklist(query.from_user.id, worker_id)
+                await query.answer(_['worker_blacklisted' if is_blacklisted else 'worker_not_blacklisted'].format(
+                        worker=worker_id,
+                    )
+                )
+            else:
+                logger.warning(f'worker_id was null {data.get("workers_unique")}')
+                await query.answer('If you see this message please contact with support', show_alert=True)
 
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
 
@@ -118,14 +127,15 @@ async def black_list_info_callback_handler(
             ),
         )
 
-    if (workers):
+        async with state.proxy() as data:
+            data['workers_unique'] = generate_unique_workers_dict(workers_normalized)
+
         for worker in workers_normalized[(page - 1) * PER_PAGE_BLACK_LIST: page * PER_PAGE_BLACK_LIST]:
-            #message_text += '\n' + format_worker_info(worker, locales)
             buttons_workers.append(
                 types.InlineKeyboardButton(
                     worker.worker + (_["blacklist_pointer"] if worker.worker in blacklisted_workers else ""),
                     callback_data=worker_black_cb.new(
-                        id=account_id, page=page, type=coin_id, action=worker.worker
+                        id=account_id, page=page, type=coin_id, action=worker.hash_name()
                     ),
                 ),
             )

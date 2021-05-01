@@ -9,6 +9,7 @@
 from datetime import datetime
 from enum import Enum
 from dataclasses import dataclass
+from hashlib import md5
 from typing import Any, Dict, List, TypeVar, Type, Callable, cast
 import typing
 
@@ -147,6 +148,9 @@ class CoinWorker:
     reject: float
     lastbeat: int
     status_id: int # 1 active 0 inactive -1 dead 2 nonstable
+
+    def hash_name(self,) -> str:
+        return md5(self.worker.encode('utf-8')).hexdigest()[:10]
 
     def to_insert(self, now: datetime) -> str:
         return f"({self.account_coin_id}, '{self.worker}', '{now.isoformat()}', {self.status_id}, {self.hashrate}, {self.hashrate1_h}, {self.hashrate24_h}, {self.reject})"

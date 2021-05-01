@@ -12,7 +12,7 @@ class UpdateRequestContextMiddleware(BaseMiddleware):
     """
 
     async def on_pre_process_update(self, update: Any, data: dict, *args, **kwargs,):
-        logger_instance =  logger.bind(request_id=uuid4())
+        logger_instance =  logger.bind(request_id=uuid4(), update=update)
         update.logger = logger_instance
         data['logger'] = logger_instance
 
