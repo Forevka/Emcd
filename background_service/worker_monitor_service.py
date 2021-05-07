@@ -1,3 +1,6 @@
+from enums.notify_channel import NotifyChannel
+from enums.notify_type import NotifyType
+from database.notification_repo import NotificationRepository
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List
@@ -43,6 +46,7 @@ class WorkerMonitorService(BaseBackgroundService[AccountCoinNotificationWorker])
 
         message_text = ''
         user_repo = UserRepository(con)
+        notification_repo = NotificationRepository(con)
 
         async with EmcdClient(item.account_id) as client:
             api_account = await client.get_workers(item.coin_id)
@@ -93,13 +97,8 @@ class WorkerMonitorService(BaseBackgroundService[AccountCoinNotificationWorker])
                 if (change_status_descr):
                     descr = [st.to_description(translation['worker_changed_status_descr'], translation) for st in change_status_descr]
                     message_text = translation['worker_changed_status_body'].format(account_name=user_account.username, description='\n'.join([i for i in descr]))
-                    try:
-                        await notifier.notify(message_text, con, user_db.id,)
-                    except (exceptions.BotBlocked, exceptions.UserDeactivated) as e:
-                        logger.warning(f'{item.user_id} blocked bot or deactivated they telegram account, disabling notifications')
-                        await user_repo.update_notification_setting(item.user_id, False)
-                    except exceptions.TelegramAPIError as e:
-                        logger.error(f'aiogram error {e}')
+                    
+                    await notification_repo.add(message_text, NotifyType.Worker, [NotifyChannel.Telegram], user_db.id)
 
                 logger.info(f'{item.account_id}|{item.coin_id} - Clean up worker history {item.id}')
                 await user_repo.cleanup_worker_history_for_account(item.id)
