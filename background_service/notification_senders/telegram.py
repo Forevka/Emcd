@@ -16,8 +16,8 @@ from notifier.telegram_notifier import TelegramNotifier
 
 
 class TelegramNotificationSenderService(BaseBackgroundService[NotificationQueue]):
-    def __init__(self, connection_string: str, max_workers: int = 10,):
-        super().__init__(connection_string, max_workers=max_workers)
+    def __init__(self, connection_string: str, max_workers: int = 10, is_need_to_load_translations: bool = True):
+        super().__init__(connection_string, max_workers=max_workers, is_need_to_load_translations=is_need_to_load_translations)
         self.is_throttled = False
 
     async def get_notifier(self,):

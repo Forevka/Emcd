@@ -14,9 +14,10 @@ T = TypeVar('T')
 
 
 class BaseBackgroundService(Generic[T]):
-    def __init__(self, connection_string: str, max_workers: int = 10,):
+    def __init__(self, connection_string: str, max_workers: int = 10, is_need_to_load_translations: bool = True):
         self.max_workers = max_workers
         self.connection_string = connection_string
+        self.is_need_to_load_translations = is_need_to_load_translations
     
     async def get_notifier(self,) -> BaseNotifier:
         raise NotImplementedError()
@@ -47,7 +48,7 @@ class BaseBackgroundService(Generic[T]):
         try:
             pool = await get_pool(self.connection_string)
             locales = await load_translations_from_file()
-            if (ENVIRONMENT != 'debug'):
+            if (ENVIRONMENT != 'debug' and self.is_need_to_load_translations):
                 logger.info('Loading from poeditor')
                 locales = await load_translations(POEDITOR_ID, POEDITOR_TOKEN)
                 

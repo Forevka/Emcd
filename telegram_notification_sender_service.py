@@ -21,7 +21,7 @@ logger.add(
 
 if (__name__ == "__main__"):
     scheduler = AsyncIOScheduler()
-    service = TelegramNotificationSenderService(CONNECTION_STRING, max_workers=1)
+    service = TelegramNotificationSenderService(CONNECTION_STRING, max_workers=1, is_need_to_load_translations=False)
 
     scheduler.start()
 
