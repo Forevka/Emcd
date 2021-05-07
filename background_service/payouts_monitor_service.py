@@ -45,6 +45,7 @@ class PayoutsMonitorService(BaseBackgroundService[AccountCoinNotificationPayout]
                 p for p in payouts.payouts 
                 if p.timestamp > PAYOUTS_CHECK_START_DATETIME 
                 and p.timestamp > item.notification_update_datetime.timestamp()
+                and p.timestamp > item.account_created_datetime.timestamp()
                 and p.txid is not None 
                 and p.txid != ''
             ]

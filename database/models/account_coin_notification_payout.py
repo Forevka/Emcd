@@ -21,3 +21,4 @@ class AccountCoinNotificationPayout:
 	is_active: bool
 	user_id: int
 	notification_update_datetime: datetime.datetime
+	account_created_datetime: datetime.datetime
