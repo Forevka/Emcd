@@ -1,4 +1,5 @@
 import asyncio
+from enums.notify_type import NotifyType
 from typing import Dict, List
 
 from asyncpg.connection import Connection
@@ -54,7 +55,10 @@ class TelegramNotificationSenderService(BaseBackgroundService[NotificationQueue]
             elif (result.result in [TelegramSendResult.Blocked, TelegramSendResult.Deactivated, TelegramSendResult.ChatNotFound,]):
                 logger.warning(f'{item.user_id} blocked bot or deactivated they telegram account, disabling notifications')
                 item.status_id = NotifyStatus.Failed.value
-                await user_repo.update_notification_setting(item.user_id, False)
+                if (item.type_id == NotifyType.Payout):
+                    await user_repo.update_notification_payouts_setting(item.user_id, False)
+                elif (item.type_id == NotifyType.Worker):
+                    await user_repo.update_notification_setting(item.user_id, False)
             
             elif (result.result in [TelegramSendResult.ApiError, TelegramSendResult.Error]):
                 logger.warning(f'{item.user_id} api error. will try to send in next start')
