@@ -1,3 +1,6 @@
+from enums.notify_channel import NotifyChannel
+from enums.notify_type import NotifyType
+from database.notification_repo import NotificationRepository
 from typing import Dict, List
 
 from aiogram import exceptions
@@ -25,6 +28,7 @@ class PayoutsMonitorService(BaseBackgroundService[AccountCoinNotificationPayout]
 
     async def job(self, con: Connection, item: AccountCoinNotificationPayout, notifier: TelegramNotifier, locales: Dict):
         user_repo = UserRepository(con)
+        notification_repo = NotificationRepository(con)
 
         async with EmcdClient(item.account_id) as client:
             user_account = next((acc for acc in await user_repo.get_accounts(item.user_id) if acc.account_id == item.account_id), None)
@@ -41,6 +45,7 @@ class PayoutsMonitorService(BaseBackgroundService[AccountCoinNotificationPayout]
                 p for p in payouts.payouts 
                 if p.timestamp > PAYOUTS_CHECK_START_DATETIME 
                 and p.timestamp > item.notification_update_datetime.timestamp()
+                and p.timestamp > item.account_created_datetime.timestamp()
                 and p.txid is not None 
                 and p.txid != ''
             ]
@@ -66,12 +71,7 @@ class PayoutsMonitorService(BaseBackgroundService[AccountCoinNotificationPayout]
                             amount=payout.amount,
                             current_balance=format(latest_coin_data.balance, '.8f'),
                         )
-                        try:
-                            await notifier.notify(msg_text, con, user_db.id,)
-                        except (exceptions.BotBlocked, exceptions.UserDeactivated) as e:
-                            logger.warning(f'{item.user_id} blocked bot or deactivated they telegram account, disabling notifications')
-                            await user_repo.update_notification_setting(item.user_id, False)
-                        except exceptions.TelegramAPIError as e:
-                            logger.error(f'aiogram error {e}')
+                        
+                        await notification_repo.add(msg_text, NotifyType.Payout, [NotifyChannel.Telegram], user_db.id)
                     
                         await user_repo.mark_payout_as_notified(item.id, payout.timestamp,)

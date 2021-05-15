@@ -2,6 +2,8 @@ import datetime
 from enums.lang import Lang
 import os
 
+TELEGRAM_DEFAULT_WAIT_TIME = 0.05
+
 START_TIME = datetime.datetime.now()
 INFLUX_WRITE_TIMEOUT_SEC = 5
 

@@ -10,6 +10,15 @@ services:
     volumes:
       - /etc/logs:/app/logs
       
+  telegram_notification_service:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.telegram_notification_service
+    env_file:
+    - ./.env
+    volumes:
+      - /etc/logs:/app/logs
+
   worker_service:
     build:
       context: .

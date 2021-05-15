@@ -178,7 +178,7 @@ class UserRepository:
         return [AccountCoinNotificationWorker(**acc) for acc in await self.connection.fetch(sql,)]
     
     async def get_all_account_payouts_to_refresh(self,) -> List[AccountCoinNotificationPayout]:
-        sql = '''
+        sql = '''        
         SELECT 
             ac."id"
             , ac.account_id
@@ -195,8 +195,10 @@ class UserRepository:
             , ac.is_active
             , ac.user_id
             , upn.update_datetime as notification_update_datetime 
+			, acc.create_datetime as account_created_datetime
         from account_coin ac
         join user_payout_notification upn on upn.user_id = ac.user_id and upn.is_enabled = true and ac.is_active = true
+		join account acc on ac.account_id = acc.account_id and ac.user_id = acc.user_id
         '''
         
         return [AccountCoinNotificationPayout(**acc) for acc in await self.connection.fetch(sql,)]
