@@ -36,6 +36,7 @@ jobs:
           envkey_INFLUXDB_USER_PASSWORD: ${{ secrets.INFLUXDB_USER_PASSWORD }}
           envkey_INFLUXDB_HTTP_AUTH_ENABLED: ${{ secrets.INFLUXDB_HTTP_AUTH_ENABLED }}
           envkey_GRAFANA_PORT: ${{ secrets.GRAFANA_PORT }}
+          envkey_INFLUXDB_DATA_MAX_VALUES_PER_TAG: ${{ secrets.INFLUXDB_DATA_MAX_VALUES_PER_TAG }}
           file_name: .env
 
       - name: Move envfile to host
