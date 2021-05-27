@@ -36,6 +36,7 @@ JSONStructure = Union[JSONArray, JSONObject]
 async def response(request: Request, model: JSONStructure = None):
     if (model[b'topic'] == 'conversation.admin.replied'):
         model = await request.json()
+        print(model)
         conv = Conversation(**model)
         conv_repo = ConversationRepository(request.state.connection)
         notification_repo = NotificationRepository(request.state.connection)
