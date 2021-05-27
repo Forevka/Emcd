@@ -1,7 +1,9 @@
+from bot.handlers.text.new_feedback import TextAddConversation
+from bot.handlers.text.feedback_command import CmdFeedback
 from bot.handlers.text.unhandled_text import UnhandledText
 from aiogram import Dispatcher
 from aiogram.types import ChatType
-from bot.common.finite_state_machine import Form
+from bot.common.finite_state_machine import FeedbackForm, Form
 from bot.filters.i18n_command_filter import I18nCommandFilter
 from bot.handlers.text.account_id_add_handler import TextAddAccount
 from bot.handlers.text.cabinet_command_handler import CmdCabinet
@@ -23,12 +25,14 @@ def register_command_handlers(dp: Dispatcher):
     dp.register_message_handler(CmdStart('start'), commands=['start'], state='*')
     dp.register_message_handler(CmdLocales('locales'), commands=['locales'], state='*')
 
+    dp.register_message_handler(CmdFeedback('feedback'), I18nCommandFilter('feedback_button'), state='*')
     dp.register_message_handler(CmdFaq('faq'), I18nCommandFilter('faq'), state='*')
     dp.register_message_handler(CmdCabinet('cabinet'), I18nCommandFilter('cabinet'), state='*')
     dp.register_message_handler(CmdLang('lang'), I18nCommandFilter('language'), state='*')
     dp.register_message_handler(CmdSettings('settings'), I18nCommandFilter('setting'), state='*')
     
     dp.register_message_handler(TextAddAccount('new_emcd_account'), state=Form.waiting_for_account_id)
+    dp.register_message_handler(TextAddConversation('new_conversation'), state=FeedbackForm.waiting_for_text)
 
     # handle all text from users 
     dp.register_message_handler(UnhandledText('unhandled_text'), state='*')

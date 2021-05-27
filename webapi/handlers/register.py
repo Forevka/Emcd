@@ -1,3 +1,4 @@
+from webapi.handlers.conversations.response import response
 from webapi.handlers.auth.me import me
 from fastapi import FastAPI
 from fastapi_jwt_auth.exceptions import AuthJWTException
@@ -65,4 +66,12 @@ def register(app: FastAPI):
         me,
         tags=['Auth'],
         methods=['GET'],
+    )
+
+
+    app.add_api_route(
+        '/conversation/response',
+        response,
+        tags=['Conversation'],
+        methods=['POST'],
     )

@@ -1,6 +1,10 @@
+from utils.get_or_create_intercom_contact import get_intercom_contact
+from third_party.intercom_client.models.search_query import SearchQuery
+from third_party.intercom_client.client import IntercomClient
+from third_party.intercom_client.models.contact import Contact
 from bot.handlers.text.base_command_handler import BaseCommandHandler
 from aiogram import types
-from config import DEFAULT_CURRENCY, DEFAULT_LANG
+from config import DEFAULT_CURRENCY, DEFAULT_LANG, INTERCOM_TOKEN
 from database.user_repo import UserRepository
 from enums.coin import Coin
 from enums.lang import Lang
@@ -20,7 +24,8 @@ class CmdStart(BaseCommandHandler):
 
         btns_text = (_['cabinet'], _['faq'])
         keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
-        keyboard_markup.row(_['setting'])
+        btns_text = (_['setting'], _['feedback_button'])
+        keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
 
         await message.answer(_['hello'], reply_markup=keyboard_markup)
         
@@ -58,5 +63,7 @@ class CmdStart(BaseCommandHandler):
         await user.add_user_coin(message.from_user.id, Coin.Dash.value, False)
 
         await user.add_user_currency(message.from_user.id, DEFAULT_CURRENCY)
+
+        await get_intercom_contact(message.from_user)
 
     __call__ = handle
