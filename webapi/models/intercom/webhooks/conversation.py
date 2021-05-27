@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Optional, List, Any
 
 from pydantic.main import BaseModel
@@ -9,11 +8,17 @@ class Assignee(BaseModel):
     type: Optional[str] = None
     name: Optional[str] = None
     email: Optional[str] = None
+    
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class Author(BaseModel):
     type: Optional[str] = None
     id: Optional[str] = None
+    
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class ConversationMessage(BaseModel):
@@ -24,6 +29,9 @@ class ConversationMessage(BaseModel):
     body: Optional[str] = None
     author: Optional[Author] = None
     attachments: Optional[List[Any]] = None
+    
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class ConversationPart(BaseModel):
@@ -39,24 +47,39 @@ class ConversationPart(BaseModel):
     author: Optional[Assignee] = None
     attachments: Optional[List[Any]] = None
 
+    class Config:
+        arbitrary_types_allowed = True
+
 
 class ConversationParts(BaseModel):
     type: Optional[str] = None
     conversation_parts: Optional[List[ConversationPart]] = None
     total_count: Optional[int] = None
 
+    class Config:
+        arbitrary_types_allowed = True
+
 
 class ConversationRatingClass(BaseModel):
     pass
+    
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class PurpleLinks(BaseModel):
     conversation_web: Optional[str] = None
+    
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class Tags(BaseModel):
     type: Optional[str] = None
     tags: Optional[List[Any]] = None
+    
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class User(BaseModel):
@@ -66,6 +89,9 @@ class User(BaseModel):
     type: Optional[str] = None
     id: Optional[str] = None
     email: Optional[str] = None
+    
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class Item(BaseModel):
@@ -89,11 +115,17 @@ class Item(BaseModel):
     tags_added: Optional[Tags] = None
     custom_attributes: Optional[ConversationRatingClass] = None
     links: Optional[PurpleLinks] = None
+    
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class Data(BaseModel):
     type: Optional[str] = None
     item: Optional[Item] = None
+    
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class Conversation(BaseModel):
@@ -109,3 +141,6 @@ class Conversation(BaseModel):
     delivered_at: Optional[int] = None
     first_sent_at: Optional[int] = None
     created_at: Optional[int] = None
+    
+    class Config:
+        arbitrary_types_allowed = True
