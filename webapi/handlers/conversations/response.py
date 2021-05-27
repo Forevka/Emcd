@@ -1,4 +1,3 @@
-from typing import Any, Dict
 from database.conversation_repo import ConversationRepository
 from database.notification_repo import NotificationRepository
 from database.user_repo import UserRepository
@@ -29,7 +28,7 @@ def strip_tags(html):
     return s.get_data()
 
 
-async def response(request: Request, conv: Dict[str, Any],):
+async def response(request: Request, conv: Conversation,):
     if (conv.topic == 'conversation.admin.replied'):
         conv_repo = ConversationRepository(request.state.connection)
         notification_repo = NotificationRepository(request.state.connection)
