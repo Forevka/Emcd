@@ -26,6 +26,8 @@ logger.add(
 )
 
 app = FastAPI()
+if (ENVIRONMENT != 'debug'):
+    app.root_path = '/api/emcd/'
 
 app.add_middleware(
     CORSMiddleware,
