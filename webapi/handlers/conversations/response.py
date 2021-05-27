@@ -9,6 +9,8 @@ from bot.common.lang import LangHolder
 from enums.lang import Lang
 from io import StringIO
 from html.parser import HTMLParser
+from typing import Any, Dict, AnyStr, List, Union
+
 
 class MLStripper(HTMLParser):
     def __init__(self):
@@ -27,9 +29,14 @@ def strip_tags(html):
     s.feed(html)
     return s.get_data()
 
+JSONObject = Dict[AnyStr, Any]
+JSONArray = List[Any]
+JSONStructure = Union[JSONArray, JSONObject]
 
-async def response(request: Request, conv: Conversation,):
-    if (conv.topic == 'conversation.admin.replied'):
+async def response(request: Request, model: JSONStructure = None):
+    if (model[b'topic'] == 'conversation.admin.replied'):
+        model = await request.json()
+        conv = Conversation(**model)
         conv_repo = ConversationRepository(request.state.connection)
         notification_repo = NotificationRepository(request.state.connection)
         

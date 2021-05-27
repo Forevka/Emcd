@@ -83,9 +83,9 @@ class Tags(BaseModel):
 
 
 class User(BaseModel):
-    user_id: Optional[int] = None
-    name: None
-    do_not_track: None
+    user_id: Optional[str] = None
+    name: Optional[str] = None
+    do_not_track: Optional[None] = None
     type: Optional[str] = None
     id: Optional[str] = None
     email: Optional[str] = None
