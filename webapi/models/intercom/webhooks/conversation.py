@@ -35,8 +35,8 @@ class ConversationMessage(BaseModel):
 
 
 class ConversationPart(BaseModel):
-    assigned_to: None
-    external_id: None
+    assigned_to: Optional[str] = None
+    external_id: Optional[str] = None
     type: Optional[str] = None
     id: Optional[str] = None
     part_type: Optional[str] = None
@@ -96,8 +96,8 @@ class User(BaseModel):
 
 class Item(BaseModel):
     id: Optional[int] = None
-    team_assignee_id: None
-    snoozed_until: None
+    team_assignee_id: Optional[str] = None
+    snoozed_until: Optional[str] = None
     type: Optional[str] = None
     created_at: Optional[int] = None
     updated_at: Optional[int] = None
@@ -129,7 +129,7 @@ class Data(BaseModel):
 
 
 class Conversation(BaseModel):
-    self: None
+    self: Optional[str] = None
     type: Optional[str] = None
     app_id: Optional[str] = None
     data: Optional[Data] = None
