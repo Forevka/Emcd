@@ -33,9 +33,13 @@ class ConversationMessage(BaseModel):
     class Config:
         arbitrary_types_allowed = True
 
+class AssignedTo(BaseModel):
+    id: Optional[int] = None
+    type: Optional[str] = None
+    name: Optional[str] = None
 
 class ConversationPart(BaseModel):
-    assigned_to: Optional[str] = None
+    assigned_to: Optional[AssignedTo] = None
     external_id: Optional[str] = None
     type: Optional[str] = None
     id: Optional[str] = None
