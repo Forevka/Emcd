@@ -2,7 +2,7 @@ from third_party.intercom_client.models.message import Message
 from third_party.intercom_client.models.conversation import Conversation, conversation_from_dict
 from third_party.intercom_client.models.search_query import SearchQuery
 from types import TracebackType
-from typing import Optional, Type
+from typing import List, Optional, Type
 
 import aiohttp
 import ujson as json
@@ -82,12 +82,13 @@ class IntercomClient:
         }) as resp:
             return await resp.json()
 
-    async def reply_to_conversation(self, intercom_user_id: str, message_text: str, conversation_id: int):
+    async def reply_to_conversation(self, intercom_user_id: str, message_text: str, conversation_id: int, attachments_urls: List[str]):
         async with self._client.post(self._make_url(f"conversations/{conversation_id}/reply"), raise_for_status=False, data=json.dumps({
                 "message_type": "comment",
                 "type": "user",
                 "intercom_user_id": intercom_user_id,
-                "body": message_text
+                "body": message_text,
+                "attachment_urls": attachments_urls
             })) as resp:
             return await resp.json()
 

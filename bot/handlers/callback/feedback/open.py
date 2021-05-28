@@ -3,10 +3,9 @@ import typing
 from aiogram import types
 from bot.common.keyboard_fabrics import conv_cb, flow_cb
 from bot.common.lang import LangHolder
-from config import INTERCOM_TOKEN, PER_PAGE_CONVERSATIONS
+from config import INTERCOM_TOKEN
 from database.user_repo import UserRepository
 from third_party.intercom_client.client import IntercomClient
-from utils.get_or_create_intercom_contact import get_intercom_contact
 from datetime import datetime
 
 
@@ -56,9 +55,13 @@ async def conversation_open(
             *buttons
         )
         
+        attachments_text = ''
+        if (last_message['attachments']):
+            attachments_text = '\n'.join([_['conversation_description_attachments'].format(link=f"<a href=\"{i['url']}\">{i['name']}</a>") for i in last_message['attachments']])
 
         await query.message.edit_text(_['conversation_description'].format(
             from_who=_['support'] if last_message['author']['type'] == 'admin' else _['not_support'],
             text=last_message['body'],
             time=datetime.fromtimestamp(last_message['updated_at']).strftime("%d/%m/%Y %H:%M:%S"),
-        ), reply_markup=keyboard_markup)
+            attachments=attachments_text,
+        ), reply_markup=keyboard_markup, disable_web_page_preview=True)

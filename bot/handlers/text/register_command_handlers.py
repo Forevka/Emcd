@@ -1,3 +1,5 @@
+from aiogram import types
+from bot.handlers.photo.add_photo_to_conversation import AddPhotoToConversation
 from bot.handlers.text.reply_to_conversation import ReplyToConversation
 from bot.handlers.text.new_feedback import TextAddConversation
 from bot.handlers.text.feedback_command import CmdFeedback
@@ -37,6 +39,7 @@ def register_command_handlers(dp: Dispatcher):
 
     dp.register_message_handler(TextAddAccount('new_emcd_account'), state=Form.waiting_for_account_id)
     dp.register_message_handler(TextAddConversation('new_conversation'), state=FeedbackForm.waiting_for_text)
+    dp.register_message_handler(AddPhotoToConversation('conversation_add_document'), state=[FeedbackForm.waiting_for_text, FeedbackForm.waiting_for_reply], content_types=[types.ContentType.PHOTO, types.ContentType.DOCUMENT, types.ContentType.VIDEO])
     
 
     # handle all text from users 

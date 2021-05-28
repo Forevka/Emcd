@@ -13,8 +13,6 @@ class TextAddConversation(BaseCommandHandler):
         
         conv_repo = ConversationRepository(user.connection)
 
-        await state.finish()
-
         async with IntercomClient(INTERCOM_TOKEN) as intercom:
             intercom_user = await get_intercom_contact(message.from_user)
 
@@ -22,8 +20,16 @@ class TextAddConversation(BaseCommandHandler):
                 return await message.answer(_['feedback_user_doesnt_exist'])
 
             conversation = await intercom.create_conversation(intercom_user['id'], message.text)
+            async with state.proxy() as data:
+                attachments_ids = data.get('attachments', [])
+                attachments_urls = [message.bot.get_file_url((await message.bot.get_file(i)).file_path) for i in attachments_ids]
+                await intercom.reply_to_conversation(intercom_user['id'], "uploaded attachments", conversation['conversation_id'], attachments_urls)
+
+
             await conv_repo.add(message.from_user.id, int(conversation['conversation_id']))
 
         await message.answer(_['feedback_accepted'])
+
+        await state.finish()
 
     __call__ = handle

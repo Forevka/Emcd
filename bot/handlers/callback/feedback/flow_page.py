@@ -68,9 +68,13 @@ async def flow_page(
             *buttons
         )
         
+        attachments_text = ''
+        if (last_message['attachments']):
+            attachments_text = '\n'.join([_['conversation_description_attachments'].format(link=f"<a href=\"{i['url']}\">{i['name']}</a>") for i in last_message['attachments']])
 
         await query.message.edit_text(_['conversation_description'].format(
             from_who=_['support'] if last_message['author']['type'] == 'admin' else _['not_support'],
             text=last_message['body'],
             time=datetime.fromtimestamp(last_message.get('updated_at', intercom_conversation['created_at'])).strftime("%d/%m/%Y %H:%M:%S"),
-        ), reply_markup=keyboard_markup)
+            attachments=attachments_text,
+        ), reply_markup=keyboard_markup, disable_web_page_preview=True,)

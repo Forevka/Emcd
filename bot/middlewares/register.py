@@ -1,3 +1,4 @@
+from bot.middlewares.album_gather_middleware import AlbumMiddleware
 from aiogram import Dispatcher
 
 from config import ENVIRONMENT
@@ -9,6 +10,7 @@ from bot.middlewares.database_provider_middleware import DatabaseProviderMiddlew
 from bot.middlewares.i18n_data_provider_midleware import I18nDataProviderMiddleware
 
 def register_middlewares(dp: Dispatcher):
+    dp.middleware.setup(AlbumMiddleware())
     dp.middleware.setup(UpdateRequestContextMiddleware())
     dp.middleware.setup(RequestContextMiddleware())
     dp.middleware.setup(MyLoggingMiddleware())

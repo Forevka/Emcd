@@ -4,7 +4,8 @@ import logging
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from loguru import logger
 
-from background_service.notification_senders.telegram import TelegramNotificationSenderService
+from background_service.notification_senders.telegram import \
+    TelegramNotificationSenderService
 from config import CONNECTION_STRING
 from utils.intercept_standart_logger import InterceptStandartHandler
 from utils.log_rotator import SizedTimedRotatingFileHandler

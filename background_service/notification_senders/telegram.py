@@ -1,5 +1,4 @@
 import asyncio
-from enums.lang import Lang
 from typing import Dict, List
 
 from aiogram import types
@@ -11,6 +10,7 @@ from database.conversation_repo import ConversationRepository
 from database.models.notification_queue import NotificationQueue
 from database.notification_repo import NotificationRepository
 from database.user_repo import UserRepository
+from enums.lang import Lang
 from enums.notify_channel import NotifyChannel
 from enums.notify_status import NotifyStatus
 from enums.notify_type import NotifyType

@@ -34,7 +34,7 @@ class CmdFeedback(BaseCommandHandler):
 
                 buttons.append(
                     types.InlineKeyboardButton(
-                        _['new_feedback'],
+                        _['new_feedback_button'],
                         callback_data=conv_cb.new(
                             id="_", action="new"
                         ),

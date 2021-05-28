@@ -9,6 +9,11 @@ INFLUX_WRITE_TIMEOUT_SEC = 5
 
 INTERCOM_TOKEN = os.environ.get('INTERCOM_TOKEN', '')
 
+class HostingParams:
+    HOSTING_URL = os.environ.get('HOSTING_URL', '')
+    HOSTING_LOGIN = os.environ.get('HOSTING_LOGIN', '')
+    HOSTING_PASSWORD = os.environ.get('HOSTING_PASSWORD', '')
+
 POEDITOR_ID = int(os.environ.get('POEDITOR_PROJECT_ID', 0))
 POEDITOR_TOKEN = os.environ.get('POEDITOR_TOKEN', '')
 

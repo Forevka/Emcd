@@ -24,11 +24,16 @@ class ReplyToConversation(BaseCommandHandler):
                 message.reply_to_message.message_id
             )
 
-            async with IntercomClient(INTERCOM_TOKEN) as intercom:
-                intercom_user = await get_intercom_contact(message.from_user)
-                await intercom.reply_to_conversation(
-                    intercom_user["id"], message.text, conv_id
-                )
+            if conv_id:
+                async with IntercomClient(INTERCOM_TOKEN) as intercom:
+                    intercom_user = await get_intercom_contact(message.from_user)
+                    
+                    async with state.proxy() as data:
+                        attachments_ids = data.get('attachments', [])
+                        attachments_urls = [message.bot.get_file_url((await message.bot.get_file(i)).file_path) for i in attachments_ids]
+                        await intercom.reply_to_conversation(
+                            intercom_user["id"], message.text, conv_id, attachments_urls,
+                        )
         else:
             conv_id = None
 
@@ -38,13 +43,20 @@ class ReplyToConversation(BaseCommandHandler):
             if conv_id:
                 async with IntercomClient(INTERCOM_TOKEN) as intercom:
                     intercom_user = await get_intercom_contact(message.from_user)
-                    await intercom.reply_to_conversation(
-                        intercom_user["id"], message.text, conv_id
-                    )
+                    
+                    async with state.proxy() as data:
+                        attachments_ids = data.get('attachments', [])
+                        attachments_urls = [message.bot.get_file_url((await message.bot.get_file(i)).file_path) for i in attachments_ids]
+
+                        await intercom.reply_to_conversation(
+                            intercom_user["id"], message.text, conv_id, attachments_urls
+                        )
             else:
                 logger.warning(f"user can't reply to conversation {conv_id}, user id {message.from_user.id}")
                 await message.answer("Попробуйте заново")
 
-        await message.answer("Ответ записан")
+        await message.answer(_['feedback_accepted'])
+        await state.finish()
+
 
     __call__ = handle
