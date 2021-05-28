@@ -56,7 +56,8 @@ async def response(request: Request, model: JSONStructure = None):
                     conversation_id=conv.data.item.id,
                 )
 
-                await notification_repo.add(msg_text, NotifyType.Conversation, [NotifyChannel.Telegram], db_conv.user_id)
+                notification_id = await notification_repo.add(msg_text, NotifyType.Conversation, [NotifyChannel.Telegram], db_conv.user_id)
+                await conv_repo.add_conversation_message(conv.data.item.id, -1, msg_text, notification_id)
 
     return {
         

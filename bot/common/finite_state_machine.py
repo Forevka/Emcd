@@ -6,3 +6,4 @@ class Form(StatesGroup):
 
 class FeedbackForm(StatesGroup):
     waiting_for_text = State()
+    waiting_for_reply = State()

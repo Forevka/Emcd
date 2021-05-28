@@ -1,3 +1,4 @@
+from bot.handlers.callback.feedback.reply import reply_to_conversation
 from bot.handlers.callback.feedback.new import new_feedback
 from aiogram import Dispatcher
 from bot.common.keyboard_fabrics import (coin_account_cb, currency_cb,
@@ -236,6 +237,12 @@ def feedback_menu_group(dp: Dispatcher):
     dp.register_callback_query_handler(
         new_feedback,
         conv_cb.filter(action="new"),
+        state="*",
+    )
+
+    dp.register_callback_query_handler(
+        reply_to_conversation,
+        conv_cb.filter(action="reply"),
         state="*",
     )
 

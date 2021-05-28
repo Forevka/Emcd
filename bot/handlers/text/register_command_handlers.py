@@ -1,3 +1,4 @@
+from bot.handlers.text.reply_to_conversation import ReplyToConversation
 from bot.handlers.text.new_feedback import TextAddConversation
 from bot.handlers.text.feedback_command import CmdFeedback
 from bot.handlers.text.unhandled_text import UnhandledText
@@ -31,8 +32,12 @@ def register_command_handlers(dp: Dispatcher):
     dp.register_message_handler(CmdLang('lang'), I18nCommandFilter('language'), state='*')
     dp.register_message_handler(CmdSettings('settings'), I18nCommandFilter('setting'), state='*')
     
+    dp.register_message_handler(ReplyToConversation('reply_to_conversation'), state='*', is_reply=True)
+    dp.register_message_handler(ReplyToConversation('reply_to_conversation'), state=FeedbackForm.waiting_for_reply)
+
     dp.register_message_handler(TextAddAccount('new_emcd_account'), state=Form.waiting_for_account_id)
     dp.register_message_handler(TextAddConversation('new_conversation'), state=FeedbackForm.waiting_for_text)
+    
 
     # handle all text from users 
     dp.register_message_handler(UnhandledText('unhandled_text'), state='*')

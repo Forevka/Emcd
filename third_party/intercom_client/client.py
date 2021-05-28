@@ -82,6 +82,15 @@ class IntercomClient:
         }) as resp:
             return await resp.json()
 
+    async def reply_to_conversation(self, intercom_user_id: str, message_text: str, conversation_id: int):
+        async with self._client.post(self._make_url(f"conversations/{conversation_id}/reply"), raise_for_status=False, data=json.dumps({
+                "message_type": "comment",
+                "type": "user",
+                "intercom_user_id": intercom_user_id,
+                "body": message_text
+            })) as resp:
+            return await resp.json()
+
     async def find_conversations_for_user(self, intercom_user_id: str):
         """
             Find all conversations initiated by user
