@@ -1,7 +1,7 @@
 from aiogram import types
 from bot.common.keyboard_fabrics import conv_cb
 from bot.handlers.text.base_command_handler import BaseCommandHandler
-from config import INTERCOM_TOKEN
+from config import INTERCOM_TOKEN, PER_PAGE_CONVERSATIONS
 from database.user_repo import UserRepository
 from third_party.intercom_client.client import IntercomClient
 from utils.get_or_create_intercom_contact import get_intercom_contact
@@ -20,7 +20,7 @@ class CmdFeedback(BaseCommandHandler):
             keyboard_markup = types.InlineKeyboardMarkup(row_width=1)
 
             if conversations["total_count"] > 0:
-                for i, conv in enumerate(conversations["conversations"]):
+                for conv in conversations["conversations"][(1 - 1) * PER_PAGE_CONVERSATIONS: 1 * PER_PAGE_CONVERSATIONS]:
                     keyboard_markup.add(
                         types.InlineKeyboardButton(
                             f'#{conv["id"]} - ' + (_["feedback_opened"] if conv["open"] else _["feedback_closed"]),
@@ -29,8 +29,10 @@ class CmdFeedback(BaseCommandHandler):
                             ),
                         )
                     )
+                    
+                buttons = []
 
-                keyboard_markup.row(
+                buttons.append(
                     types.InlineKeyboardButton(
                         _['new_feedback'],
                         callback_data=conv_cb.new(
@@ -38,6 +40,20 @@ class CmdFeedback(BaseCommandHandler):
                         ),
                     )
                 )
+                
+                if (len(conversations["conversations"]) > 1 * PER_PAGE_CONVERSATIONS):
+                    buttons.append(
+                        types.InlineKeyboardButton(
+                            _["next_button"],
+                            callback_data=conv_cb.new(
+                                id=2, action="page",
+                            ),
+                        ),
+                    )
+
+
+
+                keyboard_markup.row(*buttons)
 
                 await message.answer(
                     _["feedback_menu_has_items"].format(

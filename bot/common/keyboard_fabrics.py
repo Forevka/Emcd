@@ -8,6 +8,7 @@ menu_cb = CallbackData('menu', 'type', 'action', 'id')  # menu:<type>:<action>
 #menu:account:delete:0
 
 conv_cb = CallbackData('conv', 'action', 'id')  # menu:<type>:<action>
+flow_cb = CallbackData('flow', 'action', 'id', 'conv_id')
 
 coin_account_cb = CallbackData('c_acc', 'action', 'id') # c_acc:<action>:<id>
 #c_acc:off:12

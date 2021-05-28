@@ -1,4 +1,7 @@
 {
+    "support": "Сапорт",
+    "not_support": "Вы",
+    "conversation_description": "От: {from_who}\n\nСообщение: {text}\nВремя: {time}",
     "feedback_reply": "Отправьте текст ответа",
     "feedback_reply_button": "Ответить",
     "feedback_from_admin": "{feedback_text}\n\nИд заявки: #{conversation_id}\nЧто-бы ответить администратору - сделайте реплай на это сообщение. На пк два раза нажмите на это сообщение, на телефонах долгое нажатие.",
