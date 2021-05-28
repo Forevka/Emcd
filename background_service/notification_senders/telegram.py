@@ -52,6 +52,13 @@ class TelegramNotificationSenderService(BaseBackgroundService[NotificationQueue]
             reply_markup = types.InlineKeyboardMarkup(row_width=1)
             conv_id = await conv_repo.find_conversation_id_by_notification_id(item.notification_id)
 
+            if (not conv_id):
+                logger.warning(f'conversation not found for {item.user_id} and {item.notification_id}')
+                item.status_id = NotifyStatus.Failed.value
+                return await notification_repo.update(item)
+
+
+
             user = await user_repo.get_user(item.user_id)
             if (user):
                 c_user_locale_code = Lang(user.lang_id).name
