@@ -14,3 +14,6 @@ async def new_feedback(
 ):
     await query.message.edit_text(_['new_feedback'])
     await FeedbackForm.waiting_for_text.set()
+    
+    await query.answer()
+    

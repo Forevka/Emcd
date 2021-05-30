@@ -84,6 +84,7 @@ async def conversation_pages(
                 ),
                 reply_markup=keyboard_markup,
             )
+            await query.answer()
             return
 
         keyboard_markup.row(
@@ -99,3 +100,5 @@ async def conversation_pages(
             _["feedback_menu_no_items"],
             reply_markup=keyboard_markup,
         )
+        
+        await query.answer()

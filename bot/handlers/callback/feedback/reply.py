@@ -20,4 +20,5 @@ async def reply_to_conversation(
     await FeedbackForm.waiting_for_reply.set()
 
     await query.message.edit_text(_['feedback_reply'])
+    await query.answer()
     

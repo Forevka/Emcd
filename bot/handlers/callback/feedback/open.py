@@ -65,3 +65,5 @@ async def conversation_open(
             time=datetime.fromtimestamp(last_message['updated_at']).strftime("%d/%m/%Y %H:%M:%S"),
             attachments=attachments_text,
         ), reply_markup=keyboard_markup, disable_web_page_preview=True)
+
+        await query.answer()
