@@ -1,6 +1,7 @@
 import typing
 
 from aiogram import types
+from aiogram.types.chat import ChatActions
 from bot.common.keyboard_fabrics import conv_cb
 from bot.common.lang import LangHolder
 from config import INTERCOM_TOKEN, PER_PAGE_CONVERSATIONS
@@ -15,6 +16,7 @@ async def conversation_pages(
     user: UserRepository,
     _: LangHolder,
 ):
+    await query.bot.send_chat_action(query.from_user.id, ChatActions.TYPING)
     page = int(callback_data['id'])
 
     async with IntercomClient(INTERCOM_TOKEN) as intercom:

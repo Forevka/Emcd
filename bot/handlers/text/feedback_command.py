@@ -1,4 +1,5 @@
 from aiogram import types
+from aiogram.types.chat import ChatActions
 from bot.common.keyboard_fabrics import conv_cb
 from bot.handlers.text.base_command_handler import BaseCommandHandler
 from config import INTERCOM_TOKEN, PER_PAGE_CONVERSATIONS
@@ -9,6 +10,7 @@ from utils.get_or_create_intercom_contact import get_intercom_contact
 
 class CmdFeedback(BaseCommandHandler):
     async def handle(self, message: types.Message, user: UserRepository, _: dict):
+        await message.bot.send_chat_action(message.from_user.id, ChatActions.TYPING)
         async with IntercomClient(INTERCOM_TOKEN) as intercom:
 
             intercom_user = await get_intercom_contact(message.from_user)

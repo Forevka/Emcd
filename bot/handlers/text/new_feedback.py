@@ -1,3 +1,4 @@
+from aiogram.types.chat import ChatActions
 from database.conversation_repo import ConversationRepository
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -10,6 +11,7 @@ from utils.get_or_create_intercom_contact import get_intercom_contact
 
 class TextAddConversation(BaseCommandHandler):
     async def handle(self, message: types.Message, user: UserRepository, _: dict, state: FSMContext):
+        await message.bot.send_chat_action(message.from_user.id, ChatActions.TYPING)
         
         conv_repo = ConversationRepository(user.connection)
 

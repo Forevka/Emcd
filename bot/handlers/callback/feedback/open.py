@@ -1,6 +1,7 @@
 import typing
 
 from aiogram import types
+from aiogram.types.chat import ChatActions
 from bot.common.keyboard_fabrics import conv_cb, flow_cb
 from bot.common.lang import LangHolder
 from config import INTERCOM_TOKEN
@@ -15,6 +16,7 @@ async def conversation_open(
     user: UserRepository,
     _: LangHolder,
 ):
+    await query.bot.send_chat_action(query.from_user.id, ChatActions.TYPING)
     conversation_id = int(callback_data['id'])
     
     async with IntercomClient(INTERCOM_TOKEN) as intercom:
