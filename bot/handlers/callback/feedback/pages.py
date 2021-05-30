@@ -16,7 +16,6 @@ async def conversation_pages(
     user: UserRepository,
     _: LangHolder,
 ):
-    await query.bot.send_chat_action(query.from_user.id, ChatActions.TYPING)
     page = int(callback_data['id'])
 
     async with IntercomClient(INTERCOM_TOKEN) as intercom:
