@@ -120,7 +120,7 @@ async def statistic_info_callback_handler(
 
     user_currency = await user.get_user_currency(query.from_user.id)
 
-    async with EmcdClient(account_id) as client:
+    async with EmcdClient(account_id, logger) as client:
         account_api = await client.get_info()
 
     if (account_api is None):

@@ -92,7 +92,7 @@ async def worker_info_callback_handler(
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
 
     workers = None
-    async with EmcdClient(account_id) as client:
+    async with EmcdClient(account_id, logger) as client:
         workers = await client.get_workers(coind_id)
 
     if (workers is None):
