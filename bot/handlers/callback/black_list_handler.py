@@ -95,7 +95,7 @@ async def black_list_info_callback_handler(
     blacklisted_workers = [w.worker_id for w in await user.get_blacklisted_workers(query.from_user.id)]
     
     workers = None
-    async with EmcdClient(account_id) as client:
+    async with EmcdClient(account_id, logger) as client:
         workers = await client.get_workers(coin_id)
 
     if (workers is None):

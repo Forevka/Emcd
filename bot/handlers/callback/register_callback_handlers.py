@@ -1,3 +1,8 @@
+from bot.handlers.callback.feedback.flow_page import flow_page
+from bot.handlers.callback.feedback.open import conversation_open
+from bot.handlers.callback.feedback.pages import conversation_pages
+from bot.handlers.callback.feedback.reply import reply_to_conversation
+from bot.handlers.callback.feedback.new import new_feedback
 from aiogram import Dispatcher
 from bot.common.keyboard_fabrics import (coin_account_cb, currency_cb,
                                          delete_account_cb, finance_cb,
@@ -5,7 +10,8 @@ from bot.common.keyboard_fabrics import (coin_account_cb, currency_cb,
                                          notification_cb,
                                          notification_payout_cb, payouts_cb,
                                          question_answer_cb, statistic_cb,
-                                         worker_black_cb, worker_cb)
+                                         worker_black_cb, worker_cb,
+                                         conv_cb, flow_cb)
 from bot.handlers.callback.account_cabinet_handler import \
     account_cabinet_callback_handler
 from bot.handlers.callback.add_ccount_handler import \
@@ -230,6 +236,38 @@ def delete_menu_group(dp: Dispatcher):
         state="*"
     )
 
+def feedback_menu_group(dp: Dispatcher):
+    dp.register_callback_query_handler(
+        new_feedback,
+        conv_cb.filter(action="new"),
+        state="*",
+    )
+
+    dp.register_callback_query_handler(
+        reply_to_conversation,
+        conv_cb.filter(action="reply"),
+        state="*",
+    )
+
+    dp.register_callback_query_handler(
+        conversation_pages,
+        conv_cb.filter(action="page"),
+        state="*",
+    )
+
+    dp.register_callback_query_handler(
+        conversation_open,
+        conv_cb.filter(action="open"),
+        state="*",
+    )
+
+    dp.register_callback_query_handler(
+        flow_page,
+        flow_cb.filter(action="page"),
+        state="*",
+    )
+
+
 def register_callback_handlers(dp: Dispatcher):
     blacklist_menu_group(dp)
     currency_menu_group(dp)
@@ -243,6 +281,7 @@ def register_callback_handlers(dp: Dispatcher):
     worker_menu_group(dp)
     notification_menu_group(dp)
     delete_menu_group(dp)
+    feedback_menu_group(dp)
     
     dp.register_callback_query_handler(
         do_nothing_callback_handler,

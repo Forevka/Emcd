@@ -2,6 +2,7 @@ import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram.types import BotCommand
 from aiogram.utils import executor
 from loguru import logger
 
@@ -34,6 +35,12 @@ def init_dispatcher(bot: Bot):
 
     return Dispatcher(bot, storage=storage)
 
+async def set_bot_commands(bot: Bot):
+    commands = [
+        BotCommand(command="start", description="Launch bot/Запуск бота"),
+        BotCommand(command="lang", description="Change language/Сменить язык"),
+    ]
+    await bot.set_my_commands(commands)
 
 async def on_startup(dp: Dispatcher):
     logger.info('Loading locales')
@@ -48,6 +55,9 @@ async def on_startup(dp: Dispatcher):
     dp["db_pool"] = await get_pool(
         dp["connection_string"],
     )
+
+    await set_bot_commands(dp.bot)
+
 
 
 def start_polling(token: str, connection_string: str):

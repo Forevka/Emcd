@@ -55,7 +55,8 @@ async def lang_callback_handler(
 
     btns_text = (_['cabinet'], _['faq'])
     keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
-    keyboard_markup.row(_['setting'])
+    btns_text = (_['setting']) #, _['feedback_button']
+    keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
 
     await query.message.delete()
 

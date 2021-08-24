@@ -1,8 +1,9 @@
 from types import TracebackType
 from typing import Any, Dict, Optional, Type, Union
 from uuid import UUID
-
+from logging import LoggerAdapter
 import aiohttp
+from aiohttp.client_reqrep import ClientResponse
 from third_party.emcd_client.models.coin_workers import (
     CoinWorkers, coin_workers_from_dict)
 from third_party.emcd_client.models.income_rewards import (
@@ -15,10 +16,11 @@ from yarl import URL
 API_VERSION = 1
 
 class EmcdClient:
-    def __init__(self, account_id: Union[str, UUID], base_url: URL = URL('https://api.emcd.io/')) -> None:
+    def __init__(self, account_id: Union[str, UUID], logger: LoggerAdapter, base_url: URL = URL('https://api.emcd.io/'), ) -> None:
         self._base_url = base_url
         self._account_id = account_id
         self._client = aiohttp.ClientSession(raise_for_status=True)
+        self._logger = logger
 
     async def close(self) -> None:
         return await self._client.close()
@@ -38,11 +40,15 @@ class EmcdClient:
     def _make_url(self, path: str) -> URL:
         return self._base_url / path
 
+    async def format_response(self, response: ClientResponse):
+        return await response.text()
+
     async def get_info(self,) -> Optional[AccountInfo]:
         async with self._client.get(self._make_url(f"v{API_VERSION}/info/{self._account_id}"), raise_for_status=False) as resp:
             if (resp.status == 200):
                 ret = await resp.json()
                 return account_info_from_dict(ret)
+            self._logger.error(f'emcd api not 200, {resp.status}, {await self.format_response(resp)}')
             return None
 
     async def get_workers(self, coin_name: str) -> Optional[CoinWorkers]:
@@ -50,6 +56,7 @@ class EmcdClient:
             if (resp.status == 200):
                 ret = await resp.json()
                 return coin_workers_from_dict(ret)
+            self._logger.error(f'emcd api not 200, {resp.status}, {await self.format_response(resp)}')
             return None
 
     async def get_rewards(self, coin_name: str) -> Optional[IncomeRewards]:
@@ -57,6 +64,7 @@ class EmcdClient:
             if (resp.status == 200):
                 ret = await resp.json()
                 return income_rewards_from_dict(ret)
+            self._logger.error(f'emcd api not 200, {resp.status}, {await self.format_response(resp)}')
             return None
 
     async def get_payouts(self, coin_name: str) -> Optional[Payouts]:
@@ -64,4 +72,5 @@ class EmcdClient:
             if (resp.status == 200):
                 ret = await resp.json()
                 return payouts_from_dict(ret)
+            self._logger.error(f'emcd api not 200, {resp.status}, {await self.format_response(resp)}')
             return None

@@ -1,3 +1,4 @@
+from logging import LoggerAdapter
 from bot.handlers.text.base_command_handler import BaseCommandHandler
 from uuid import UUID
 
@@ -18,7 +19,7 @@ def validate_uuid4(uuid_string: str):
     return True
 
 class TextAddAccount(BaseCommandHandler):
-    async def handle(self, message: types.Message, user: UserRepository, _: dict, state: FSMContext):
+    async def handle(self, message: types.Message, user: UserRepository, _: dict, state: FSMContext, logger: LoggerAdapter):
         account_id = message.text
 
         await state.finish()
@@ -29,7 +30,7 @@ class TextAddAccount(BaseCommandHandler):
             exist_account = next((acc for acc in user_account if str(acc.account_id) == account_id), None)
 
             if (not exist_account):
-                async with EmcdClient(account_id) as client:
+                async with EmcdClient(account_id, logger) as client:
                     account = await client.get_info()
 
                     if (account):

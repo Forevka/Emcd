@@ -30,7 +30,7 @@ class PayoutsMonitorService(BaseBackgroundService[AccountCoinNotificationPayout]
         user_repo = UserRepository(con)
         notification_repo = NotificationRepository(con)
 
-        async with EmcdClient(item.account_id) as client:
+        async with EmcdClient(item.account_id, logger) as client:
             user_account = next((acc for acc in await user_repo.get_accounts(item.user_id) if acc.account_id == item.account_id), None)
 
             payouts = await client.get_payouts(item.coin_id)

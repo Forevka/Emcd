@@ -82,7 +82,7 @@ async def income_info_callback_handler(
         return await reply_to_account_not_found(query.message, _)
 
     incomes = None
-    async with EmcdClient(account_id) as client:
+    async with EmcdClient(account_id, logger) as client:
         incomes = await client.get_rewards(coind_id)
 
     if (incomes is None):

@@ -31,9 +31,15 @@ class AnalyticMiddleware(BaseMiddleware):
         if (message.is_command()):
             await log_command(message.from_user.id, analytic_id)
         else:
-            await log_text(message.from_user.id, analytic_id)
+            if (message.from_user):
+                await log_text(message.from_user.id, analytic_id)
+            else:
+                data['logger'].warning(f'{json.dumps(message.to_python())} user id null')
+                await log_text(message.chat.id, 'no user id provided')
+
 
 
     async def on_post_process_callback_query(self, callback_query: types.CallbackQuery, results, data: dict):
-        c_data = callback_query.data.split(":")
-        await log_callback_query(callback_query.from_user.id, c_data[0])
+        if (callback_query.from_user):
+            c_data = callback_query.data.split(":")
+            await log_callback_query(callback_query.from_user.id, c_data[0])

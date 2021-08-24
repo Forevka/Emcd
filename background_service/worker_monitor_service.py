@@ -48,7 +48,7 @@ class WorkerMonitorService(BaseBackgroundService[AccountCoinNotificationWorker])
         user_repo = UserRepository(con)
         notification_repo = NotificationRepository(con)
 
-        async with EmcdClient(item.account_id) as client:
+        async with EmcdClient(item.account_id, logger) as client:
             api_account = await client.get_workers(item.coin_id)
             if (api_account is None):
                 logger.info(f'{item.account_id}|{item.coin_id} - is none')

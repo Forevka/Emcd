@@ -3,7 +3,7 @@ uvloop
 aiohttp[speedups]
 aioinflux
 asyncpg
-aiogram
+aiogram==2.11.2
 apscheduler
 loguru
 gitpython
