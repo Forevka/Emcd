@@ -64,6 +64,6 @@ class CmdStart(BaseCommandHandler):
 
         await user.add_user_currency(message.from_user.id, DEFAULT_CURRENCY)
 
-        await get_intercom_contact(message.from_user)
+        #await get_intercom_contact(message.from_user)
 
     __call__ = handle
