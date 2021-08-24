@@ -20,10 +20,15 @@ class I18nDataProviderMiddleware(LifetimeControllerMiddleware):
     async def pre_process(self, message: Any, data: dict, *args, **kwargs,):
         if (isinstance(message, Update)): return
 
-        user = await data['user'].get_user(message.from_user.id)
-        if (user):
-            message.c_user_locale_code = Lang(user.lang_id).name
-            data['_'] = LangHolder(user.lang_id, message.c_user_locale_code,)
+        if (message.from_user):
+            user = await data['user'].get_user(message.from_user.id)
+            if (user):
+                message.c_user_locale_code = Lang(user.lang_id).name
+                data['_'] = LangHolder(user.lang_id, message.c_user_locale_code,)
+            else:
+                message.c_user_locale_code = DEFAULT_LANG.name
+                data['_'] = LangHolder(DEFAULT_LANG.value, message.c_user_locale_code,)
         else:
             message.c_user_locale_code = DEFAULT_LANG.name
             data['_'] = LangHolder(DEFAULT_LANG.value, message.c_user_locale_code,)
+
