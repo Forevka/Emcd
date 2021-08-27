@@ -15,7 +15,7 @@ T = TypeVar("T")
 
 
 def from_float(x: Any) -> float:
-    return float(x)
+    return float(x or 0)
 
 
 def from_none(x: Any) -> Any:
