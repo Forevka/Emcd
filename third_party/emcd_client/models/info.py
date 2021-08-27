@@ -15,7 +15,6 @@ T = TypeVar("T")
 
 
 def from_float(x: Any) -> float:
-    assert isinstance(x, (float, int)) and not isinstance(x, bool)
     return float(x)
 
 
