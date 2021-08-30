@@ -12,12 +12,6 @@ from typing import Any, List, TypeVar, Callable, Type, cast, Optional
 
 T = TypeVar("T")
 
-
-def from_int(x: Any) -> int:
-    assert isinstance(x, int) and not isinstance(x, bool)
-    return x
-
-
 def from_str(x: Any) -> str:
     assert isinstance(x, str)
     return x
@@ -45,7 +39,7 @@ def to_class(c: Type[T], x: Any) -> T:
 
 @dataclass
 class Payout:
-    timestamp: int
+    timestamp: float
     gmt_time: str
     amount: float
     txid: Optional[str]
@@ -53,7 +47,7 @@ class Payout:
     @staticmethod
     def from_dict(obj: Any) -> 'Payout':
         assert isinstance(obj, dict)
-        timestamp = from_int(obj.get("timestamp"))
+        timestamp = from_float(obj.get("timestamp"))
         gmt_time = from_str(obj.get("gmt_time"))
         amount = from_float(obj.get("amount"))
         txid = obj.get("txid")
@@ -61,7 +55,7 @@ class Payout:
 
     def to_dict(self) -> dict:
         result: dict = {}
-        result["timestamp"] = from_int(self.timestamp)
+        result["timestamp"] = from_float(self.timestamp)
         result["gmt_time"] = from_str(self.gmt_time)
         result["amount"] = to_float(self.amount)
         result["txid"] = from_str(self.txid)
