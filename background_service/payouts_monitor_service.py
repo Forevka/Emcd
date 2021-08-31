@@ -68,7 +68,7 @@ class PayoutsMonitorService(BaseBackgroundService[AccountCoinNotificationPayout]
                         msg_text = translation['new_payout_received'].format(
                             account=user_account.username,
                             link=f'<a href="https://blockchair.com/{coin.name.lower()}/transaction/{payout.txid}">{payout.txid[8:]}</a>',
-                            amount=payout.amount,
+                            amount=format(payout.amount, '.8f'),
                             current_balance=format(latest_coin_data.balance, '.8f'),
                         )
                         
