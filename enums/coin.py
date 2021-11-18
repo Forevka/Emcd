@@ -2,7 +2,7 @@ from enum import Enum
 
 class Coin(Enum):
     Bitcoin = 'btc'
-    BitcoinHash = 'bchn'
+    BitcoinCash = 'bchn'
     BitcoinSV = 'bsv'
     Litecoin = 'ltc'
     Dash = 'dash'

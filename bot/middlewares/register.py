@@ -1,3 +1,4 @@
+from bot.middlewares.black_list_middleware import BlackListMiddleware
 from bot.middlewares.album_gather_middleware import AlbumMiddleware
 from aiogram import Dispatcher
 
@@ -20,3 +21,4 @@ def register_middlewares(dp: Dispatcher):
         
     dp.middleware.setup(DatabaseProviderMiddleware(dp))
     dp.middleware.setup(I18nDataProviderMiddleware(dp))
+    #dp.middleware.setup(BlackListMiddleware())

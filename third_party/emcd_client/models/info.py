@@ -141,7 +141,7 @@ class AccountInfo:
     
         coins.update({Coin.Litecoin.value: self.litecoin})
 
-        coins.update({Coin.BitcoinHash.value: self.bitcoin_cash})
+        coins.update({Coin.BitcoinCash.value: self.bitcoin_cash})
 
         coins.update({Coin.BitcoinSV.value: self.bitcoin_sv})
 

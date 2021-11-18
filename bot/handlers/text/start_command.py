@@ -55,7 +55,7 @@ class CmdStart(BaseCommandHandler):
         await user.add_notification_payouts_setting(message.from_user.id, True)
         
         await user.add_user_coin(message.from_user.id, Coin.Bitcoin.value, True)
-        await user.add_user_coin(message.from_user.id, Coin.BitcoinHash.value, False)
+        await user.add_user_coin(message.from_user.id, Coin.BitcoinCash.value, False)
         await user.add_user_coin(message.from_user.id, Coin.BitcoinSV.value, False)
         await user.add_user_coin(message.from_user.id, Coin.Ethereum.value, False)
         await user.add_user_coin(message.from_user.id, Coin.EthereumClassic.value, False)
