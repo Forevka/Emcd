@@ -9,8 +9,6 @@ logs/
 
 certbot/
 
-t.py
-
 locales/export/
 .vscode/
 # C extensions

@@ -20,7 +20,6 @@ class TelegramNotifier(BaseNotifier):
         self.token = token
         self.bot = Bot(token=token, parse_mode='HTML', validate_token=False)
 
-
     async def send_message(self, user_id: int, text: str, con: Connection, reply_markup = None) -> TelegramSendData:
         """
         Safe messages sender

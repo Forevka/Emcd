@@ -10,6 +10,13 @@ class BroadcastRepository:
     def __init__(self, con: Connection):
         self.connection = con
 
+    async def get_all_users(self,) -> List[User]:
+        sql = f"""
+        {User.__select__}
+        """
+
+        return [User(**acc) for acc in await self.connection.fetch(sql,)]
+
     async def get_all_user_by_lang(self, lang_id: int) -> List[User]:
         sql = f"""
         {User.__select__} where "lang_id" = $1
